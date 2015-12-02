@@ -1,0 +1,48 @@
+body {
+    padding-top: 70px;
+}
+
+.nav,
+.pagination,
+.carousel,
+.panel-title a {
+    cursor: pointer;
+}
+
+#jsonViewer {
+    position: relative;
+    height: 65vh;
+    background: rgb(230, 230, 230);
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    margin-top: 10px;
+}
+
+#jsonEditor {
+    position: relative;
+    height: 15vh;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    margin-top: 10px;
+}
+
+#timeButton {
+    border-radius: 0;
+    background: rgb(256, 256, 256);
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+#queryBar {
+    border-right: 0;
+}
+
+.form-control {
+    border-radius: 0;
+}
+
+.ace_link_marker {
+    position: absolute;
+    border-bottom: 1px solid blue;
+}

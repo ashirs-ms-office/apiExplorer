@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Microsoft Graph Explorer</title>
+    <link rel="stylesheet" href="./src/bootstrap.css">
+    <link rel="stylesheet" href="./src/api-explorer.css">
+    <link rel="stylesheet" href="./src/ngProgress.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+
+    <script src="./src/api-explorer-helpers.js"></script>    
+    <script src="./src/api-explorer-jsviewer.js"></script>
+    <script src="./src/api-explorer-jseditor.js"></script>
+    <script src="./src/constants.js"></script>
+    <script src="./src/angular.js"></script>
+    <script src="./src/angular-route.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+    <script src="./src/ui-bootstrap-tpls-0.14.3.min.js"></script>
+    <script src="./src/adal.js"></script>
+    <script src="./src/adal-angular.js"></script>
+
+    <script src="./src/ngprogress.min.js"></script>
+
+    <script src="./src/api-explorer-init.js"></script>
+    <script src="./src/api-explorer-app.js"></script>
+    <script src="./src/api-explorer-svc.js"></script>
+    <script src="./src/api-explorer-ctrl.js"></script>
+</head>
+
+<body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document">
+    <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+        <div class="container">
+            <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
+                &#9776;
+            </button>
+            <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
+                <a class="navbar-brand" href="#">Microsoft Graph Explorer</a>
+                <ul class="nav navbar-nav pull-right">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://msdn.microsoft.com/en-us/Library/Azure/Ad/Graph/api/api-catalog">Documentation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ng-show="userInfo.isAuthenticated">{{userInfo.userName}}</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#" ng-show="userInfo.isAuthenticated" ng-click="logout()">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" ng-hide="userInfo.isAuthenticated" ng-click="login()">Login</a></li>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!--    move this into the controller-->
+    <div ng-controller="datalistCtrl">
+        <datalist id="requestList">
+            <option value="https://graph.microsoft.com/v1.0/me"></option>
+            <option value="https://graph.microsoft.com/v1.0/users"></option>
+            <option value="https://graph.microsoft.com/v1.0/me/messages"></option>
+            <option value="https://graph.microsoft.com/v1.0/drive"></option>
+            <option value="https://graph.microsoft.com/v1.0/groups"></option>
+            <option value="https://graph.microsoft.com/v1.0/devices"></option>
+            <option value="https://graph.microsoft.com/beta/me"></option>
+            <option value="https://graph.microsoft.com/beta/users"></option>
+            <option value="https://graph.microsoft.com/beta/me/messages"></option>
+            <option value="https://graph.microsoft.com/beta/drive"></option>
+            <option value="https://graph.microsoft.com/beta/groups"></option>
+            <option value="https://graph.microsoft.com/beta/devices"></option>
+        </datalist>
+    </div>
+
+    <div class="container body-content" ng-controller="FormCtrl">
+        <div class="input-group">
+            <div class="input-group-btn" ng-controller="DropdownCtrl">
+                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
+                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle>
+                        {{selectedOptions}} <span class="caret"></span>
+                    </button>
+                    <ul class="uib-dropdown-menu">
+                        <li ng-repeat="choice in items">
+                            <a href ng-click="OnItemClick(choice)">{{choice}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <form class="main-query" ng-submit="submit()">
+                <!--    the style addition is for compatibility with IE11-->
+                <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off"/>
+            </form>
+            <div class="input-group-btn" id="duration" ng-show="showDuration">
+                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
+                    <button id="timeButton" type="button" class="btn btn-default" ng-model="duration" name="duration">
+                        {{duration}}
+                    </button>
+                </div>
+            </div>
+            <div class="input-group-btn" ng-controller="VersionCtrl" style="z-index: 99">
+                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
+                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle>
+                        {{selectedVersion}} <span class="caret"></span>
+                    </button>
+                    <ul class="uib-dropdown-menu">
+                        <li ng-repeat="choice in items">
+                            <a href ng-click="OnItemClick(choice)">{{choice}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="jsonEditor" ng-show="showJsonEditor"></div>
+        <div id="jsonViewer"></div>
+    </div>
+</body>
+
+</html>
