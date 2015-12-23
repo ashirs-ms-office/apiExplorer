@@ -57,18 +57,40 @@ var formatXml = function (xml) {
     return formatted;
 };
 
-var handleResponse = function ($scope, startTime, results) {
+var handleResponse = function ($scope, startTime, results, headers) {
     var endTime = new Date();
     $scope.jsonViewer.setValue("");
     var response = JSON.stringify(results, null, 4).trim();
     if (response.indexOf("<?xml") != -1) {
         response = formatXml(response);
     }
+
+    if(headers != null){
+        $scope.responseHeaders = JSON.stringify(headers(), null, 4).trim();
+    }
     
     $scope.jsonViewer.getSession().insert(0, response);
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
     $scope.$parent.showDuration = true;
-
     $scope.progressbar.complete();
+}
+
+var handleImageResponse = function ($scope, apiService) {
+    apiService.performQuery('GET_BINARY')($scope.text, "").success(function (results, status, headers, config) {
+        var arr = new Uint8Array(results);
+        var raw = String.fromCharCode.apply(null, arr);
+        var b64 = btoa(raw);
+        var dataURL = "data:image/jpeg;base64," + b64;
+
+        document.getElementById("img").src = dataURL;
+        $scope.showJsonViewer = false;
+        $scope.showImage = true;
+
+        $scope.progressbar.complete();
+    });
+}
+
+var isImageResponse = function (results) {
+    return JSON.stringify(results, null, 4).indexOf("JFIF") != -1;
 }

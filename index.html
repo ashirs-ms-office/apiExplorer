@@ -3,28 +3,6 @@
 
 <head>
     <title>Microsoft Graph Explorer</title>
-    <link rel="stylesheet" href="./src/bootstrap.css">
-    <link rel="stylesheet" href="./src/api-explorer.css">
-    <link rel="stylesheet" href="./src/ngProgress.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
-
-    <script src="./src/api-explorer-helpers.js"></script>    
-    <script src="./src/api-explorer-jsviewer.js"></script>
-    <script src="./src/api-explorer-jseditor.js"></script>
-    <script src="./src/constants.js"></script>
-    <script src="./src/angular.js"></script>
-    <script src="./src/angular-route.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
-    <script src="./src/ui-bootstrap-tpls-0.14.3.min.js"></script>
-    <script src="./src/adal.js"></script>
-    <script src="./src/adal-angular.js"></script>
-
-    <script src="./src/ngprogress.min.js"></script>
-
-    <script src="./src/api-explorer-init.js"></script>
-    <script src="./src/api-explorer-app.js"></script>
-    <script src="./src/api-explorer-svc.js"></script>
-    <script src="./src/api-explorer-ctrl.js"></script>
 </head>
 
 <body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document">
@@ -53,18 +31,7 @@
     <!--    move this into the controller-->
     <div ng-controller="datalistCtrl">
         <datalist id="requestList">
-            <option value="https://graph.microsoft.com/v1.0/me"></option>
-            <option value="https://graph.microsoft.com/v1.0/users"></option>
-            <option value="https://graph.microsoft.com/v1.0/me/messages"></option>
-            <option value="https://graph.microsoft.com/v1.0/drive"></option>
-            <option value="https://graph.microsoft.com/v1.0/groups"></option>
-            <option value="https://graph.microsoft.com/v1.0/devices"></option>
-            <option value="https://graph.microsoft.com/beta/me"></option>
-            <option value="https://graph.microsoft.com/beta/users"></option>
-            <option value="https://graph.microsoft.com/beta/me/messages"></option>
-            <option value="https://graph.microsoft.com/beta/drive"></option>
-            <option value="https://graph.microsoft.com/beta/groups"></option>
-            <option value="https://graph.microsoft.com/beta/devices"></option>
+            <option data-ng-repeat="ttl in urlOptions" value="{{ttl}}">
         </datalist>
     </div>
 
@@ -84,7 +51,7 @@
             </div>
             <form class="main-query" ng-submit="submit()">
                 <!--    the style addition is for compatibility with IE11-->
-                <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off"/>
+                <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
             </form>
             <div class="input-group-btn" id="duration" ng-show="showDuration">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
@@ -106,9 +73,42 @@
                 </div>
             </div>
         </div>
+        <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div id="jsonEditor" ng-show="showJsonEditor"></div>
-        <div id="jsonViewer"></div>
+        <div id="jsonViewer" ng-show="showJsonViewer"></div>
+        <br/>
+        <uib-accordion>
+            <uib-accordion-group heading="Response Headers" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
+                <pre id="responseHeaderDetails">{{responseHeaders}}</pre>
+            </uib-accordion-group>
+        </uib-accordion>
+
     </div>
+    
+<!--    scripts are loaded here-->
+    <link rel="stylesheet" href="./src/bootstrap.css">
+    <link rel="stylesheet" href="./src/api-explorer.css">
+    <link rel="stylesheet" href="./src/ngProgress.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
+
+    <script src="./src/api-explorer-helpers.js"></script>
+    <script src="./src/api-explorer-jsviewer.js"></script>
+    <script src="./src/api-explorer-jseditor.js"></script>
+    <script src="./src/constants.js"></script>
+    <script src="./src/angular.js"></script>
+    <script src="./src/angular-route.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+    <script src="./src/ui-bootstrap-tpls-0.14.3.min.js"></script>
+    <script src="./src/adal.js"></script>
+    <script src="./src/adal-angular.js"></script>
+
+    <script src="./src/ngprogress.min.js"></script>
+
+    <script src="./src/api-explorer-init.js"></script>
+    <script src="./src/api-explorer-app.js"></script>
+    <script src="./src/api-explorer-svc.js"></script>
+    <script src="./src/api-explorer-msgraph.js"></script>
+    <script src="./src/api-explorer-ctrl.js"></script>
 </body>
 
 </html>

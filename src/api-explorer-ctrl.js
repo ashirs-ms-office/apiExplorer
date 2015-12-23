@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, adalService, $location, apiService) {
         var expanded = true;
@@ -8,6 +6,8 @@ angular.module('ApiExplorer')
         $scope.selectedVersion = "v1.0";
         $scope.showJsonEditor = false;
         $scope.showDuration = false;
+        $scope.showJsonViewer = true;
+        $scope.showImage = false;
 
         initializeJsonViewer($scope, run, apiService);
 
@@ -64,40 +64,56 @@ angular.module('ApiExplorer')
     });
 
 angular.module('ApiExplorer')
-    .controller('datalistCtrl', function ($scope, $log) {});
+    .controller('datalistCtrl', function ($scope, $log) {
+        $scope.urlOptions = [];
+
+        $scope.$parent.$on("clearUrls", function (event, args) {
+            $scope.urlOptions = [];
+        });
+
+        $scope.$parent.$on("populateUrls", function (event, args) {
+            $scope.urlOptions = [
+                "https://graph.microsoft.com/v1.0/me",
+                "https://graph.microsoft.com/v1.0/users",
+                "https://graph.microsoft.com/v1.0/me/messages",
+                "https://graph.microsoft.com/v1.0/drive",
+                "https://graph.microsoft.com/v1.0/groups",
+                "https://graph.microsoft.com/v1.0/devices",
+                "https://graph.microsoft.com/beta/me",
+                "https://graph.microsoft.com/beta/users",
+                "https://graph.microsoft.com/beta/me/messages",
+                "https://graph.microsoft.com/beta/drive",
+                "https://graph.microsoft.com/beta/devices",
+                "https://graph.microsoft.com/beta/groups"
+            ];
+        });
+    });
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', function ($scope, $log, apiService, ngProgressFactory) {
     $scope.text = 'https://graph.microsoft.com/v1.0/';
     $scope.duration = "";
     $scope.progressbar = ngProgressFactory.createInstance();
+    $scope.listData = "requestList";
+    $scope.photoData = "";
+    $scope.responseHeaders = "";
+
+    $scope.$emit('populateUrls');
 
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
-        if (args.indexOf("https://") == -1) {
-            if($scope.text.indexOf(args.substr(1)) != -1){
-                
-            }
-            else if ($scope.text.indexOf("/me") != -1 && $scope.text.indexOf("/me/") == -1) {
-                $scope.text = $scope.text.replace("/me", "") + "/users/" + args.substr(1);
-            } else {
-                if ($scope.text.indexOf("?") != -1) {
-                    $scope.text = $scope.text.substr(0, $scope.text.indexOf("?"));
-                }
-                $scope.text = $scope.text + "/" + args.substr(1);
-            }
-        } else {
-            $scope.text = args.replace("\"", "");
-        }
-        $scope.selectedOptions = 'GET';
-        $scope.submit();
+        msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args);
     });
 
     $scope.submit = function () {
+        $scope.$emit('clearUrls');
         if ($scope.text) {
             $scope.previousString = $scope.text;
             $log.log($scope.text);
 
             if ($scope.userInfo.isAuthenticated) {
+                $scope.showJsonViewer = true;
+                $scope.showImage = false;
+
                 $scope.progressbar.reset();
                 $scope.progressbar.start();
                 var postBody = "";
@@ -107,9 +123,13 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 var startTime = new Date();
                 var endTime = null;
                 apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
-                    handleResponse($scope, startTime, results);
+                    if (isImageResponse(results)) {
+                        handleImageResponse($scope, apiService);
+                    } else {
+                        handleResponse($scope, startTime, results, headers);
+                    }
                 }).error(function (err, status) {
-                    handleResponse($scope, startTime, err);
+                    handleResponse($scope, startTime, err, null);
                 });
             }
         }

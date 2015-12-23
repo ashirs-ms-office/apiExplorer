@@ -9,6 +9,12 @@ angular.module('ApiExplorer')
                         return $http.get(query);
                     };
                 }
+                if (queryType == "GET_BINARY") {
+                    return function (query, postString) {
+                        return $http.get(query, {responseType:"arraybuffer"});
+                    };
+                }
+                
                 if (queryType == "POST") {
                     return function (query, postString) {
                         return $http.post(query, postString, {headers : "Content-Type:application/json"});

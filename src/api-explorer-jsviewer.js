@@ -110,7 +110,19 @@ function initializeJsonViewer($scope, run, apiService) {
             };
 
             this.onClick = function () {
+                var jsonViewer = this.jsonViewer;
+                var renderer = jsonViewer.renderer;
+
+                var canvasPos = renderer.scroller.getBoundingClientRect();
+                var offset = (this.x + renderer.scrollLeft - canvasPos.left - renderer.$padding) / renderer.characterWidth;
+                var row = Math.floor((this.y + renderer.scrollTop - canvasPos.top) / renderer.lineHeight);
+                var col = Math.round(offset);
+
                 if (this.link) {
+                    if (row != this.link.row || !(col > this.link.start && col < this.link.start + this.link.value.length)) {
+                        return;
+                    }
+
                     this.link.jsonViewer = this.jsonViewer;
                     this._signal("open", this.link);
                     this.clear()
@@ -123,11 +135,11 @@ function initializeJsonViewer($scope, run, apiService) {
                 var line = session.getLine(row);
 
                 var match = this.getMatchAround(/https?:\/\/[^\s"]+/g, line, column);
-                if (!match){
+                if (!match) {
                     var match = this.getMatchAround(/"id": "[^\s"']+/g, line, column);
                     if (!match) return;
                     match = this.getMatchAround(/"[^\s"']+/g, line, column);
-                    if(!match) return;
+                    if (!match) return;
                 }
 
                 match.row = row;
