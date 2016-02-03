@@ -84,7 +84,8 @@ angular.module('ApiExplorer')
                 "https://graph.microsoft.com/beta/me/messages",
                 "https://graph.microsoft.com/beta/drive",
                 "https://graph.microsoft.com/beta/devices",
-                "https://graph.microsoft.com/beta/groups"
+                "https://graph.microsoft.com/beta/groups",
+                "https://graph.microsoft.com/beta/me/notes/notebooks"
             ];
         });
     });
