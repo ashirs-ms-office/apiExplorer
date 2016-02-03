@@ -22,7 +22,6 @@
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" ng-show="userInfo.isAuthenticated" ng-click="logout()">Logout</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" ng-hide="userInfo.isAuthenticated" ng-click="login()">Login</a></li>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -39,12 +38,12 @@
         <div class="input-group">
             <div class="input-group-btn" ng-controller="DropdownCtrl">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle>
+                    <button id="http-verb-button" type="button" class="btn btn-default" uib-dropdown-toggle>
                         {{selectedOptions}} <span class="caret"></span>
                     </button>
                     <ul class="uib-dropdown-menu">
                         <li ng-repeat="choice in items">
-                            <a href ng-click="OnItemClick(choice)">{{choice}}</a>
+                            <a ng-click="OnItemClick(choice)">{{choice}}</a>
                         </li>
                     </ul>
                 </div>
@@ -62,12 +61,12 @@
             </div>
             <div class="input-group-btn" ng-controller="VersionCtrl" style="z-index: 99">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle>
+                    <button id="version-button" type="button" class="btn btn-default" uib-dropdown-toggle>
                         {{selectedVersion}} <span class="caret"></span>
                     </button>
                     <ul class="uib-dropdown-menu">
                         <li ng-repeat="choice in items">
-                            <a href ng-click="OnItemClick(choice)">{{choice}}</a>
+                            <a ng-click="OnItemClick(choice)">{{choice}}</a>
                         </li>
                     </ul>
                 </div>
