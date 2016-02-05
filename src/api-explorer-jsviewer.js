@@ -182,3 +182,7 @@ function initializeJsonViewer($scope, run, apiService) {
 
     $scope.jsonViewer = jsonViewer;
 }
+
+function setJsonViewerContentType(mode) {
+    jsonViewer.getSession().setMode("ace/mode/" + mode);
+}

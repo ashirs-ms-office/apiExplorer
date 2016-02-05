@@ -124,13 +124,17 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 var startTime = new Date();
                 var endTime = null;
                 apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
-                    if (isImageResponse(results)) {
-                        handleImageResponse($scope, apiService);
+                    if (isImageResponse(headers)) { 
+                        handleImageResponse($scope, apiService, headers);
+                    } else if (isHtmlResponse(headers)) {  
+                        handleHtmlResponse($scope, startTime, results, headers);
+                    } else if (isXmlResponse(results)) {
+                        handleXmlResponse($scope, startTime, results, headers);
                     } else {
-                        handleResponse($scope, startTime, results, headers);
+                        handleJsonResponse($scope, startTime, results, headers);
                     }
                 }).error(function (err, status) {
-                    handleResponse($scope, startTime, err, null);
+                    handleJsonResponse($scope, startTime, err, null);
                 });
             }
         }
