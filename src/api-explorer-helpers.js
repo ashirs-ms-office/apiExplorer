@@ -56,41 +56,96 @@ var formatXml = function (xml) {
 
     return formatted;
 };
-
-var handleResponse = function ($scope, startTime, results, headers) {
+var showDuration = function($scope, startTime) {
     var endTime = new Date();
-    $scope.jsonViewer.setValue("");
-    var response = JSON.stringify(results, null, 4).trim();
-    if (response.indexOf("<?xml") != -1) {
-        response = formatXml(response);
-    }
-
-    if(headers != null){
-        $scope.responseHeaders = JSON.stringify(headers(), null, 4).trim();
-    }
-    
-    $scope.jsonViewer.getSession().insert(0, response);
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
     $scope.$parent.showDuration = true;
     $scope.progressbar.complete();
 }
 
-var handleImageResponse = function ($scope, apiService) {
+var showHeaders = function($scope, headers) {
+    if (headers != null) {
+        $scope.responseHeaders = JSON.stringify(headers(), null, 4).trim();
+    }
+}
+
+var showResults = function ($scope, results, headers) {
+    $scope.jsonViewer.setValue("");
+
+    showHeaders($scope, headers); 
+    
+    $scope.jsonViewer.getSession().insert(0, results);
+}
+
+var handleImageResponse = function ($scope, apiService, headers) {
     apiService.performQuery('GET_BINARY')($scope.text, "").success(function (results, status, headers, config) {
         var arr = new Uint8Array(results);
-        var raw = String.fromCharCode.apply(null, arr);
+
+        //  Don't use fromCharCode.apply as it blows the stack with moderate size images
+        var raw = "";
+        for (var i = 0; i < arr.length; i++) {
+            raw = raw + String.fromCharCode(arr[i]);
+        }
         var b64 = btoa(raw);
         var dataURL = "data:image/jpeg;base64," + b64;
 
         document.getElementById("img").src = dataURL;
         $scope.showJsonViewer = false;
         $scope.showImage = true;
+        showHeaders($scope, headers);
 
         $scope.progressbar.complete();
     });
 }
 
-var isImageResponse = function (results) {
-    return JSON.stringify(results, null, 4).indexOf("JFIF") != -1;
+var handleHtmlResponse = function ($scope, startTime, results, headers) {
+    setJsonViewerContentType("html");
+    showDuration($scope, startTime);
+    showResults($scope, results, headers);
+}
+
+var handleJsonResponse = function ($scope, startTime, results, headers) {
+    setJsonViewerContentType("json");
+    results = JSON.stringify(results, null, 4).trim();
+    showDuration($scope, startTime);
+    showResults($scope, results, headers);
+}
+
+var handleXmlResponse = function ($scope, startTime, results, headers) {
+    setJsonViewerContentType("xml");
+    results = formatXml(results);
+    showDuration($scope, startTime);
+    showResults($scope, results, headers);
+}
+
+var isImageResponse = function (headers) {
+    var contentType = getContentType(headers);
+    return contentType === "application/octet-stream" || contentType.substr(0, 6) === "image/";
+}
+
+var isHtmlResponse = function (headers) {
+
+    var contentType = getContentType(headers);
+    return contentType === "text/html" || contentType === "application/xhtml+xml";
+}
+
+var isXmlResponse = function (results) {
+    // Don't use headers, cos xml could be of a million content types.
+    return JSON.stringify(results, null, 4).indexOf("<?xml") != -1;
+}
+
+var isJsonResponse = function (headers) {
+    var contentType = getContentType(headers);
+    return contentType === "application/json";
+}
+
+var getContentType = function(headers) {
+    var full = headers("content-type");
+    var delimiterPos = full.indexOf(";");
+    if (delimiterPos != -1) {
+        return full.substr(0, delimiterPos);
+    } else {
+        return full;
+    }
 }
