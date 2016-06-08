@@ -20,6 +20,7 @@ angular.module('ApiExplorer')
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
+        
 }]);
 
 angular.module('ApiExplorer')
@@ -58,7 +59,7 @@ angular.module('ApiExplorer')
         $scope.OnItemClick = function (selectedVersion) {
             $log.log(selectedVersion);
             $scope.selectedVersion = selectedVersion;
-            $scope.$parent.selectedVersion = selectedVersion;
+            $scope.$parent.$parent.selectedVersion = selectedVersion;
             $scope.$parent.text = $scope.$parent.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + selectedVersion + "/");
         }
     });
@@ -107,14 +108,28 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     });
     
     $scope.historyOnClick = function(input){
-        $scope.text = input;
+        $scope.text = input.urlText;
+        $scope.$parent.selectedVersion = input.selectedVersion;
+        $log.log($scope.$parent.selectedVersion);
     }
 
     $scope.submit = function () {
         $scope.$emit('clearUrls');
         if ($scope.text) {
             $scope.previousString = $scope.text;
-            $scope.history.push($scope.previousString);
+            
+            var historyObj = {};
+            
+            historyObj.urlText = $scope.previousString,
+            historyObj.selectedVersion = $scope.$parent.selectedVersion;
+            if($scope.jsonEditor != undefined){
+                historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
+            }else{
+                historyObj.jsonInput = null;
+            }
+            
+            $scope.history.push(historyObj);
+                
             $log.log($scope.text);
             
             if ($scope.userInfo.isAuthenticated) {
@@ -130,7 +145,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 var startTime = new Date();
                 var endTime = null;
                 apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
-                    $log.log("got here");
                     if (isImageResponse(headers)) { 
                         handleImageResponse($scope, apiService, headers);
                     } else if (isHtmlResponse(headers)) {  
@@ -147,10 +161,3 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     };
 }]);
-
-angular.module('ApiExplorer').filter('reverse', function(){
-    return function(items){
-        return items.reverse();
-    }                                     
-                                     
-});

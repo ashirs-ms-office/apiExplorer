@@ -61,8 +61,8 @@
             </div>
             <div class="input-group-btn" ng-controller="VersionCtrl" >
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="version-button" type="button" class="btn btn-default" uib-dropdown-toggle>
-                        {{selectedVersion}} <span class="caret"></span>
+                    <button id="version-button" type="button" class="btn btn-default" ng-bind="$parent.$parent.selectedVersion" uib-dropdown-toggle >
+                         <span class="caret"></span>
                     </button>
                     <ul class="uib-dropdown-menu">
                         <li ng-repeat="choice in items">
@@ -77,8 +77,8 @@
                             Back <span class="caret"> </span>
                     </button>
                     <ul class="uib-dropdown-menu">
-                        <li ng-repeat="call in history | reverse">
-                            <a ng-click="historyOnClick(call)"> {{call}} </a>
+                        <li ng-repeat="call in history | orderBy:'id':true track by $index">
+                            <a ng-click="historyOnClick(call)"> {{call.urlText}} </a>
                         </li>
                     </ul>
                 </div>
