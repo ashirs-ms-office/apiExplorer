@@ -142,7 +142,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 historyObj.jsonInput ="";
             }
             
-            
             $scope.history.push(historyObj);
                 
             $log.log($scope.text);
