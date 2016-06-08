@@ -110,7 +110,18 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.historyOnClick = function(input){
         $scope.text = input.urlText;
         $scope.$parent.selectedVersion = input.selectedVersion;
-        $log.log($scope.$parent.selectedVersion);
+        
+        $scope.selectedOptions = input.htmlOption;
+        if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
+            $scope.showJsonEditor = true;
+            $log.log("Json editor should be shown");
+            initializeJsonEditor($scope.$parent.$parent);
+            $scope.jsonEditor.getSession().setValue(input.jsonInput);
+        }else{
+            $scope.jsonEditor.getSession().setValue("");
+            $scope.showJsonEditor = false;
+        }
+        
     }
 
     $scope.submit = function () {
@@ -122,11 +133,15 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             
             historyObj.urlText = $scope.previousString,
             historyObj.selectedVersion = $scope.$parent.selectedVersion;
-            if($scope.jsonEditor != undefined){
+            
+            historyObj.htmlOption = $scope.selectedOptions;
+            
+            if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
                 historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
             }else{
-                historyObj.jsonInput = null;
+                historyObj.jsonInput ="";
             }
+            
             
             $scope.history.push(historyObj);
                 
