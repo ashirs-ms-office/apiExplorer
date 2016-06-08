@@ -13,7 +13,7 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         adalProvider.init({
                 instance: 'https://login.microsoftonline.com/',
                 tenant: 'common',
-                clientId: 'ce268d90-5d39-403c-a3a0-8d463140d4a9',
+                clientId: '2e8459fe-87ef-4286-af70-f33a307563aa',
                 endpoints: {
                     "https://graph.microsoft.com": "https://graph.microsoft.com"
                 },

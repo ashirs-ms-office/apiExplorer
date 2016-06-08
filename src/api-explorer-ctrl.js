@@ -97,6 +97,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.responseHeaders = "";
+    $scope.history = [];
 
     $scope.$emit('populateUrls');
 
@@ -104,13 +105,18 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.$parent.$on("urlChange", function (event, args) {
         msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args);
     });
+    
+    $scope.historyOnClick = function(input){
+        $scope.text = input;
+    }
 
     $scope.submit = function () {
         $scope.$emit('clearUrls');
         if ($scope.text) {
             $scope.previousString = $scope.text;
+            $scope.history.push($scope.previousString);
             $log.log($scope.text);
-
+            
             if ($scope.userInfo.isAuthenticated) {
                 $scope.showJsonViewer = true;
                 $scope.showImage = false;
@@ -124,6 +130,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 var startTime = new Date();
                 var endTime = null;
                 apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
+                    $log.log("got here");
                     if (isImageResponse(headers)) { 
                         handleImageResponse($scope, apiService, headers);
                     } else if (isHtmlResponse(headers)) {  
@@ -140,3 +147,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     };
 }]);
+
+angular.module('ApiExplorer').filter('reverse', function(){
+    return function(items){
+        return items.reverse();
+    }                                     
+                                     
+});
