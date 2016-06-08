@@ -78,7 +78,7 @@
                     </button>
                     <ul class="uib-dropdown-menu">
                         <li ng-repeat="call in history | orderBy:'id':true track by $index">
-                            <a ng-click="historyOnClick(call)"> {{call.urlText}} </a>
+                            <a ng-click="historyOnClick(call)" ng-class="call.success"> {{call.urlText}} </a>
                         </li>
                     </ul>
                 </div>

@@ -9,6 +9,14 @@ body {
     cursor: pointer;
 }
 
+.success{
+    color: green;
+}
+
+.error{
+    color: red;
+}
+
 #jsonViewer {
     position: relative;
     height: 65vh;

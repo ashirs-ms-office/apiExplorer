@@ -142,7 +142,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 historyObj.jsonInput ="";
             }
             
-            $scope.history.push(historyObj);
                 
             $log.log($scope.text);
             
@@ -168,10 +167,15 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     } else {
                         handleJsonResponse($scope, startTime, results, headers);
                     }
+                    
+                    historyObj.success = "success";
+                    
                 }).error(function (err, status) {
                     handleJsonResponse($scope, startTime, err, null);
+                    historyObj.success = "error";
                 });
             }
         }
+        $scope.history.push(historyObj);
     };
 }]);
