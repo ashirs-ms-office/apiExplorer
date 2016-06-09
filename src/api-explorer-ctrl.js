@@ -45,9 +45,7 @@ angular.module('ApiExplorer')
                 $scope.$parent.showJsonEditor = false;
             }
         }
-    });
-
-angular.module('ApiExplorer')
+    });  angular.module('ApiExplorer')
     .controller('VersionCtrl', function ($scope, $log) {
         $scope.selectedVersion = "Version";
 
@@ -128,6 +126,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     }
 
     $scope.submit = function () {
+        
+        parseMetadata($scope.$parent.selectedVersion, apiService);
+        
         $scope.$emit('clearUrls');
         if ($scope.text) {
             

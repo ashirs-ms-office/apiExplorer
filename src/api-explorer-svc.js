@@ -1,8 +1,11 @@
 'use strict';
 
 angular.module('ApiExplorer')
-    .factory('ApiExplorerSvc', ['$http', function ($http) {
+    .factory('ApiExplorerSvc', ['$http', '$cacheFactory', function ($http, $cacheFactory) {
         return {
+            
+            cache: $cacheFactory('myCache'),
+            
             performQuery: function (queryType) {
                 if (queryType == "GET") {
                     return function (query, postString) {
@@ -32,6 +35,18 @@ angular.module('ApiExplorer')
                 }
                 
                 return null;
+            },
+            
+            getV1Metadata: function(){
+                 var data = this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
+                
+                this.cache.put("v1Metadata", data);
+            },
+            
+            getBetaMetadata: function(){
+                var data =  this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
+                
+                this.cache.put("betaMetadata", data);
             }
         };
     }]);

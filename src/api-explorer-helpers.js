@@ -149,3 +149,19 @@ var getContentType = function(headers) {
         return full;
     }
 }
+
+var parseMetadata = function(version, service){
+    
+    switch(version){
+        case "beta":
+            if(!service.cache.get("betaMetadata")){
+               service.getBetaMetadata();
+            }
+            break;
+        
+        case "v1.0":
+            if(!service.cache.get("v1Metadata")){
+                service.getV1Metadata();
+            }
+    } 
+}
