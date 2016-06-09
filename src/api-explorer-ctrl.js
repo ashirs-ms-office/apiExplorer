@@ -108,44 +108,46 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     });
     
     $scope.historyOnClick = function(input){
-        $scope.text = input.urlText;
-        $scope.$parent.selectedVersion = input.selectedVersion;
-        
-        $scope.selectedOptions = input.htmlOption;
-        if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
-            $scope.showJsonEditor = true;
-            $log.log("Json editor should be shown");
-            initializeJsonEditor($scope.$parent.$parent);
-            $scope.jsonEditor.getSession().setValue(input.jsonInput);
-        }else{
-            $scope.jsonEditor.getSession().setValue("");
-            $scope.showJsonEditor = false;
+        if($scope.userInfo.isAuthenticated){
+            $scope.text = input.urlText;
+            $scope.$parent.selectedVersion = input.selectedVersion;
+
+            $scope.selectedOptions = input.htmlOption;
+            if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
+                $scope.showJsonEditor = true;
+                $log.log("Json editor should be shown");
+                initializeJsonEditor($scope.$parent.$parent);
+                $scope.jsonEditor.getSession().setValue(input.jsonInput);
+            }else{
+                $scope.jsonEditor.getSession().setValue("");
+                $scope.showJsonEditor = false;
+            }
         }
-        
     }
 
     $scope.submit = function () {
         $scope.$emit('clearUrls');
         if ($scope.text) {
-            $scope.previousString = $scope.text;
             
-            var historyObj = {};
-            
-            historyObj.urlText = $scope.previousString,
-            historyObj.selectedVersion = $scope.$parent.selectedVersion;
-            
-            historyObj.htmlOption = $scope.selectedOptions;
-            
-            if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
-                historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
-            }else{
-                historyObj.jsonInput ="";
-            }
-            
-                
             $log.log($scope.text);
             
             if ($scope.userInfo.isAuthenticated) {
+                $scope.previousString = $scope.text;
+            
+                var historyObj = {};
+
+                historyObj.urlText = $scope.previousString,
+                historyObj.selectedVersion = $scope.$parent.selectedVersion;
+
+                historyObj.htmlOption = $scope.selectedOptions;
+
+                if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
+                    historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
+                }else{
+                    historyObj.jsonInput ="";
+                }
+                
+                
                 $scope.showJsonViewer = true;
                 $scope.showImage = false;
 
@@ -174,8 +176,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     handleJsonResponse($scope, startTime, err, null);
                     historyObj.success = "error";
                 });
+                
+                $scope.history.push(historyObj);
             }
         }
-        $scope.history.push(historyObj);
     };
 }]);
