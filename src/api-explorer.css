@@ -9,13 +9,6 @@ body {
     cursor: pointer;
 }
 
-.success{
-    color: green;
-}
-
-.error{
-    color: red;
-}
 
 #jsonViewer {
     position: relative;
@@ -79,4 +72,13 @@ body {
 .ng-binding{
     color:rgba(51,51,51,1);
     font-size:18px;
+}
+
+/* css classses for coloring back links based on success/failure */
+.success{
+    color: green;
+}
+
+.error{
+    color: red;
 }
