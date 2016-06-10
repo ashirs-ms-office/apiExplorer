@@ -158,7 +158,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 //        parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
         
         
-        $scope.$emit('clearUrls');
+        //$scope.$emit('clearUrls');
         if ($scope.text) {
             
             $log.log($scope.text);
