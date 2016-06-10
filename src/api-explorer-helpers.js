@@ -150,18 +150,26 @@ var getContentType = function(headers) {
     }
 }
 
-var parseMetadata = function(version, service){
+var parseMetadata = function(version, service, $log){
     
     switch(version){
         case "beta":
             if(!service.cache.get("betaMetadata")){
-               service.getBetaMetadata();
+               service.getBetaMetadata().success(function (results){
+                    results = JSON.stringify(results, null, 4).trim();
+                    $log.log(results)
+                    service.cache.put("betaMetadata", results);
+                });
             }
             break;
         
         case "v1.0":
             if(!service.cache.get("v1Metadata")){
-                service.getV1Metadata();
+                service.getV1Metadata().success(function (results){
+                    results = JSON.stringify(results, null, 4).trim();
+                    $log.log(results)
+                    service.cache.put("v1Metadata", results);
+                });
             }
     } 
 }
