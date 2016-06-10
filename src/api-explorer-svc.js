@@ -38,15 +38,13 @@ angular.module('ApiExplorer')
             },
             
             getV1Metadata: function(){
-                 var data = this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
+                 return this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
                 
-                this.cache.put("v1Metadata", data);
             },
             
             getBetaMetadata: function(){
-                var data =  this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
+                return this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
                 
-                this.cache.put("betaMetadata", data);
             }
         };
     }]);
