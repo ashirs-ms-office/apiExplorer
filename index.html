@@ -47,6 +47,16 @@
                         </li>
                     </ul>
                 </div>
+                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
+                    <button id="back-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="history.length == 0"> 
+                            Back <span class="caret"> </span>
+                    </button>
+                    <ul class="uib-dropdown-menu">
+                        <li ng-repeat="call in history | orderBy:'id':true track by $index">
+                            <a ng-click="historyOnClick(call)" ng-class="call.success"> {{call.urlText}} </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <form class="main-query" ng-submit="submit()">
                 <!--    the style addition is for compatibility with IE11-->
@@ -70,16 +80,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="back-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="history.length == 0"> 
-                            Back <span class="caret"> </span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="call in history | orderBy:'id':true track by $index">
-                            <a ng-click="historyOnClick(call)" ng-class="call.success"> {{call.urlText}} </a>
-                        </li>
-                    </ul>
-                </div>
+                
                 <button id="go-button" type="button" class="btn btn-default"  ng-click="submit()" ng-disabled="!userInfo.isAuthenticated"> Go </button>
             </div>
         </div>
