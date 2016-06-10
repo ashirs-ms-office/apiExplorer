@@ -9,6 +9,7 @@ body {
     cursor: pointer;
 }
 
+
 #jsonViewer {
     position: relative;
     height: 65vh;
@@ -33,6 +34,17 @@ body {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
+
+#history-button{
+    border-radius: 0;
+    border-left: 0;
+}
+
+#version-button{
+    border-radius:0;
+    border-right: 0;
+}
+
 
 #queryBar {
     border-right: 0;
@@ -71,4 +83,13 @@ body {
 .ng-binding{
     color:rgba(51,51,51,1);
     font-size:18px;
+}
+
+/* css classses for coloring back links based on success/failure */
+.success{
+    color: green;
+}
+
+.error{
+    color: red;
 }

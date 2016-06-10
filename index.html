@@ -38,12 +38,22 @@
         <div class="input-group">
             <div class="input-group-btn" ng-controller="DropdownCtrl">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="http-verb-button" type="button" class="btn btn-default" uib-dropdown-toggle>
-                        {{selectedOptions}} <span class="caret"></span>
+                    <button id="http-verb-button" type="button" class="btn btn-default" ng-bind="$parent.selectedOptions" uib-dropdown-toggle>
+                        <span class="caret"></span>
                     </button>
                     <ul class="uib-dropdown-menu">
                         <li ng-repeat="choice in items">
                             <a ng-click="OnItemClick(choice)">{{choice}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
+                    <button id="back-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="history.length == 0"> 
+                            Back <span class="caret"> </span>
+                    </button>
+                    <ul class="uib-dropdown-menu">
+                        <li ng-repeat="call in history | orderBy:'id':true track by $index">
+                            <a ng-click="historyOnClick(call)" ng-class="call.success"> {{call.urlText}} </a>
                         </li>
                     </ul>
                 </div>
@@ -59,10 +69,10 @@
                     </button>
                 </div>
             </div>
-            <div class="input-group-btn" ng-controller="VersionCtrl" style="z-index: 99">
+            <div class="input-group-btn" ng-controller="VersionCtrl" >
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="version-button" type="button" class="btn btn-default" uib-dropdown-toggle>
-                        {{selectedVersion}} <span class="caret"></span>
+                    <button id="version-button" type="button" class="btn btn-default" ng-bind="$parent.$parent.selectedVersion" uib-dropdown-toggle >
+                         <span class="caret"></span>
                     </button>
                     <ul class="uib-dropdown-menu">
                         <li ng-repeat="choice in items">
@@ -70,6 +80,8 @@
                         </li>
                     </ul>
                 </div>
+                
+                <button id="go-button" type="button" class="btn btn-default"  ng-click="submit()" ng-disabled="!userInfo.isAuthenticated"> Go </button>
             </div>
         </div>
         <img id="img" width="250px" height="250px" ng-show="showImage" />
