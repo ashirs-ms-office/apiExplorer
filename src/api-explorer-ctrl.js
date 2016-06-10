@@ -1,5 +1,5 @@
 angular.module('ApiExplorer')
-    .controller('ApiExplorerCtrl', ['$scope', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, adalService, $location, apiService) {
+    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
 
         $scope.selectedOptions = "GET";
@@ -9,6 +9,8 @@ angular.module('ApiExplorer')
         $scope.showJsonViewer = true;
         $scope.showImage = false;
 
+        
+        parseMetadata($scope.selectedVersion, apiService, $log, $scope);
         initializeJsonViewer($scope, run, apiService);
 
         $scope.login = function () {
@@ -63,7 +65,7 @@ angular.module('ApiExplorer')
     });
 
 angular.module('ApiExplorer')
-    .controller('datalistCtrl', function ($scope, $log) {
+    .controller('datalistCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
         $scope.urlOptions = [];
 
         $scope.$parent.$on("clearUrls", function (event, args) {
@@ -71,7 +73,32 @@ angular.module('ApiExplorer')
         });
 
         $scope.$parent.$on("populateUrls", function (event, args) {
-            $scope.urlOptions = [
+            
+            var cacheKey;
+            
+            switch($scope.$parent.selectedVersion){
+                case "v1.0":
+                    cacheKey = "v1EntitySetData";
+                    break;
+                case "beta":
+                    $log.log("here");
+                    cacheKey = "betaEntitySetData";
+                    
+            }
+                    
+            var data = apiService.cache.get(cacheKey);
+            for(var i=0; i<data.length; i++){
+                   $scope.urlOptions.push('https://graph.microsoft.com/v1.0/' + data[i]);
+            }
+            
+            $log.log($scope.urlOptions);
+            
+            //$scope.urlOptions = "graph.microsoft.com"
+            
+            
+            
+                /*[
+                
                 "https://graph.microsoft.com/v1.0/me",
                 "https://graph.microsoft.com/v1.0/users",
                 "https://graph.microsoft.com/v1.0/me/messages",
@@ -85,9 +112,9 @@ angular.module('ApiExplorer')
                 "https://graph.microsoft.com/beta/devices",
                 "https://graph.microsoft.com/beta/groups",
                 "https://graph.microsoft.com/beta/me/notes/notebooks"
-            ];
+            ];*/
         });
-    });
+    }]);
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', function ($scope, $log, apiService, ngProgressFactory) {
     $scope.text = 'https://graph.microsoft.com/v1.0/';
@@ -98,7 +125,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.responseHeaders = "";
     $scope.history = [];
 
-    $scope.$emit('populateUrls');
+    //$scope.$emit('populateUrls');
 
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
@@ -127,7 +154,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
     $scope.submit = function () {
         
-        parseMetadata($scope.$parent.selectedVersion, apiService, $log);
+        var entitySetData, entityTypeData;
+//        parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
+        
         
         $scope.$emit('clearUrls');
         if ($scope.text) {

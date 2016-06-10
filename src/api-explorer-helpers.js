@@ -150,7 +150,24 @@ var getContentType = function(headers) {
     }
 }
 
-var parseMetadata = function(version, service, $log){
+var getEntitySets = function(XML, $log){
+    var entitySetArray = [];
+    var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;
+    for(var i=0; i<entitySets.length; i++){
+           var name = entitySets[i].attributes[0].nodeValue
+            entitySetArray.push(name.substring(2, name.length-2));
+    }
+    return entitySetArray;
+}
+
+var parseXML = function(XML, entitySetData, entityTypeData, $log){
+    //parse and return a data structure - map with key as word and value as where you can go from there
+//    entitySetData = getEntitySets(XML, $log);
+//    $log.log(entitySetData);
+}
+
+var parseMetadata = function(version, service, $log, $scope){
+    var entitySetData, entityTypeData;
     
     switch(version){
         case "beta":
@@ -159,6 +176,9 @@ var parseMetadata = function(version, service, $log){
                     results = JSON.stringify(results, null, 4).trim();
                     $log.log(results)
                     service.cache.put("betaMetadata", results);
+                    parseXML(service.cache.get("betaMetadata"), entitySetData, entityTypeData, $log);
+                    service.cache.put("betaEntitySetData", entitySetData);
+                    $scope.$emit('populateUrls');
                 });
             }
             break;
@@ -169,7 +189,13 @@ var parseMetadata = function(version, service, $log){
                     results = JSON.stringify(results, null, 4).trim();
                     $log.log(results)
                     service.cache.put("v1Metadata", results);
+                    parseXML(results, entitySetData, entityTypeData, $log);
+                    entitySetData = getEntitySets(results, $log);
+                    service.cache.put("v1EntitySetData", entitySetData);
+                    $log.log(service.cache.get("v1EntitySetData"));
+                    $scope.$emit('populateUrls');
                 });
             }
     } 
+    
 }
