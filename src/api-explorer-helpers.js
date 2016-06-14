@@ -151,19 +151,49 @@ var getContentType = function(headers) {
 }
 
 var getEntitySets = function(XML, $log){
-    var entitySetArray = [];
+    var entitySetArray = {};
     var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;
     for(var i=0; i<entitySets.length; i++){
-           var name = entitySets[i].attributes[0].nodeValue
-            entitySetArray.push(name.substring(2, name.length-2));
+           var EntitySet = {};
+           var name = entitySets[i].attributes[0].nodeValue;
+           name = name.substring(2, name.length-2);
+           EntitySet.name = name;
+           EntitySet.isEntitySet = true;
+           EntitySet.URLS = [];
+           var type = entitySets[i].attributes[1].nodeValue;
+           var index = type.indexOf("graph.")
+           type = type.substring(index+6, type.length-2);
+           EntitySet.entityType = type;
+           entitySetArray[EntitySet.name] = EntitySet;
     }
     return entitySetArray;
 }
 
-var parseXML = function(XML, entitySetData, entityTypeData, $log){
-    //parse and return a data structure - map with key as word and value as where you can go from there
-//    entitySetData = getEntitySets(XML, $log);
-//    $log.log(entitySetData);
+
+var getEntityTypes = function(XML, $log){
+    var entityTypesArray = {};
+    var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
+    for(var i=0; i<entityTypes.length; i++){
+           var EntityType = {};
+           var name = entityTypes[i].attributes[0].nodeValue;
+           name = name.substring(2, name.length-2);
+           EntityType.name = name;
+           EntityType.isEntitySet = false;
+           EntityType.URLS = [];
+           var children = entityTypes[i].children;
+           for(var j=0; j<children.length; j++){
+                 if(children[j].attributes.length > 0){
+                     var childName = children[j].attributes[0].nodeValue;
+                     childName = childName.substring(2, childName.length-2);
+                     var urlObject = {};
+                     urlObject.name = childName;
+                     EntityType.URLS.push(urlObject);
+                 }
+           }
+        
+            entityTypesArray[EntityType.name] = EntityType;
+    }
+    return entityTypesArray;
 }
 
 var parseMetadata = function(version, service, $log, $scope){
@@ -176,7 +206,7 @@ var parseMetadata = function(version, service, $log, $scope){
                     results = JSON.stringify(results, null, 4).trim();
                     $log.log(results)
                     service.cache.put("betaMetadata", results);
-                    parseXML(service.cache.get("betaMetadata"), entitySetData, entityTypeData, $log);
+                    //parseXML(service.cache.get("betaMetadata"), entitySetData, entityTypeData, $log);
                     service.cache.put("betaEntitySetData", entitySetData);
                     $scope.$emit('populateUrls');
                 });
@@ -185,14 +215,16 @@ var parseMetadata = function(version, service, $log, $scope){
         
         case "v1.0":
             if(!service.cache.get("v1Metadata")){
+                $log.log("PARSING");
                 service.getV1Metadata().success(function (results){
                     results = JSON.stringify(results, null, 4).trim();
-                    $log.log(results)
+                    //$log.log(results)
                     service.cache.put("v1Metadata", results);
-                    parseXML(results, entitySetData, entityTypeData, $log);
                     entitySetData = getEntitySets(results, $log);
                     service.cache.put("v1EntitySetData", entitySetData);
-                    $log.log(service.cache.get("v1EntitySetData"));
+                    entityTypeData = getEntityTypes(results, $log);
+                    service.cache.put("v1EntityTypeData", entityTypeData);
+                    //$log.log(service.cache.get("v1EntitySetData"));
                     $scope.$emit('populateUrls');
                 });
             }

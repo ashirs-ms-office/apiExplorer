@@ -27,12 +27,12 @@
         </div>
     </nav>
 
-    <!--    move this into the controller-->
     <div ng-controller="datalistCtrl">
-        <datalist id="requestList">
-            <option data-ng-repeat="ttl in urlOptions" value="{{ttl}}">
-        </datalist>
-    </div>
+     <!--    move this into the controller-->
+     <datalist id="requestList">
+            <option data-ng-repeat="ttl in urlOptions" value="{{text + ttl.name}}">
+    </datalist>
+     </div>
 
     <div class="container body-content" ng-controller="FormCtrl">
         <div class="input-group">
@@ -58,9 +58,9 @@
                     </ul>
                 </div>
             </div>
-            <form class="main-query" ng-submit="submit()">
+            <form class="main-query" ng-submit="submit(text)">
                 <!--    the style addition is for compatibility with IE11-->
-                <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
+                <input type="text" ng-model="text" ng-change="entityClicked(text)" name="text" class="form-control" placeholder="{{text}}" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
             </form>
             <div class="input-group-btn" id="duration" ng-show="showDuration">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">

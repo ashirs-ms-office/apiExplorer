@@ -1,7 +1,8 @@
 angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
-
+        
+        $scope.text = 'https://graph.microsoft.com/v1.0/';
         $scope.selectedOptions = "GET";
         $scope.selectedVersion = "v1.0";
         $scope.showJsonEditor = false;
@@ -47,7 +48,9 @@ angular.module('ApiExplorer')
                 $scope.$parent.showJsonEditor = false;
             }
         }
-    });  angular.module('ApiExplorer')
+    });  
+
+angular.module('ApiExplorer')
     .controller('VersionCtrl', function ($scope, $log) {
         $scope.selectedVersion = "Version";
 
@@ -67,57 +70,31 @@ angular.module('ApiExplorer')
 angular.module('ApiExplorer')
     .controller('datalistCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
         $scope.urlOptions = [];
-
+        
         $scope.$parent.$on("clearUrls", function (event, args) {
             $scope.urlOptions = [];
         });
-
+    
         $scope.$parent.$on("populateUrls", function (event, args) {
-            
-            var cacheKey;
-            
-            switch($scope.$parent.selectedVersion){
-                case "v1.0":
-                    cacheKey = "v1EntitySetData";
-                    break;
-                case "beta":
-                    $log.log("here");
-                    cacheKey = "betaEntitySetData";
-                    
+            $log.log("populating URLS");
+            if(apiService.entity == "" /*at top level*/){
+                switch($scope.$parent.selectedVersion){
+                    case "v1.0":
+                       $scope.urlOptions = apiService.cache.get("v1EntitySetData");
+                       break;
+                    case "beta":
+                       $scope.urlOptions = apiService.cache.get("betaEntitySetData")
+                }
+            }else if(apiService.entity != null){
+                 $scope.urlOptions = apiService.entity.URLS;  
+    
             }
-                    
-            var data = apiService.cache.get(cacheKey);
-            for(var i=0; i<data.length; i++){
-                   $scope.urlOptions.push('https://graph.microsoft.com/v1.0/' + data[i]);
-            }
-            
             $log.log($scope.urlOptions);
             
-            //$scope.urlOptions = "graph.microsoft.com"
-            
-            
-            
-                /*[
-                
-                "https://graph.microsoft.com/v1.0/me",
-                "https://graph.microsoft.com/v1.0/users",
-                "https://graph.microsoft.com/v1.0/me/messages",
-                "https://graph.microsoft.com/v1.0/drive",
-                "https://graph.microsoft.com/v1.0/groups",
-                "https://graph.microsoft.com/v1.0/devices",
-                "https://graph.microsoft.com/beta/me",
-                "https://graph.microsoft.com/beta/users",
-                "https://graph.microsoft.com/beta/me/messages",
-                "https://graph.microsoft.com/beta/drive",
-                "https://graph.microsoft.com/beta/devices",
-                "https://graph.microsoft.com/beta/groups",
-                "https://graph.microsoft.com/beta/me/notes/notebooks"
-            ];*/
         });
     }]);
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', function ($scope, $log, apiService, ngProgressFactory) {
-    $scope.text = 'https://graph.microsoft.com/v1.0/';
     $scope.duration = "";
     $scope.progressbar = ngProgressFactory.createInstance();
     $scope.listData = "requestList";
@@ -151,19 +128,60 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             }
         }
     }
-
+    
+    function myTrim(word)     
+    {     
+        return word.replace(/\/$/, "");
+    } 
+    
     $scope.submit = function () {
         
-        var entitySetData, entityTypeData;
-//        parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
+        
+        parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
         
         
-        //$scope.$emit('clearUrls');
+        $scope.$emit('clearUrls');
         if ($scope.text) {
-            
+            $scope.$parent.text = $scope.text + "/";
             $log.log($scope.text);
             
+            //FIX WHEN THERE ARE TWO SLASHES AFTER ENTRY
+            $scope.entityName = myTrim($scope.text);
+            $scope.entityName = $scope.entityName.substring($scope.entityName.lastIndexOf("/")+1, $scope.entityName.length);
+            $log.log($scope.entityName);
+            switch($scope.$parent.selectedVersion){
+                    case "v1.0":
+                       var entityObj = apiService.cache.get("v1EntitySetData")[$scope.entityName];
+                       break;
+                    case "beta":
+                       var entityObj = apiService.cache.get("betaEntitySetData")[$scope.entityName];
+             }
+            
+            if(entityObj == null){
+                if(apiService.entity != null && apiService.entity.isEntitySet){
+                     var typeName = apiService.entity.entityType; 
+                     switch($scope.$parent.selectedVersion){
+                        case "v1.0":
+                           apiService.entity = apiService.cache.get("v1EntityTypeData")[typeName];
+                           break;
+                        case "beta":
+                           apiService.entity = apiService.cache.get("betaEntityTypeData")[typeName];
+                     }
+                 }else{
+                     switch($scope.$parent.selectedVersion){
+                        case "v1.0":
+                         apiService.entity = apiService.cache.get("v1EntityTypeData")[$scope.entityName];
+                           break;
+                        case "beta":
+                         apiService.entity = apiService.cache.get("betaEntityTypeData")[$scope.entityName];
+                 }
+               }
+            }else{
+              apiService.entity = entityObj;
+            } 
+            
             if ($scope.userInfo.isAuthenticated) {
+                
                 $scope.previousString = $scope.text;
             
                 //create an object to store the api call
@@ -200,9 +218,20 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                         handleXmlResponse($scope, startTime, results, headers);
                     } else {
                         handleJsonResponse($scope, startTime, results, headers);
+                        
+                        if(apiService.entity != null && apiService.entity.isEntitySet){
+                            $log.log(results);
+                            for(var i=0; i<results.value.length && i<10; i++){
+                                var urlObject = {};
+                                urlObject.name = results.value[i].id;
+                                apiService.entity.URLS.push(urlObject);
+                            }
+                            $log.log(apiService.entity.URLS);
+                        }
                     }
                     
                     historyObj.success = "success";
+                    $scope.$emit('populateUrls');
                     
                 }).error(function (err, status) {
                     handleJsonResponse($scope, startTime, err, null);

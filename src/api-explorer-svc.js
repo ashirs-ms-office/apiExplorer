@@ -6,6 +6,8 @@ angular.module('ApiExplorer')
             
             cache: $cacheFactory('myCache'),
             
+            entity: "",
+            
             performQuery: function (queryType) {
                 if (queryType == "GET") {
                     return function (query, postString) {
