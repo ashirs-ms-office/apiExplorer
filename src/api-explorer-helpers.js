@@ -196,6 +196,27 @@ var getEntityTypes = function(XML, $log){
     return entityTypesArray;
 }
 
+var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
+    if(service.entity != null && service.entity.isEntitySet){
+        service.entity.URLS = [];
+        for(var i=0; i<jsonObj.value.length && i<10; i++){
+            var urlObject = {};
+            urlObject.name = jsonObj.value[i].id;
+            service.entity.URLS.push(urlObject);
+        }
+    }
+}
+    
+var myTrim = function(word){
+        return word.replace(/\/$/, "");
+} 
+
+var getEntityName = function(URL){
+     var returnWord = myTrim(URL);
+     returnWord = returnWord.substring(returnWord.lastIndexOf("/")+1, returnWord.length);
+     return returnWord;
+}
+
 var parseMetadata = function(version, service, $log, $scope){
     var entitySetData, entityTypeData;
     

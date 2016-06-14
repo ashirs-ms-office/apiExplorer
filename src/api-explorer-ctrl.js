@@ -128,57 +128,54 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             }
         }
     }
-    
-    function myTrim(word)     
-    {     
-        return word.replace(/\/$/, "");
-    } 
+
     
     $scope.submit = function () {
         
         
         parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
         
-        
         $scope.$emit('clearUrls');
         if ($scope.text) {
-            $scope.$parent.text = $scope.text + "/";
-            $log.log($scope.text);
+            $scope.$parent.text = $scope.text;
+            if($scope.$parent.text.charAt($scope.$parent.text.length-1) != '/'){
+                $scope.$parent.text += '/';
+            }
             
             //FIX WHEN THERE ARE TWO SLASHES AFTER ENTRY
-            $scope.entityName = myTrim($scope.text);
-            $scope.entityName = $scope.entityName.substring($scope.entityName.lastIndexOf("/")+1, $scope.entityName.length);
+            $scope.entityName =  getEntityName($scope.text);
             $log.log($scope.entityName);
-            switch($scope.$parent.selectedVersion){
-                    case "v1.0":
-                       var entityObj = apiService.cache.get("v1EntitySetData")[$scope.entityName];
-                       break;
-                    case "beta":
-                       var entityObj = apiService.cache.get("betaEntitySetData")[$scope.entityName];
-             }
             
-            if(entityObj == null){
-                if(apiService.entity != null && apiService.entity.isEntitySet){
-                     var typeName = apiService.entity.entityType; 
-                     switch($scope.$parent.selectedVersion){
-                        case "v1.0":
-                           apiService.entity = apiService.cache.get("v1EntityTypeData")[typeName];
-                           break;
-                        case "beta":
-                           apiService.entity = apiService.cache.get("betaEntityTypeData")[typeName];
-                     }
-                 }else{
-                     switch($scope.$parent.selectedVersion){
-                        case "v1.0":
-                         apiService.entity = apiService.cache.get("v1EntityTypeData")[$scope.entityName];
-                           break;
-                        case "beta":
-                         apiService.entity = apiService.cache.get("betaEntityTypeData")[$scope.entityName];
-                 }
-               }
+            switch($scope.$parent.selectedVersion){
+                case "v1.0":
+                    var entityKeyPrefix = "v1";
+                    break;
+                case "beta":
+                    var entityKeyPrefix = "beta";
+            }
+            
+            
+            //FOUR CASES - 
+            //entityName is an entitySet
+            //entityName is an entityType
+            //entityName is an ID
+            //we are at top level URL
+            
+            var entityNameIsEntitySet = apiService.cache.get(entityKeyPrefix + "EntitySetData")[$scope.entityName];
+            var entityNameIsAnId = apiService.entity != null && apiService.entity.isEntitySet;
+            var topLevel = $scope.entityName == $scope.$parent.selectedVersion;
+            
+            if(topLevel){
+                   apiService.entity = "";
+            }else if(entityNameIsEntitySet){
+                   apiService.entity = entityNameIsEntitySet;
+            }else if(entityNameIsAnId){
+                   var typeName = apiService.entity.entityType; 
+                   apiService.entity = apiService.cache.get(entityKeyPrefix + "EntityTypeData")[typeName];
             }else{
-              apiService.entity = entityObj;
-            } 
+                   apiService.entity = apiService.cache.get(entityKeyPrefix + "EntityTypeData")[$scope.entityName];
+            }
+
             
             if ($scope.userInfo.isAuthenticated) {
                 
@@ -218,24 +215,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                         handleXmlResponse($scope, startTime, results, headers);
                     } else {
                         handleJsonResponse($scope, startTime, results, headers);
-                        
-                        if(apiService.entity != null && apiService.entity.isEntitySet){
-                            $log.log(results);
-                            for(var i=0; i<results.value.length && i<10; i++){
-                                var urlObject = {};
-                                urlObject.name = results.value[i].id;
-                                apiService.entity.URLS.push(urlObject);
-                            }
-                            $log.log(apiService.entity.URLS);
-                        }
+                        dynamicallyPopulateURLsForEntitySets(apiService, results);
                     }
                     
-                    historyObj.success = "success";
                     $scope.$emit('populateUrls');
+                    historyObj.success = "success";
                     
                 }).error(function (err, status) {
                     handleJsonResponse($scope, startTime, err, null);
                     historyObj.success = "error";
+                    $scope.$emit('populateUrls');
                 });
                 
                 //add history object to the array
