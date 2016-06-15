@@ -208,7 +208,7 @@ var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
 }
     
 var myTrim = function(word){
-        return word.replace(/\/$/, "");
+      return word.replace(/\/$/, "");
 } 
 
 var getEntityName = function(URL){

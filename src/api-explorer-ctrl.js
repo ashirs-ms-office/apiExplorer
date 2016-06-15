@@ -132,7 +132,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     
     $scope.submit = function () {
         
-        
         parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
         
         $scope.$emit('clearUrls');
