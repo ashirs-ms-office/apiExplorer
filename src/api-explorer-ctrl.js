@@ -20,6 +20,7 @@ angular.module('ApiExplorer')
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
+        
 }]);
 
 angular.module('ApiExplorer')
@@ -58,7 +59,7 @@ angular.module('ApiExplorer')
         $scope.OnItemClick = function (selectedVersion) {
             $log.log(selectedVersion);
             $scope.selectedVersion = selectedVersion;
-            $scope.$parent.selectedVersion = selectedVersion;
+            $scope.$parent.$parent.selectedVersion = selectedVersion;
             $scope.$parent.text = $scope.$parent.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + selectedVersion + "/");
         }
     });
@@ -97,6 +98,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.responseHeaders = "";
+    $scope.history = [];
 
     $scope.$emit('populateUrls');
 
@@ -104,19 +106,55 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.$parent.$on("urlChange", function (event, args) {
         msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args);
     });
+    
+    //function called when link in the back button history is clicked
+    $scope.historyOnClick = function(input){
+        if($scope.userInfo.isAuthenticated){
+            
+            $scope.text = input.urlText;
+            $scope.$parent.selectedVersion = input.selectedVersion;
+            $scope.selectedOptions = input.htmlOption;
+            
+            if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
+                $scope.showJsonEditor = true;
+                initializeJsonEditor($scope.$parent.$parent);
+                $scope.jsonEditor.getSession().setValue(input.jsonInput);
+            }else{
+                //clear jsonEditor
+                $scope.jsonEditor.getSession().setValue("");
+                $scope.showJsonEditor = false;
+            }
+        }
+    }
 
     $scope.submit = function () {
         $scope.$emit('clearUrls');
         if ($scope.text) {
-            $scope.previousString = $scope.text;
+            
             $log.log($scope.text);
-
+            
             if ($scope.userInfo.isAuthenticated) {
+                $scope.previousString = $scope.text;
+            
+                //create an object to store the api call
+                var historyObj = {};
+
+                historyObj.urlText = $scope.previousString,
+                historyObj.selectedVersion = $scope.$parent.selectedVersion;
+                historyObj.htmlOption = $scope.selectedOptions;
+
+                if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
+                    historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
+                }else{
+                    historyObj.jsonInput ="";
+                }
+                
                 $scope.showJsonViewer = true;
                 $scope.showImage = false;
 
                 $scope.progressbar.reset();
                 $scope.progressbar.start();
+                
                 var postBody = "";
                 if ($scope.jsonEditor != undefined) {
                     postBody = $scope.jsonEditor.getSession().getValue();
@@ -133,9 +171,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     } else {
                         handleJsonResponse($scope, startTime, results, headers);
                     }
+                    
+                    historyObj.success = "success";
+                    
                 }).error(function (err, status) {
                     handleJsonResponse($scope, startTime, err, null);
+                    historyObj.success = "error";
                 });
+                
+                //add history object to the array
+                $scope.history.push(historyObj);
             }
         }
     };
