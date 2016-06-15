@@ -165,9 +165,11 @@ var getEntitySets = function(XML, $log){
            type = type.substring(index+6, type.length-2);
            EntitySet.entityType = type;
            entitySetArray[EntitySet.name] = EntitySet;
+           //entitySetArray.push(EntitySet);
     }
     return entitySetArray;
 }
+
 
 
 var getEntityTypes = function(XML, $log){

@@ -27,12 +27,12 @@
         </div>
     </nav>
 
-    <div ng-controller="datalistCtrl">
-     <!--    move this into the controller-->
+<!--    <div ng-controller="datalistCtrl">
+         move this into the controller
      <datalist id="requestList">
             <option data-ng-repeat="ttl in urlOptions" value="{{text + ttl.name}}">
     </datalist>
-     </div>
+     </div>-->
 
     <div class="container body-content" ng-controller="FormCtrl">
         <div class="input-group">
@@ -58,10 +58,25 @@
                     </ul>
                 </div>
             </div>
-            <form class="main-query" ng-submit="submit(text)">
+<!--            <form class="main-query" ng-submit="submit()">-->
                 <!--    the style addition is for compatibility with IE11-->
-                <input type="text" ng-model="text" ng-change="entityClicked(text)" name="text" class="form-control" placeholder="{{text}}" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
-            </form>
+                <!--<input type="text" ng-model="text" ng-change="entityClicked(text)" name="text" class="form-control" placeholder="{{text}}" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />-->
+                 <div class="main-query" ng-controller="datalistCtrl">
+                  
+                    <md-autocomplete md-selected-item="selectedItem" 
+                                     md-search-text="searchText" 
+                                     md-items="item in getMatches(searchText)" 
+                                     md-item-text="text + item.name" 
+                                     md-min-length="0" 
+                                     md-selected-item-change="$parent.submit(searchText)"
+                                     placeholder="Type something">
+                    <md-item-template> 
+                        <span md-highlight-text="searchText">{{text + item.name}}</span>
+
+                    </md-item-template>
+                </md-autocomplete>
+                 </div> 
+<!--            </form>-->
             <div class="input-group-btn" id="duration" ng-show="showDuration">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
                     <button id="timeButton" type="button" class="btn btn-default" ng-model="duration" name="duration">
@@ -98,6 +113,7 @@
 
     <!--    scripts are loaded here-->
     <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
     <link rel="stylesheet" href="./src/api-explorer.css">
     <link rel="stylesheet" href="./bower_components/ngprogress/ngProgress.css">
     <!-- Ace not available currently on bower -->
@@ -110,6 +126,12 @@
     <script src="./bower_components/angular-route/angular-route.min.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+
+     <!-- Angular Material Library -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
     <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal.min.js"></script>
     <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal-angular.min.js"></script>
 

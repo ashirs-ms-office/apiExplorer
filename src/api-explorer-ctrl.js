@@ -75,6 +75,30 @@ angular.module('ApiExplorer')
             $scope.urlOptions = [];
         });
     
+             
+      $scope.getMatches = function(query) {
+          $log.log("in querySearch");
+          if(apiService.entity == "" /*at top level*/){
+                switch($scope.$parent.selectedVersion){
+                    case "v1.0":
+                       $scope.urlOptions = apiService.cache.get("v1EntitySetData");
+                       break;
+                    case "beta":
+                       $scope.urlOptions = apiService.cache.get("betaEntitySetData")
+                }
+            }else if(apiService.entity != null){
+                 $scope.urlOptions = apiService.entity.URLS;  
+    
+            }
+
+          var urlArray = [];
+          for(var x in $scope.urlOptions){
+             urlArray.push($scope.urlOptions[x]);
+          }
+          $log.log(urlArray);
+          return urlArray;
+     }
+        
         $scope.$parent.$on("populateUrls", function (event, args) {
             $log.log("populating URLS");
             if(apiService.entity == "" /*at top level*/){
@@ -130,7 +154,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     }
 
     
-    $scope.submit = function () {
+    $scope.submit = function (text) {
+        
+        $log.log("submitting " + text);
+        $scope.text = text;
         
         parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
         
@@ -142,7 +169,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             }
             
             //FIX WHEN THERE ARE TWO SLASHES AFTER ENTRY
-            $scope.entityName =  getEntityName($scope.text);
+            $scope.entityName = getEntityName($scope.text);
             $log.log($scope.entityName);
             
             switch($scope.$parent.selectedVersion){
@@ -163,6 +190,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             var entityNameIsEntitySet = apiService.cache.get(entityKeyPrefix + "EntitySetData")[$scope.entityName];
             var entityNameIsAnId = apiService.entity != null && apiService.entity.isEntitySet;
             var topLevel = $scope.entityName == $scope.$parent.selectedVersion;
+            $log.log(apiService.cache.get("v1EntitySetData"));
+            $log.log(entityNameIsAnId);
+            $log.log(topLevel);
             
             if(topLevel){
                    apiService.entity = "";
@@ -174,7 +204,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             }else{
                    apiService.entity = apiService.cache.get(entityKeyPrefix + "EntityTypeData")[$scope.entityName];
             }
-
+            
+            $log.log(apiService.entity);
+            
             
             if ($scope.userInfo.isAuthenticated) {
                 
