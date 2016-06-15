@@ -9,10 +9,31 @@ body {
     cursor: pointer;
 }
 
+.md-tab{
+    height: 65vh;
+}
+
+.md-button{
+    padding: 0 0 0 0;
+    border-radius: 0px;
+}
+
+.md-menu{
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
 
 #jsonViewer {
     position: relative;
     height: 65vh;
+    background: rgb(230, 230, 230);
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    margin-top: 10px;
+}
+
+#responseHeaders{
+    position: relative;
     background: rgb(230, 230, 230);
     border: 1px solid #ccc;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
@@ -27,24 +48,11 @@ body {
     margin-top: 10px;
 }
 
-#timeButton {
-    border-radius: 0;
-    background: rgb(256, 256, 256);
-    border-right: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+#duration {
+   padding: 5px;
+    color: #4685e2;
+    margin: 10px;
 }
-
-#history-button{
-    border-radius: 0;
-    border-left: 0;
-}
-
-#version-button{
-    border-radius:0;
-    border-right: 0;
-}
-
 
 #queryBar {
     border-right: 0;
@@ -70,6 +78,10 @@ body {
     color: #333;
 }
 
+.main-query{
+    width: 100%;
+}
+
 .panel-heading{
     color: #333;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -85,11 +97,49 @@ body {
     font-size:18px;
 }
 
+
+
+.historyItem{
+    border-top: 1px solid #808080;
+}
+
+.historyIcon{
+    min-height: 100%;
+    min-width: 100%
+}
+
 /* css classses for coloring back links based on success/failure */
 .success{
-    color: green;
+    color: #92C700;
+    border-left: 1px solid #808080;
+    padding-left: 10px;
 }
 
 .error{
-    color: red;
+    color: #FF6A00;
+    border-left: 1px solid #808080;
+    padding-left: 10px;
 }
+
+.md-toolbar-tools{
+    background-color: #0078d7;
+}
+
+/*.linear-color {
+    //doesn't work :(
+    color: #0078d7; 
+}*/
+
+.hidden{
+    visibility: hidden;
+}
+
+.not-hidden{
+     visibility: visible;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+

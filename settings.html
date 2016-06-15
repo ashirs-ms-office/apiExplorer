@@ -1,0 +1,32 @@
+<md-toolbar>
+   <div class="md-toolbar-tools">
+        <h2> Settings </h2>    
+        <span flex></span>
+
+   </div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 68cd3e7... okay button
+</md-toolbar>
+<br />
+
+<div layout="row" layout-align="space-around">
+
+
+     <md-input-container ng-controller="VersionCtrl">
+         <label> Version </label>
+       <md-select id="version-button" ng-model="selectedVersion">
+             <md-option ng-value="choice" ng-repeat="choice in items" ng-click="onItemClick(choice)">
+                 {{choice}}
+           </md-option>
+       </md-select>
+    </md-input-container>
+</div>
+
+<div layout="row" layout-align="center">
+    <md-button class="md-raised" ng-click="cancel()">
+        OK
+    </md-button>
+
+</div>

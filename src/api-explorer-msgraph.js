@@ -1,9 +1,9 @@
-var msGraphLinkResolution = function ($scope, body, args) {
+var msGraphLinkResolution = function ($scope, body, args, service) {
     if (args.indexOf("https://") == -1) {
-        if ($scope.text.indexOf(args.substr(1)) != -1) {
+        if (service.text.indexOf(args.substr(1)) != -1) {
 
-        } else if ($scope.text.indexOf("/me") != -1 && $scope.text.indexOf("/me/") == -1 && $scope.text.indexOf("/memberOf") == -1) {
-            $scope.text = $scope.text.replace("/me", "") + "/users/" + args.substr(1);
+        } else if (service.text.indexOf("/me") != -1 && service.text.indexOf("/me/") == -1 && service.text.indexOf("/memberOf") == -1) {
+            service.text = service.text.replace("/me", "") + "/users/" + args.substr(1);
         } else {
 
             // if type exists
@@ -14,17 +14,20 @@ var msGraphLinkResolution = function ($scope, body, args) {
                 var type = body.substr(typeIndex, typeIndexEnd - typeIndex);
                 type = type.replace("@odata.type\": \"#microsoft.graph.", "");
                 type = type.replace("\"", "").replace(",", "");
-                $scope.text = "https://graph.microsoft.com/v1.0/" + type + "s/" + args.substr(1);
+                service.text = "https://graph.microsoft.com/v1.0/" + type + "s/" + args.substr(1);
             } else {
-                if ($scope.text.indexOf("?") != -1) {
-                    $scope.text = $scope.text.substr(0, $scope.text.indexOf("?"));
+                if (service.text.indexOf("?") != -1) {
+                    service.text = service.text.substr(0, service.text.indexOf("?"));
                 }
-                $scope.text = $scope.text + "/" + args.substr(1);
+                service.text = service.text + "/" + args.substr(1);
             }
         }
     } else {
-        $scope.text = args.replace("\"", "");
+        service.text = args.replace("\"", "");
     }
-    $scope.selectedOptions = 'GET';
-    $scope.submit();
+    //$scope.selectedOptions = 'GET';
+    if(service.text && service.text.charAt(service.text.length-1) != '/'){
+                service.text += '/';
+    }
+    $scope.submit(service.text);
 }

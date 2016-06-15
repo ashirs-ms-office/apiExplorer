@@ -60,25 +60,34 @@ var showDuration = function($scope, startTime) {
     var endTime = new Date();
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
-    $scope.$parent.showDuration = true;
-    $scope.progressbar.complete();
+    $scope.progressVisibility = "hidden";
+    $scope.durationVisibility = "not-hidden";
 }
 
-var showHeaders = function($scope, headers) {
-    if (headers != null) {
-        $scope.responseHeaders = JSON.stringify(headers(), null, 4).trim();
-    }
-}
 
-var showResults = function ($scope, results, headers) {
-    $scope.jsonViewer.setValue("");
 
-    showHeaders($scope, headers); 
+var showHeaders = function($scope, headers, status) {
     
+   
+    
+   var responseObj = {};
+    if (headers != null) {
+        responseObj = headers();
+    }
+    
+    responseObj["Status Code"] = status;
+    var responseHeaders = JSON.stringify(responseObj, null, 4).trim();
+    $scope.jsonViewer.getSession().insert(0, responseHeaders);
+}
+
+
+var showResults = function ($scope, results, headers, status) {
+    $scope.jsonViewer.setValue("");
+    showHeaders($scope, headers, status); 
     $scope.jsonViewer.getSession().insert(0, results);
 }
 
-var handleImageResponse = function ($scope, apiService, headers) {
+var handleImageResponse = function ($scope, apiService, headers, status) {
     apiService.performQuery('GET_BINARY')($scope.text, "").success(function (results, status, headers, config) {
         var arr = new Uint8Array(results);
 
@@ -99,24 +108,24 @@ var handleImageResponse = function ($scope, apiService, headers) {
     });
 }
 
-var handleHtmlResponse = function ($scope, startTime, results, headers) {
+var handleHtmlResponse = function ($scope, startTime, results, headers,  status){
     setJsonViewerContentType("html");
     showDuration($scope, startTime);
-    showResults($scope, results, headers);
+    showResults($scope, results, headers, status);
 }
 
-var handleJsonResponse = function ($scope, startTime, results, headers) {
+var handleJsonResponse = function ($scope, startTime, results, headers, status){
     setJsonViewerContentType("json");
-    results = JSON.stringify(results, null, 4).trim();
+    results = JSON.stringify(results, null, 4);
     showDuration($scope, startTime);
-    showResults($scope, results, headers);
+    showResults($scope, results, headers, status);
 }
 
-var handleXmlResponse = function ($scope, startTime, results, headers) {
+var handleXmlResponse = function ($scope, startTime, results, headers,  status) {
     setJsonViewerContentType("xml");
     results = formatXml(results);
     showDuration($scope, startTime);
-    showResults($scope, results, headers);
+    showResults($scope, results, headers, status);
 }
 
 var isImageResponse = function (headers) {
@@ -149,3 +158,216 @@ var getContentType = function(headers) {
         return full;
     }
 }
+
+
+
+
+var getEntitySets = function(XML, $log){
+    var entitySetArray = {};
+    var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;
+    for(var i=0; i<entitySets.length; i++){
+           var EntitySet = {};
+           var name = entitySets[i].attributes[0].nodeValue;
+           name = name.substring(2, name.length-2);
+           EntitySet.name = name;
+           EntitySet.isEntitySet = true;
+           EntitySet.URLS = [];
+           var type = entitySets[i].attributes[1].nodeValue;
+           var index = type.indexOf("graph.")
+           type = type.substring(index+6, type.length-2);
+           EntitySet.entityType = type;
+           entitySetArray[EntitySet.name] = EntitySet;
+    }
+    return entitySetArray;
+}
+
+
+
+var findNameIndex = function(array){
+    for(var i=0; i<array.length; i++){
+        if(array[i].name === "name"){
+            return i;
+        }
+    }
+}
+
+var findTypeIndex = function(array){
+    for(var i=0; i<array.length; i++){
+        if(array[i].name === "type"){
+            return i;
+        }
+    }
+}
+
+var createEntityTypeObject = function(returnArray, DOMarray, $log){
+    for(var i=0; i<DOMarray.length; i++){
+           var EntityType = {};
+           var name = DOMarray[i].attributes[0].nodeValue;
+           name = name.substring(2, name.length-2);
+           EntityType.name = name;
+           EntityType.isEntitySet = false;
+           EntityType.URLS = [];
+           var children = DOMarray[i].children;
+           for(var j=0; j<children.length; j++){
+                 if(children[j].attributes.length > 0){
+                     var nameIndex = findNameIndex(children[j].attributes);
+                     var typeIndex = findTypeIndex(children[j].attributes);
+                     var childName = children[j].attributes[nameIndex].nodeValue;
+                     childName = childName.substring(2, childName.length-2);
+                     var collection = children[j].attributes[typeIndex].nodeValue;
+                     collection = collection.substring(2, 12);
+                     var type = children[j].attributes[typeIndex].nodeValue;
+                     var index = type.indexOf("graph.")
+                     type = type.substring(index+6, type.length-3);
+                     var urlObject = {};
+                     urlObject.isACollection = (collection === "Collection") && (index >0);
+                     urlObject.name = childName;
+                     urlObject.type = type;
+                     EntityType.URLS.push(urlObject);
+                 }
+           }
+        
+            returnArray[EntityType.name] = EntityType;
+    }    
+    return returnArray;
+}
+
+var getEntityTypes = function(XML, $log){
+    var entityTypesArray = {};
+    var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
+    entityTypesArray = createEntityTypeObject(entityTypesArray, entityTypes, $log);
+    
+    var complexTypes = $(($.parseHTML(XML))[2]).find("ComplexType");
+    entityTypesArray = createEntityTypeObject(entityTypesArray, complexTypes, $log);
+    
+    return entityTypesArray;
+}
+
+var myTrim = function(word){
+      var returnWord = word;
+      if(returnWord != null){
+          while(returnWord.charAt(returnWord.length-1) == "/"){
+              returnWord = returnWord.replace(/\/$/, "");
+          }
+          return returnWord; 
+      }
+
+
+} 
+
+var getEntityName = function(URL){
+     var returnWord = myTrim(URL);
+     if(returnWord != null){
+         returnWord = returnWord.substring(returnWord.lastIndexOf("/")+1, returnWord.length);
+     }
+     return returnWord;
+}
+
+
+var getPreviousCall = function(URL, entityName){
+    var index = URL.indexOf(entityName);
+    return URL.substr(0, index-1);
+}
+
+
+var setEntity = function(entityItem, service, $log, lastCallSuccessful){
+    
+    if(service.selectedOption != "GET"){
+        return;
+    }
+
+    $log.log("setting entity to");
+    
+    
+   if(getEntityName(service.text) == service.selectedVersion){
+             return;
+    }else{
+       var entityName = getEntityName(service.text);
+    }
+    
+    $log.log(entityName);
+    
+    var prevCallName = getEntityName(getPreviousCall(service.text, entityName));
+    var twoPrevCallsName = getEntityName(getPreviousCall(getPreviousCall(service.text, entityName), prevCallName));
+    if(entityName === "me" && lastCallSuccessful){
+        prevCallName = "users";
+    }else if(twoPrevCallsName === "me" && lastCallSuccessful){
+        twoPrevCallsName = "user";
+    }
+    
+    var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[prevCallName];
+    var entityType = service.cache.get(service.selectedVersion + "EntityTypeData")[prevCallName]; 
+    var twoPrevEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[twoPrevCallsName];
+    var twoPrevEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[twoPrevCallsName];
+    var collection = false;
+    $log.log(prevCallName);
+    if(twoPrevEntitySet){
+        for(var i=0; i<twoPrevEntitySet.URLS.length; i++){
+            if(twoPrevEntitySet.URLS[i].name == prevCallName){
+                collection = twoPrevEntitySet.URLS[i].isACollection;
+            }
+        }
+    }else if(twoPrevEntityType){
+        for(var i=0; i<twoPrevEntityType.URLS.length; i++){
+            if(twoPrevEntityType.URLS[i].name == prevCallName){
+                collection = twoPrevEntityType.URLS[i].isACollection;
+                var collectionType = twoPrevEntityType.URLS[i].type;
+
+            }
+        }
+    }
+    
+    service.entityNameIsAnId = (((entitySet && !entityType) || (entitySet && twoPrevCallsName === service.selectedVersion))&& lastCallSuccessful && (prevCallName != "me")) || (collection && lastCallSuccessful);
+    
+    if(service.entityNameIsAnId){
+           $log.log("entity name is an id");
+           var typeName;
+           if(collection){
+               typeName = collectionType;
+           }else if(entitySet){
+               typeName = entitySet.entityType; 
+           }
+           service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
+    }else{
+              var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
+              var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
+              if(isEntitySet && !isEntityType){
+                  entityItem = isEntitySet;
+              }else if(isEntityType && !isEntitySet){
+                  entityItem = isEntityType;
+              }else if(isEntitySet && isEntityType){
+                   if(prevCallName === service.selectedVersion){
+                       entityItem = isEntitySet
+                   }else{
+                       entityItem = isEntityType;
+                   }
+              }
+        service.entity = entityItem;
+    }
+}
+
+
+var parseMetadata = function(service, $log, $scope){
+    var entitySetData, entityTypeData;
+    if(!service.cache.get(service.selectedVersion + "Metadata")){
+         $log.log("parsing metadata");
+         service.getMetadata().success(function (results){
+                results = JSON.stringify(results, null, 4).trim();
+                service.cache.put(service.selectedVersion + "Metadata", results);
+                entitySetData = getEntitySets(results, $log);
+                service.cache.put(service.selectedVersion + "EntitySetData", entitySetData);
+                entityTypeData = getEntityTypes(results, $log);
+                service.cache.put(service.selectedVersion + "EntityTypeData", entityTypeData);
+                $log.log("metadata successfully parsed");
+                var entityObj = {};
+                entityObj.name = service.selectedVersion;
+                service.entity = entityObj;
+          $scope.$root.$broadcast("updateUrlOptions");
+         }).error(function(err, status){
+                 $log.log("metadata could not be parsed");
+         });
+     }else{
+          $scope.$root.$broadcast("updateUrlOptions");
+     }
+}
+
