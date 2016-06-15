@@ -27,7 +27,7 @@ body {
     margin-top: 10px;
 }
 
-#timeButton {
+#duration {
     border-radius: 0;
     background: rgb(256, 256, 256);
     border-right: 1px solid #ccc;

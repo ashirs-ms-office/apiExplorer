@@ -62,12 +62,8 @@
                 <!--    the style addition is for compatibility with IE11-->
                 <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
             </form>
-            <div class="input-group-btn" id="duration" ng-show="showDuration">
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="timeButton" type="button" class="btn btn-default" ng-model="duration" name="duration">
-                        {{duration}}
-                    </button>
-                </div>
+            <div class="input-group-addon" id="duration" ng-show="showDuration" ng-model="duration" name="duration">
+                      {{duration}} 
             </div>
             <div class="input-group-btn" ng-controller="VersionCtrl" >
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">

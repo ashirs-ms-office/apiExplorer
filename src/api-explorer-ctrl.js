@@ -74,7 +74,7 @@ angular.module('ApiExplorer')
 
         $scope.$parent.$on("populateUrls", function (event, args) {
             $scope.urlOptions = [
-                "https://graph.microsoft.com/v1.0/me",
+          /*      "https://graph.microsoft.com/v1.0/me",
                 "https://graph.microsoft.com/v1.0/users",
                 "https://graph.microsoft.com/v1.0/me/messages",
                 "https://graph.microsoft.com/v1.0/drive",
@@ -86,7 +86,7 @@ angular.module('ApiExplorer')
                 "https://graph.microsoft.com/beta/drive",
                 "https://graph.microsoft.com/beta/devices",
                 "https://graph.microsoft.com/beta/groups",
-                "https://graph.microsoft.com/beta/me/notes/notebooks"
+                "https://graph.microsoft.com/beta/me/notes/notebooks"*/
             ];
         });
     });
