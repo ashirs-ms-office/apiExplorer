@@ -219,6 +219,11 @@ var getEntityName = function(URL){
      return returnWord;
 }
 
+var getPreviousCall = function(URL, entityName){
+    var index = URL.indexOf(entityName);
+    return URL.substr(0, index-1);
+}
+
 var parseMetadata = function(version, service, $log, $scope){
     var entitySetData, entityTypeData;
     

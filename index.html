@@ -68,7 +68,7 @@
                                      md-items="item in getMatches(searchText)" 
                                      md-item-text="text + item.name" 
                                      md-min-length="0" 
-                                     md-selected-item-change="$parent.submit(searchText)"
+                                     md-selected-item-change="$parent.submit(item)"
                                      placeholder="Type something">
                     <md-item-template> 
                         <span md-highlight-text="searchText">{{text + item.name}}</span>
@@ -126,7 +126,6 @@
     <script src="./bower_components/angular-route/angular-route.min.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="bower_components/angular-aria/angular-aria.js"></script>
      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
 
