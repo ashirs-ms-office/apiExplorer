@@ -62,7 +62,7 @@
                 <!--    the style addition is for compatibility with IE11-->
                 <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
             </form>
-            <div class="input-group-addon" id="duration" ng-show="showDuration" ng-model="duration" name="duration">
+            <div class="input-group-addon" id="duration" ng-show="showDuration" ng-model="duration" name="duration" >
                       {{duration}} 
             </div>
             <div class="input-group-btn" ng-controller="VersionCtrl" >
@@ -71,7 +71,7 @@
                          <span class="caret"></span>
                     </button>
                     <ul class="uib-dropdown-menu">
-                        <li ng-repeat="choice in items">
+                        <li ng-repeat="choice in items" >
                             <a ng-click="OnItemClick(choice)">{{choice}}</a>
                         </li>
                     </ul>
@@ -82,7 +82,7 @@
         </div>
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div id="jsonEditor" ng-show="showJsonEditor"></div>
-        <div id="jsonViewer" ng-show="showJsonViewer"></div>
+        <div id="jsonViewer" ng-show="showJsonViewer" aria-label="ariaResultsLabel"></div>
         <br/>
         <uib-accordion>
             <uib-accordion-group heading="Response Headers" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
