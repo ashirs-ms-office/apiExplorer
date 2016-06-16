@@ -61,9 +61,9 @@
 <!--            <form class="main-query" ng-submit="submit()">-->
                 <!--    the style addition is for compatibility with IE11-->
                 <!--<input type="text" ng-model="text" ng-change="entityClicked(text)" name="text" class="form-control" placeholder="{{text}}" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />-->
-                 <div class="main-query" ng-controller="datalistCtrl">
-                  
-                    <md-autocomplete md-selected-item="selectedItem" 
+                 <div class="autocomplete" ng-controller="datalistCtrl">
+                    <md-autocomplete 
+                                     md-selected-item="selectedItem" 
                                      md-search-text="searchText" 
                                      md-items="item in getMatches(searchText)" 
                                      md-item-text="text + item.name" 

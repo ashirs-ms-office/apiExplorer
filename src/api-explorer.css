@@ -50,6 +50,16 @@ body {
     border-right: 0;
 }
 
+.autocomplete{
+    border-radius:0;
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+md-input-container {
+    padding-bottom: 0px;
+}
+
 .form-control {
     border-radius: 0;
 }
