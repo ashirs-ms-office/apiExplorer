@@ -127,7 +127,7 @@ angular.module('ApiExplorer')
               var isAnId = $scope.$parent.entityNameIsAnId;
 /*              var typeName = service.entity.entityType; 
               service.entity = service.cache.get($scope.$parent.entityKeyPrefix + "EntityTypeData")[typeName];*/
-              var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && (getEntityName(query) ==  ));
+              var queryIsEntityName = (getEntityName(query) == apiService.entity.name)/* || (isAnId && (getEntityName(query) ==  ))*/;
               return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
           });
      }
