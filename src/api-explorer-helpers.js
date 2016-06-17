@@ -224,6 +224,7 @@ var getPreviousCall = function(URL, entityName){
     return URL.substr(0, index-1);
 }
 
+
 var setEntity = function(entityItem, $scope, service){
     if(entityItem){
         $scope.$parent.entityNameIsAnId = service.cache.get($scope.$parent.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityItem.name))];
