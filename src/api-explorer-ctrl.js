@@ -5,13 +5,15 @@ angular.module('ApiExplorer')
         $scope.text = 'https://graph.microsoft.com/v1.0/';
         $scope.selectedOptions = "GET";
         $scope.selectedVersion = "v1.0";
+        $scope.entityKeyPrefix = "v1";
+        $scope.entityNameIsAnId = false;
         $scope.showJsonEditor = false;
         $scope.showDuration = false;
         $scope.showJsonViewer = true;
         $scope.showImage = false;
 
         
-        parseMetadata($scope.selectedVersion, apiService, $log, $scope);
+        parseMetadata($scope.entityKeyPrefix, apiService, $log, $scope);
         initializeJsonViewer($scope, run, apiService);
 
         $scope.login = function () {
@@ -52,7 +54,6 @@ angular.module('ApiExplorer')
 
 angular.module('ApiExplorer')
     .controller('VersionCtrl', function ($scope, $log) {
-        $scope.selectedVersion = "Version";
 
         $scope.items = [
             'beta',
@@ -61,8 +62,14 @@ angular.module('ApiExplorer')
 
         $scope.OnItemClick = function (selectedVersion) {
             $log.log(selectedVersion);
-            $scope.selectedVersion = selectedVersion;
             $scope.$parent.$parent.selectedVersion = selectedVersion;
+            switch($scope.$parent.$parent.selectedVersion){
+               case "v1.0":
+                  $scope.$parent.entityKeyPrefix = "v1.0";
+                  break;
+              case "beta":
+                  $scope.$parent.entityKeyPrefix = "beta";
+            }
             $scope.$parent.text = $scope.$parent.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + selectedVersion + "/");
         }
     });
@@ -70,14 +77,19 @@ angular.module('ApiExplorer')
 angular.module('ApiExplorer')
     .controller('datalistCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
         $scope.urlOptions = [];
+        $scope.urlArray = []; 
         
         $scope.$parent.$on("clearUrls", function (event, args) {
             $scope.urlOptions = [];
         });
+        
+        $scope.getEntity = function(){
+            return apiService.entity;
+        }
     
-             
-      $scope.getMatches = function(query) {
-          if(apiService.entity == "" /*at top level*/){
+        $scope.$watch("getEntity()", function(event, args){
+            $log.log("entity changed - changing URLs");
+            if(apiService.entity == "topLevel"){
                 switch($scope.$parent.selectedVersion){
                     case "v1.0":
                        $scope.urlOptions = apiService.cache.get("v1EntitySetData");
@@ -87,15 +99,34 @@ angular.module('ApiExplorer')
                 }
             }else if(apiService.entity != null){
                  $scope.urlOptions = apiService.entity.URLS;  
-    
             }
-
-          var urlArray = [];
-          for(var x in $scope.urlOptions){
-             urlArray.push($scope.urlOptions[x]);
+            
+            $scope.urlArray = [];
+            for(var x in $scope.urlOptions){
+                 $scope.urlArray.push($scope.urlOptions[x]);
+           }
+            
+        }, true);
+        
+        
+        $scope.searchTextChange = function(searchText){  
+              if($scope.$parent.text.charAt($scope.$parent.text.length-1) != '/'){
+                $scope.$parent.text += '/';
           }
-          $log.log(urlArray);
-          return urlArray;
+        }
+        
+      $scope.getMatches = function(query) {
+          
+          $log.log("Getting matches");
+          $log.log(getEntityName(query));
+          
+          return $scope.urlArray.filter( function(option){
+              var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
+              var queryIsEmpty = (getEntityName(query).length == 0);
+              var queryIsEntityName = (getEntityName(query) == apiService.entity.name);
+              var isAnId = $scope.$parent.entityNameIsAnId;
+              return isAnId || queryIsEntityName || queryIsEmpty || queryInOption;
+          });
      }
         
     }]);
@@ -107,8 +138,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.photoData = "";
     $scope.responseHeaders = "";
     $scope.history = [];
-
-
+ 
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
         msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args);
@@ -143,37 +173,19 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $log.log(entityItem);
         }
         
-        parseMetadata($scope.$parent.selectedVersion, apiService, $log, $scope);
+        parseMetadata($scope.$parent.entityKeyPrefix, apiService, $log, $scope);
         
         $scope.$emit('clearUrls');
         if ($scope.text) {
             $scope.$parent.text = $scope.text;
+            
             if($scope.$parent.text.charAt($scope.$parent.text.length-1) != '/'){
                 $scope.$parent.text += '/';
                 $scope.text = $scope.$parent.text;
             }
+
             
-            switch($scope.$parent.selectedVersion){
-                case "v1.0":
-                    var entityKeyPrefix = "v1";
-                    break;
-                case "beta":
-                    var entityKeyPrefix = "beta";
-            }
-            
-            
-        if(entityItem){
-            $log.log(getEntityName(getPreviousCall($scope.text, entityItem.name)));
-                var entityNameIsAnId = apiService.cache.get(entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityItem.name))];
-                if(entityNameIsAnId){
-                       var typeName = apiService.entity.entityType; 
-                       apiService.entity = apiService.cache.get(entityKeyPrefix + "EntityTypeData")[typeName];
-                }else{
-                    apiService.entity = entityItem;
-                }
-                $log.log("SERVICE ENTITY: ");
-                $log.log(apiService.entity);
-         }
+           setEntity(entityItem, $scope, apiService);
             
             if ($scope.userInfo.isAuthenticated) {
                 
@@ -216,13 +228,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                         dynamicallyPopulateURLsForEntitySets(apiService, results);
                     }
                     
-                    $scope.$emit('populateUrls');
                     historyObj.success = "success";
                     
                 }).error(function (err, status) {
                     handleJsonResponse($scope, startTime, err, null);
                     historyObj.success = "error";
-                    $scope.$emit('populateUrls');
                 });
                 
                 //add history object to the array

@@ -224,38 +224,43 @@ var getPreviousCall = function(URL, entityName){
     return URL.substr(0, index-1);
 }
 
-var parseMetadata = function(version, service, $log, $scope){
-    var entitySetData, entityTypeData;
-    
-    switch(version){
-        case "beta":
-            if(!service.cache.get("betaMetadata")){
-               service.getBetaMetadata().success(function (results){
-                    results = JSON.stringify(results, null, 4).trim();
-                    $log.log(results)
-                    service.cache.put("betaMetadata", results);
-                    //parseXML(service.cache.get("betaMetadata"), entitySetData, entityTypeData, $log);
-                    service.cache.put("betaEntitySetData", entitySetData);
-                    $scope.$emit('populateUrls');
-                });
-            }
-            break;
-        
-        case "v1.0":
-            if(!service.cache.get("v1Metadata")){
-                $log.log("PARSING");
-                service.getV1Metadata().success(function (results){
-                    results = JSON.stringify(results, null, 4).trim();
-                    //$log.log(results)
-                    service.cache.put("v1Metadata", results);
-                    entitySetData = getEntitySets(results, $log);
-                    service.cache.put("v1EntitySetData", entitySetData);
-                    entityTypeData = getEntityTypes(results, $log);
-                    service.cache.put("v1EntityTypeData", entityTypeData);
-                    //$log.log(service.cache.get("v1EntitySetData"));
-                    $scope.$emit('populateUrls');
-                });
-            }
-    } 
-    
+var setEntity = function(entityItem, $scope, service){
+    if(entityItem){
+        $scope.$parent.entityNameIsAnId = service.cache.get($scope.$parent.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityItem.name))];
+        if($scope.$parent.entityNameIsAnId){
+               var typeName = service.entity.entityType; 
+               service.entity = service.cache.get($scope.$parent.entityKeyPrefix + "EntityTypeData")[typeName];
+        }else{
+            service.entity = entityItem;
+        }
+     }else{
+         if(getEntityName($scope.text) == $scope.$parent.selectedVersion){
+             service.entity = "topLevel";
+         }
+     }
 }
+
+
+var parseMetadata = function(entityKeyPrefix, service, $log, $scope){
+    var entitySetData, entityTypeData;
+
+    
+    if(!service.cache.get("v1Metadata")){
+         $log.log("parsing metadata");
+         service.getV1Metadata().success(function (results){
+                results = JSON.stringify(results, null, 4).trim();
+                service.cache.put(entityKeyPrefix + "Metadata", results);
+                entitySetData = getEntitySets(results, $log);
+                service.cache.put(entityKeyPrefix + "EntitySetData", entitySetData);
+                entityTypeData = getEntityTypes(results, $log);
+                service.cache.put(entityKeyPrefix + "EntityTypeData", entityTypeData);
+                $log.log("metadata successfully parsed");
+                if(service.entity == ""){
+                   service.entity = "topLevel";
+                }
+         }).error(function(err, status){
+                 $log.log("metadata could not be parsed");
+         });
+     }
+}
+    

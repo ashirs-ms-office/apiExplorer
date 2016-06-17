@@ -64,12 +64,14 @@
                  <div class="autocomplete" ng-controller="datalistCtrl">
                     <md-autocomplete 
                                      md-selected-item="selectedItem" 
+                                     md-no-cache="true"
                                      md-search-text="searchText" 
+                                     md-search-text-change="searchTextChange(searchText)"
                                      md-items="item in getMatches(searchText)" 
                                      md-item-text="text + item.name" 
                                      md-min-length="0" 
                                      md-selected-item-change="$parent.submit(item)"
-                                     placeholder="Type something">
+                                     placeholder="{{text}}">
                     <md-item-template> 
                         <span md-highlight-text="searchText">{{text + item.name}}</span>
 
