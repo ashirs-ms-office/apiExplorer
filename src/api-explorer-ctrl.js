@@ -119,15 +119,15 @@ angular.module('ApiExplorer')
           
           $log.log("Getting matches");
           $log.log(getEntityName(query));
-          $log.log(apiService.entity.name);
           
           return $scope.urlArray.filter( function(option){
               var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
               var queryIsEmpty = (getEntityName(query).length == 0);
               var isAnId = $scope.$parent.entityNameIsAnId;
-/*              var typeName = service.entity.entityType; 
-              service.entity = service.cache.get($scope.$parent.entityKeyPrefix + "EntityTypeData")[typeName];*/
-              var queryIsEntityName = (getEntityName(query) == apiService.entity.name)/* || (isAnId && (getEntityName(query) ==  ))*/;
+              if(isAnId){
+                  var previousEntity = apiService.cache.get($scope.$parent.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
+              }
+              var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
               return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
           });
      }
