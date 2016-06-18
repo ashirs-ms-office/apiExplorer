@@ -50,12 +50,6 @@ body {
     border-right: 0;
 }
 
-.autocomplete{
-    border-radius:0;
-    border-bottom: 0;
-    padding-bottom: 0;
-}
-
 .form-control {
     border-radius: 0;
 }
@@ -74,6 +68,10 @@ body {
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     color: #333;
+}
+
+.main-query{
+    width: 100%;
 }
 
 .panel-heading{
@@ -96,6 +94,6 @@ body {
     color: green;
 }
 
-.error{
+.error {
     color: red;
 }

@@ -1,5 +1,5 @@
 angular.module('ApiExplorer')
-    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
+    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', '$mdDialog', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, $mdDialog, apiService) {
         var expanded = true;
         
         $scope.text = 'https://graph.microsoft.com/v1.0/';
@@ -52,6 +52,32 @@ angular.module('ApiExplorer')
         }
     });  
 
+function DialogController($scope, $mdDialog) {
+    $scope.hide = function() {
+        $mdDialog.hide();
+    };
+    
+    $scope.cancel = function() {
+        $mdDialog.cancel();
+    };
+    
+    $scope.answer = function(answer) {
+        $mdDialog.hide(answer);
+    };
+}
+
+angular.module('ApiExplorer').controller('settingsCtrl', function($scope, $log, $mdDialog){
+    
+   $scope.showDialog = function(event){
+       $mdDialog.show({
+           controller: DialogController,
+           templateUrl: 'settings.html',
+           clickOutsideToClose:true
+       })
+   }
+    
+});
+
 angular.module('ApiExplorer')
     .controller('VersionCtrl', function ($scope, $log) {
 
@@ -79,9 +105,9 @@ angular.module('ApiExplorer')
         $scope.urlOptions = [];
         $scope.urlArray = []; 
         
-        $scope.$parent.$on("clearUrls", function (event, args) {
+       /* $scope.$parent.$on("clearUrls", function (event, args) {
             $scope.urlOptions = [];
-        });
+        });*/
         
         $scope.getEntity = function(){
             return apiService.entity;
@@ -118,7 +144,7 @@ angular.module('ApiExplorer')
       $scope.getMatches = function(query) {
           
           $log.log("Getting matches");
-          $log.log(getEntityName(query));
+          $log.log($scope.urlArray);
           
           return $scope.urlArray.filter( function(option){
               var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
@@ -141,6 +167,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.photoData = "";
     $scope.responseHeaders = "";
     $scope.history = [];
+    $scope.historySelected = null;
  
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
@@ -168,17 +195,18 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     }
 
     
-    $scope.submit = function (entityItem) {
+    $scope.submit = function (entityItem, query) {
+        $log.log("in submit");
+        $scope.text = query; 
+        $log.log(query);
         
         if(entityItem){
-            $scope.text = $scope.text + entityItem.name;
             $log.log("submitting " + $scope.text);
             $log.log(entityItem);
         }
         
         parseMetadata($scope.$parent.entityKeyPrefix, apiService, $log, $scope);
         
-        $scope.$emit('clearUrls');
         if ($scope.text) {
             $scope.$parent.text = $scope.text;
             

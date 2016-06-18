@@ -27,80 +27,56 @@
         </div>
     </nav>
 
-<!--    <div ng-controller="datalistCtrl">
-         move this into the controller
-     <datalist id="requestList">
-            <option data-ng-repeat="ttl in urlOptions" value="{{text + ttl.name}}">
-    </datalist>
-     </div>-->
-
     <div class="container body-content" ng-controller="FormCtrl">
-        <div class="input-group">
-            <div class="input-group-btn" ng-controller="DropdownCtrl">
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="http-verb-button" type="button" class="btn btn-default" ng-bind="$parent.selectedOptions" uib-dropdown-toggle>
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="choice in items">
-                            <a ng-click="OnItemClick(choice)">{{choice}}</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="back-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="history.length == 0"> 
-                            Back <span class="caret"> </span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="call in history | orderBy:'id':true track by $index">
-                            <a ng-click="historyOnClick(call)" ng-class="call.success"> {{call.urlText}} </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-<!--            <form class="main-query" ng-submit="submit()">-->
-                <!--    the style addition is for compatibility with IE11-->
-                <!--<input type="text" ng-model="text" ng-change="entityClicked(text)" name="text" class="form-control" placeholder="{{text}}" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />-->
-                 <div class="autocomplete" ng-controller="datalistCtrl">
-                    <md-autocomplete 
-                                     md-selected-item="selectedItem" 
-                                     md-no-cache="true"
-                                     md-search-text="searchText" 
-                                     md-search-text-change="searchTextChange(searchText)"
-                                     md-items="item in getMatches(searchText)" 
-                                     md-item-text="text + item.name" 
-                                     md-min-length="0" 
-                                     md-selected-item-change="$parent.submit(item)"
-                                     placeholder="{{text}}">
-                    <md-item-template> 
-                        <span md-highlight-text="searchText">{{text + item.name}}</span>
+            <div class="autocomplete" ng-controller="datalistCtrl">
+            <form class="main-query" ng-submit="submit(item, searchText)">
+                        <md-autocomplete flex
+                                         md-selected-item="selectedItem" 
+                                         md-no-cache="true"
+                                         md-search-text="searchText" 
+                                         md-search-text-change="searchTextChange(searchText)"
+                                         md-items="item in getMatches(searchText)" 
+                                         md-item-text="text + item.name" 
+                                         md-floating-label="Enter a request"
+                                         md-min-length="0" 
+                                         md-selected-item-change="$parent.submit(item, searchText)"
+                                         placeholder="{{text}}">
+                        <md-item-template> 
+                            <span md-highlight-text="searchText">{{text + item.name}}</span>
 
-                    </md-item-template>
-                </md-autocomplete>
-                 </div> 
-<!--            </form>-->
-            <div class="input-group-btn" id="duration" ng-show="showDuration">
+                        </md-item-template>
+                    </md-autocomplete>
+
+        <div layout="row" layout-align="space-around">
+              <md-input-container flex=75>
+                    <!-- FIX THIS TO BE ORDERED CORRECTLY --> 
+                    <md-select id="back-button" ng-model="historySelected" placeholder="history" ng-disabled="history.length==0">
+                       <!--<md-option ng-value="call" ng-repeat="call in history | orderby:'id':true track by $index">-->
+                        <md-option ng-value="{{call}}" ng-repeat="call in history" ng-class="call.success" ng-click="historyOnClick(call)" >
+                            {{ call.urlText }} 
+                        </md-option> 
+                    </md-select>
+               </md-input-container>
+                <md-input-container ng-controller="settingsCtrl">
+                    <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>
+                </md-input-container>
+               <md-input-container>
+                    <md-button class="md-raised" type="submit" ng-click="submit(item, searchText)" ng-disabled="!userInfo.isAuthenticated"> Go </md-button>
+               </md-input-container>
+         </div>
+            </form>
+            </div>    
+            <!-- MAKE THIS A TOAST -->
+                
+     <!--       </div>-->
+<!--            <div class="input-group-btn" id="duration" ng-show="showDuration">
                 <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
                     <button id="timeButton" type="button" class="btn btn-default" ng-model="duration" name="duration">
                         {{duration}}
                     </button>
                 </div>
-            </div>
-            <div class="input-group-btn" ng-controller="VersionCtrl" style="z-index:99" >
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="version-button" type="button" class="btn btn-default" ng-bind="$parent.$parent.selectedVersion" uib-dropdown-toggle >
-                         <span class="caret"></span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="choice in items">
-                            <a ng-click="OnItemClick(choice)">{{choice}}</a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <button id="go-button" type="button" class="btn btn-default"  ng-click="submit()" ng-disabled="!userInfo.isAuthenticated"> Go </button>
-            </div>
-        </div>
+            </div>-->
+
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div id="jsonEditor" ng-show="showJsonEditor"></div>
         <div id="jsonViewer" ng-show="showJsonViewer"></div>
