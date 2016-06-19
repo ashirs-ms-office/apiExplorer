@@ -30,7 +30,6 @@ angular.module('ApiExplorer')
 
 angular.module('ApiExplorer')
     .controller('DropdownCtrl', function ($scope, $log) {
-        $scope.selectedOptions = "GET";
 
         $scope.items = [
             'GET',
@@ -41,7 +40,6 @@ angular.module('ApiExplorer')
 
         $scope.OnItemClick = function (selectedOption) {
             $log.log(selectedOption);
-            $scope.selectedOptions = selectedOption;
             $scope.$parent.selectedOptions = selectedOption;
             if (selectedOption == 'POST' || selectedOption == 'PATCH') {
                 $scope.$parent.showJsonEditor = true;
