@@ -2,19 +2,28 @@ angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', '$mdDialog', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, $mdDialog, apiService) {
         var expanded = true;
         
-        $scope.text = 'https://graph.microsoft.com/v1.0/';
-        $scope.selectedOptions = "GET";
-        $scope.selectedVersion = "v1.0";
         $scope.entityKeyPrefix = "v1";
         $scope.entityNameIsAnId = false;
-        $scope.showJsonEditor = false;
         $scope.showDuration = false;
-        $scope.showJsonViewer = true;
+        $scope.showJsonEditor = apiService.showJsonEditor;
+        $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
 
         
         parseMetadata($scope.entityKeyPrefix, apiService, $log, $scope);
         initializeJsonViewer($scope, run, apiService);
+        
+        $scope.getEditor = function(){
+            return apiService.showJsonEditor;
+        }
+        
+        $scope.$watch("getEditor()", function(event, args){
+            $scope.showJsonEditor = $scope.getEditor();
+            
+            if($scope.showJsonEditor){
+                initializeJsonEditor($scope);
+            }
+        });
 
         $scope.login = function () {
             adalService.login();
@@ -29,8 +38,9 @@ angular.module('ApiExplorer')
 }]);
 
 angular.module('ApiExplorer')
-    .controller('DropdownCtrl', function ($scope, $log) {
-        $scope.selectedOptions = "GET";
+    .controller('DropdownCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
+    
+        $scope.selectedOption = apiService.selectedOption;
 
         $scope.items = [
             'GET',
@@ -38,19 +48,23 @@ angular.module('ApiExplorer')
             'PATCH',
             'DELETE'
           ];
-
-        $scope.OnItemClick = function (selectedOption) {
-            $log.log(selectedOption);
-            $scope.selectedOptions = selectedOption;
-            $scope.$parent.selectedOptions = selectedOption;
-            if (selectedOption == 'POST' || selectedOption == 'PATCH') {
-                $scope.$parent.showJsonEditor = true;
-                initializeJsonEditor($scope.$parent);
-            } else if (selectedOption == 'GET' || selectedOption == 'DELETE') {
-                $scope.$parent.showJsonEditor = false;
-            }
+    
+    
+        $scope.getOption = function(){
+                return $scope.selectedOption;
         }
-    });  
+
+        $scope.$watch("getOption()", function(event, args) {
+            $log.log($scope.selectedOption);
+            apiService.selectedOption = $scope.selectedOption;
+            if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
+                apiService.showJsonEditor = true;
+            } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
+                apiService.showJsonEditor = false;
+            }
+        }, true);
+
+    }]);  
 
 function DialogController($scope, $mdDialog) {
     $scope.hide = function() {
@@ -66,7 +80,7 @@ function DialogController($scope, $mdDialog) {
     };
 }
 
-angular.module('ApiExplorer').controller('settingsCtrl', function($scope, $log, $mdDialog){
+angular.module('ApiExplorer').controller('settingsCtrl', ['$scope', '$log', '$mdDialog', function($scope, $log, $mdDialog){
     
    $scope.showDialog = function(event){
        $mdDialog.show({
@@ -76,38 +90,41 @@ angular.module('ApiExplorer').controller('settingsCtrl', function($scope, $log, 
        })
    }
     
-});
+}]);
 
 angular.module('ApiExplorer')
-    .controller('VersionCtrl', function ($scope, $log) {
+    .controller('VersionCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
 
+        $scope.selectedVersion = apiService.selectedVersion;
+        
         $scope.items = [
             'beta',
             'v1.0',
           ];
+    
+        $scope.getVersion = function(){
+            return $scope.selectedVersion;
+        }
 
-        $scope.OnItemClick = function (selectedVersion) {
-            $log.log(selectedVersion);
-            $scope.$parent.$parent.selectedVersion = selectedVersion;
-            switch($scope.$parent.$parent.selectedVersion){
+        $scope.$watch("getVersion()", function(event, args) {
+            apiService.selectedVersion = $scope.selectedVersion;
+            $log.log(apiService.selectedVersion);
+            switch(apiService.selectedVersion){
                case "v1.0":
-                  $scope.$parent.entityKeyPrefix = "v1.0";
+                  $scope.$parent.$parent.entityKeyPrefix = "v1.0";
                   break;
               case "beta":
-                  $scope.$parent.entityKeyPrefix = "beta";
+                  $scope.$parent.$parent.entityKeyPrefix = "beta";
             }
-            $scope.$parent.text = $scope.$parent.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + selectedVersion + "/");
-        }
-    });
+            apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + apiService.selectedVersion + "/");
+            $scope.$parent.text = apiService.text;
+        }, true);
+}]);
 
 angular.module('ApiExplorer')
     .controller('datalistCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
         $scope.urlOptions = [];
         $scope.urlArray = []; 
-        
-       /* $scope.$parent.$on("clearUrls", function (event, args) {
-            $scope.urlOptions = [];
-        });*/
         
         $scope.getEntity = function(){
             return apiService.entity;
@@ -116,7 +133,7 @@ angular.module('ApiExplorer')
         $scope.$watch("getEntity()", function(event, args){
             $log.log("entity changed - changing URLs");
             if(apiService.entity == "topLevel"){
-                switch($scope.$parent.selectedVersion){
+                switch(apiService.selectedVersion){
                     case "v1.0":
                        $scope.urlOptions = apiService.cache.get("v1EntitySetData");
                        break;
@@ -136,16 +153,18 @@ angular.module('ApiExplorer')
         
         
         $scope.searchTextChange = function(searchText){  
-              if($scope.$parent.text.charAt($scope.$parent.text.length-1) != '/'){
-                $scope.$parent.text += '/';
+              $scope.$parent.text = apiService.text;
+              if(apiService.text.charAt(apiService.text.length-1) != '/'){
+                apiService.text += '/';
           }
         }
         
       $scope.getMatches = function(query) {
-          
           $log.log("Getting matches");
           $log.log($scope.urlArray);
           
+          //maybe this should be in the version controller?
+         $scope.$parent.text = apiService.text;
           return $scope.urlArray.filter( function(option){
               var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
               var queryIsEmpty = (getEntityName(query).length == 0);
@@ -168,6 +187,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.responseHeaders = "";
     $scope.history = [];
     $scope.historySelected = null;
+    $scope.text = apiService.text;
  
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
@@ -179,17 +199,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         if($scope.userInfo.isAuthenticated){
             
             $scope.text = input.urlText;
-            $scope.$parent.selectedVersion = input.selectedVersion;
-            $scope.selectedOptions = input.htmlOption;
+            apiService.selectedVersion = input.selectedVersion;
+            apiService.selectedOption = input.htmlOption;
             
             if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
-                $scope.showJsonEditor = true;
-                initializeJsonEditor($scope.$parent.$parent);
+                apiService.showJsonEditor = true;
                 $scope.jsonEditor.getSession().setValue(input.jsonInput);
             }else{
                 //clear jsonEditor
                 $scope.jsonEditor.getSession().setValue("");
-                $scope.showJsonEditor = false;
+                apiService.showJsonEditor = false;
             }
         }
     }
@@ -208,11 +227,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         parseMetadata($scope.$parent.entityKeyPrefix, apiService, $log, $scope);
         
         if ($scope.text) {
-            $scope.$parent.text = $scope.text;
+            apiService.text = $scope.text;
             
-            if($scope.$parent.text.charAt($scope.$parent.text.length-1) != '/'){
-                $scope.$parent.text += '/';
-                $scope.text = $scope.$parent.text;
+            if(apiService.text.charAt(apiService.text.length-1) != '/'){
+                apiService.text += '/';
+                $scope.text = apiService.text;
             }
 
             
@@ -220,14 +239,14 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             
             if ($scope.userInfo.isAuthenticated) {
                 
-                $scope.previousString = $scope.text;
+                $scope.previousString = apiService.text
             
                 //create an object to store the api call
                 var historyObj = {};
 
                 historyObj.urlText = $scope.previousString,
-                historyObj.selectedVersion = $scope.$parent.selectedVersion;
-                historyObj.htmlOption = $scope.selectedOptions;
+                historyObj.selectedVersion = apiService.selectedVersion;
+                historyObj.htmlOption = apiService.selectedOption;
 
                 if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
                     historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
@@ -247,7 +266,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
                 var startTime = new Date();
                 var endTime = null;
-                apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
+                apiService.performQuery(apiService.selectedOption)($scope.text, postBody).success(function (results, status, headers, config) {
                     if (isImageResponse(headers)) { 
                         handleImageResponse($scope, apiService, headers);
                     } else if (isHtmlResponse(headers)) {  

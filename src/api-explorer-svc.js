@@ -4,6 +4,16 @@ angular.module('ApiExplorer')
     .factory('ApiExplorerSvc', ['$http', '$cacheFactory', function ($http, $cacheFactory) {
         return {
             
+            text: 'https://graph.microsoft.com/v1.0/',
+            
+            selectedVersion: "v1.0",
+            
+            selectedOption: "GET",
+            
+            showJsonEditor: false,
+            
+            showJsonViewer: true,
+            
             cache: $cacheFactory('myCache'),
             
             entity: "",

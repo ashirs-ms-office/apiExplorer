@@ -1,7 +1,15 @@
+
+<md-toolbar>
+   <div class="md-toolbar-tools">
+        <h2> Settings </h2>    
+    </div>
+</md-toolbar>
+<br />
+
 <div layout="row" layout-align="space-around">
      <md-input-container ng-controller="DropdownCtrl">
          <label> Http verb </label>
-        <md-select id="http-verb-button" ng-model="$parent.selectedOptions">
+        <md-select id="http-verb-button" ng-model="selectedOption">
             <md-option ng-value="choice" ng-repeat="choice in items" ng-click="onItemClick(choice)">
                {{ choice }}
            </md-option>
@@ -9,7 +17,8 @@
    </md-input-container>
 
      <md-input-container ng-controller="VersionCtrl">
-       <md-select id="version-button" ng-model="$parent.$parent.selectedVersion">
+         <label> Version </label>
+       <md-select id="version-button" ng-model="selectedVersion">
              <md-option ng-value="choice" ng-repeat="choice in items" ng-click="onItemClick(choice)">
                  {{choice}}
            </md-option>

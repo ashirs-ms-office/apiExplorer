@@ -26,27 +26,28 @@
             </div>
         </div>
     </nav>
-
+    <br />
     <div class="container body-content" ng-controller="FormCtrl">
-            <div class="autocomplete" ng-controller="datalistCtrl">
-            <form class="main-query" ng-submit="submit(item, searchText)">
-                        <md-autocomplete flex
-                                         md-selected-item="selectedItem" 
-                                         md-no-cache="true"
-                                         md-search-text="searchText" 
-                                         md-search-text-change="searchTextChange(searchText)"
-                                         md-items="item in getMatches(searchText)" 
-                                         md-item-text="text + item.name" 
-                                         md-floating-label="Enter a request"
-                                         md-min-length="0" 
-                                         md-selected-item-change="$parent.submit(item, searchText)"
-                                         placeholder="{{text}}">
-                        <md-item-template> 
-                            <span md-highlight-text="searchText">{{text + item.name}}</span>
+        <div class="autocomplete" ng-controller="datalistCtrl">
+        <form class="main-query" ng-submit="submit(item, searchText)">
+                    <md-autocomplete flex
+                                     md-selected-item="selectedItem" 
+                                     md-no-cache="true"
+                                     md-search-text="searchText" 
+                                     md-search-text-change="searchTextChange(searchText)"
+                                     md-items="item in getMatches(searchText)" 
+                                     md-item-text="text + item.name" 
+                                     md-floating-label="Enter a request"
+                                     md-min-length="0" 
+                                     md-selected-item-change="$parent.submit(item, searchText)"
+                                     placeholder="{{text}}">
+                    <md-item-template> 
+                        <span md-highlight-text="searchText">{{text + item.name}}</span>
 
-                        </md-item-template>
-                    </md-autocomplete>
-
+                    </md-item-template>
+                </md-autocomplete>
+         </form>
+        </div>
         <div layout="row" layout-align="space-around">
               <md-input-container flex=75>
                     <!-- FIX THIS TO BE ORDERED CORRECTLY --> 
@@ -64,8 +65,7 @@
                     <md-button class="md-raised" type="submit" ng-click="submit(item, searchText)" ng-disabled="!userInfo.isAuthenticated"> Go </md-button>
                </md-input-container>
          </div>
-            </form>
-            </div>    
+               
             <!-- MAKE THIS A TOAST -->
                 
      <!--       </div>-->
