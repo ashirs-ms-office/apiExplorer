@@ -202,7 +202,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     //function called when link in the back button history is clicked
     $scope.historyOnClick = function(input){
         if($scope.userInfo.isAuthenticated){
-            
             $scope.text = input.urlText;
             apiService.selectedVersion = input.selectedVersion;
             apiService.selectedOption = input.htmlOption;
@@ -212,9 +211,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 $scope.jsonEditor.getSession().setValue(input.jsonInput);
             }else{
                 //clear jsonEditor
-                $scope.jsonEditor.getSession().setValue("");
+                //$scope.jsonEditor.getSession().setValue("");
                 apiService.showJsonEditor = false;
             }
+            
+            $scope.submit($scope.text);
         }
     }
 

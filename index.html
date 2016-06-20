@@ -45,13 +45,14 @@
                         <span md-highlight-text="searchText">{{text + item.name}}</span>
                     </md-item-template>
                 </md-autocomplete>
+            <br />
         <div layout="row" layout-align="space-between">
               <md-input-container flex=75>
                      <label> history </label> 
                     <!-- FIX THIS TO BE ORDERED CORRECTLY --> 
                     <md-select id="back-button" ng-model="historySelected" placeholder="history" ng-disabled="history.length==0">
                        <!--<md-option ng-value="call" ng-repeat="call in history | orderby:'id':true track by $index">-->
-                        <md-option ng-value="{{call}}" ng-repeat="call in history" ng-click="historyOnClick(call)" >
+                        <md-option ng-value="{{call}}" ng-repeat="call in history" ng-class="call.success" ng-click="historyOnClick(call)" >
                             {{ call.urlText }} 
                         </md-option> 
                     </md-select>
