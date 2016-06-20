@@ -42,6 +42,7 @@ angular.module('ApiExplorer')
     
         $scope.selectedOption = apiService.selectedOption;
 
+
         $scope.items = [
             'GET',
             'POST',
@@ -61,6 +62,7 @@ angular.module('ApiExplorer')
                 apiService.showJsonEditor = true;
             } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                 apiService.showJsonEditor = false;
+
             }
         }, true);
 
