@@ -293,7 +293,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             });
 
             //add history object to the array
-            $scope.history.push(historyObj);
+            $scope.history.unshift(historyObj);
             }
     };
 }]);
