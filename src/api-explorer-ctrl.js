@@ -55,6 +55,7 @@ angular.module('ApiExplorer')
         $scope.$watch("getOption()", function(event, args) {
             $log.log($scope.selectedOption);
             apiService.selectedOption = $scope.selectedOption;
+            apiService.text = "https://graph.microsoft.com/v1.0/";
             if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                 apiService.showJsonEditor = true;
             } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
@@ -152,7 +153,6 @@ angular.module('ApiExplorer')
         
         
         $scope.searchTextChange = function(searchText){  
-              //$scope.$parent.text = apiService.text;
               if(apiService.text.charAt(apiService.text.length-1) != '/'){
                 apiService.text += '/';
           }
@@ -161,21 +161,24 @@ angular.module('ApiExplorer')
       $scope.getMatches = function(query) {
           $log.log("Getting matches");
           $log.log($scope.urlArray);
-          $log.log(getEntityName(query));
-          $log.log(apiService.entity.name);
           
           //maybe this should be in the version controller?
          $scope.$parent.text = apiService.text;
-          return $scope.urlArray.filter( function(option){
-              var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
-              var queryIsEmpty = (getEntityName(query).length == 0);
-              var isAnId = apiService.entityNameIsAnId;
-              if(isAnId){
-                  var previousEntity = apiService.cache.get(apiService.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
-              }
-              var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
-              return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
-          });
+         if(apiService.selectedOption == "GET"){
+             
+              return $scope.urlArray.filter( function(option){
+                  var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
+                  var queryIsEmpty = (getEntityName(query).length == 0);
+                  var isAnId = apiService.entityNameIsAnId;
+                  if(isAnId){
+                      var previousEntity = apiService.cache.get(apiService.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
+                  }
+                  var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
+                  return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
+              });
+         }else{
+             return [apiService.text];
+         }
      }
         
     }]);
@@ -240,8 +243,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $scope.text = apiService.text;
         }
 
-
-       //moved above
        setEntity($scope.entityItem, $scope, apiService, $log);
 
         if ($scope.userInfo.isAuthenticated) {

@@ -37,12 +37,10 @@
                                      md-search-text-change="searchTextChange(searchText)"
                                      md-items="item in getMatches(searchText)" 
                                      md-item-text="text + item.name" 
-                                     md-floating-label="Enter a request"
                                      md-min-length="0" 
                                      md-selected-item-change="$parent.selectedItemChange(item)"
                                      placeholder="{{text}}">
                         
-                                  <!-- md-selected-item-change="$parent.submit(item, searchText)" -->
                     <md-item-template> 
                         <span md-highlight-text="searchText">{{text + item.name}}</span>
                     </md-item-template>
@@ -53,7 +51,7 @@
                     <!-- FIX THIS TO BE ORDERED CORRECTLY --> 
                     <md-select id="back-button" ng-model="historySelected" placeholder="history" ng-disabled="history.length==0">
                        <!--<md-option ng-value="call" ng-repeat="call in history | orderby:'id':true track by $index">-->
-                        <md-option ng-value="{{call}}" ng-class="call.success" ng-repeat="call in history" ng-click="historyOnClick(call)" >
+                        <md-option ng-value="{{call}}" ng-repeat="call in history" ng-click="historyOnClick(call)" >
                             {{ call.urlText }} 
                         </md-option> 
                     </md-select>

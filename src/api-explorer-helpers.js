@@ -235,6 +235,10 @@ var getPreviousCall = function(URL, entityName){
 
 
 var setEntity = function(entityItem, $scope, service, $log){
+    if(service.selectedOption != "GET"){
+        return;
+    }
+    
     $log.log("setting entity to");
     $log.log(entityItem);
     
@@ -251,7 +255,11 @@ var setEntity = function(entityItem, $scope, service, $log){
        var entityName = entityItem.name; 
     }
     
-    service.entityNameIsAnId = service.cache.get(service.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
+    if(service.cache.get(service.entityKeyPrefix + "EntitySetData")){
+        service.entityNameIsAnId = service.cache.get(service.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
+    }else{
+      //WHY IS THIS GETTING CLEARED???
+    }
     if(service.entityNameIsAnId){
            $log.log("entity name is an id")
            var typeName = service.entityNameIsAnId.entityType; 
@@ -273,9 +281,7 @@ var setEntity = function(entityItem, $scope, service, $log){
 
 var parseMetadata = function(entityKeyPrefix, service, $log, $scope){
     var entitySetData, entityTypeData;
-
-    
-    if(!service.cache.get("v1Metadata")){
+    if(!service.cache.get(entityKeyPrefix + "Metadata")){
          $log.log("parsing metadata");
          service.getV1Metadata().success(function (results){
                 results = JSON.stringify(results, null, 4).trim();
