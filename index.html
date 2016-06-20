@@ -48,7 +48,7 @@
                 </md-autocomplete>
          </form>
         </div>
-        <div layout="row" layout-align="space-around">
+        <div layout="row" layout-align="space-between">
               <md-input-container flex=75>
                     <!-- FIX THIS TO BE ORDERED CORRECTLY --> 
                     <md-select id="back-button" ng-model="historySelected" placeholder="history" ng-disabled="history.length==0">
@@ -66,16 +66,7 @@
                </md-input-container>
          </div>
                
-            <!-- MAKE THIS A TOAST -->
-                
-     <!--       </div>-->
-<!--            <div class="input-group-btn" id="duration" ng-show="showDuration">
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="timeButton" type="button" class="btn btn-default" ng-model="duration" name="duration">
-                        {{duration}}
-                    </button>
-                </div>
-            </div>-->
+
 
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div id="jsonEditor" ng-show="showJsonEditor"></div>

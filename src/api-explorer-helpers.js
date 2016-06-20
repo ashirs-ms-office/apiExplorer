@@ -56,11 +56,16 @@ var formatXml = function (xml) {
 
     return formatted;
 };
-var showDuration = function($scope, startTime) {
+var showDuration = function($scope, startTime, $mdToast) {
     var endTime = new Date();
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
-    $scope.$parent.showDuration = true;
+    $mdToast.show(
+        $mdToast.simple().
+        textContent($scope.duration).
+        hideDelay(3000).
+        position('bottom right')
+    );
     $scope.progressbar.complete();
 }
 
@@ -99,23 +104,23 @@ var handleImageResponse = function ($scope, apiService, headers) {
     });
 }
 
-var handleHtmlResponse = function ($scope, startTime, results, headers) {
+var handleHtmlResponse = function ($scope, startTime, results, headers, $mdToast) {
     setJsonViewerContentType("html");
-    showDuration($scope, startTime);
+    showDuration($scope, startTime, $mdToast);
     showResults($scope, results, headers);
 }
 
-var handleJsonResponse = function ($scope, startTime, results, headers) {
+var handleJsonResponse = function ($scope, startTime, results, headers, $mdToast) {
     setJsonViewerContentType("json");
-    results = JSON.stringify(results, null, 4).trim();
-    showDuration($scope, startTime);
+    results = JSON.stringify(results, null, 4);
+    showDuration($scope, startTime, $mdToast);
     showResults($scope, results, headers);
 }
 
-var handleXmlResponse = function ($scope, startTime, results, headers) {
+var handleXmlResponse = function ($scope, startTime, results, headers, $mdToast) {
     setJsonViewerContentType("xml");
     results = formatXml(results);
-    showDuration($scope, startTime);
+    showDuration($scope, startTime, $mdToast);
     showResults($scope, results, headers);
 }
 
@@ -210,12 +215,16 @@ var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
 }
     
 var myTrim = function(word){
-      return word.replace(/\/$/, "");
+      if(word != null){
+          return word.replace(/\/$/, "");
+      }
 } 
 
 var getEntityName = function(URL){
      var returnWord = myTrim(URL);
-     returnWord = returnWord.substring(returnWord.lastIndexOf("/")+1, returnWord.length);
+     if(returnWord != null){
+         returnWord = returnWord.substring(returnWord.lastIndexOf("/")+1, returnWord.length);
+     }
      return returnWord;
 }
 

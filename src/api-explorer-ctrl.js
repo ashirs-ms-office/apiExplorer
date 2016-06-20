@@ -4,7 +4,6 @@ angular.module('ApiExplorer')
         
         $scope.entityKeyPrefix = "v1";
         $scope.entityNameIsAnId = false;
-        $scope.showDuration = false;
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
@@ -181,7 +180,7 @@ angular.module('ApiExplorer')
         
     }]);
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', function ($scope, $log, apiService, ngProgressFactory) {
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', '$mdToast', function ($scope, $log, apiService, ngProgressFactory, $mdToast){
     $scope.duration = "";
     $scope.progressbar = ngProgressFactory.createInstance();
     $scope.listData = "requestList";
@@ -228,10 +227,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         parseMetadata($scope.$parent.entityKeyPrefix, apiService, $log, $scope);
         
-        if ($scope.text) {
+        if ($scope.text != apiService.text) {
             apiService.text = $scope.text;
             
-            if(apiService.text.charAt(apiService.text.length-1) != '/'){
+            if(apiService.text != null && apiService.text.charAt(apiService.text.length-1) != '/'){
                 apiService.text += '/';
                 $scope.text = apiService.text;
             }
@@ -272,18 +271,18 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     if (isImageResponse(headers)) { 
                         handleImageResponse($scope, apiService, headers);
                     } else if (isHtmlResponse(headers)) {  
-                        handleHtmlResponse($scope, startTime, results, headers);
+                        handleHtmlResponse($scope, startTime, results, headers, $mdToast);
                     } else if (isXmlResponse(results)) {
-                        handleXmlResponse($scope, startTime, results, headers);
+                        handleXmlResponse($scope, startTime, results, headers, $mdToast);
                     } else {
-                        handleJsonResponse($scope, startTime, results, headers);
+                        handleJsonResponse($scope, startTime, results, headers, $mdToast);
                         dynamicallyPopulateURLsForEntitySets(apiService, results);
                     }
                     
                     historyObj.success = "success";
                     
                 }).error(function (err, status) {
-                    handleJsonResponse($scope, startTime, err, null);
+                    handleJsonResponse($scope, startTime, err, null, $mdToast);
                     historyObj.success = "error";
                 });
                 
