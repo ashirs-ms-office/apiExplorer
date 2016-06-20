@@ -2,14 +2,12 @@ angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', '$mdDialog', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, $mdDialog, apiService) {
         var expanded = true;
         
-        $scope.entityKeyPrefix = "v1";
-        $scope.entityNameIsAnId = false;
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
 
         
-        parseMetadata($scope.entityKeyPrefix, apiService, $log, $scope);
+        parseMetadata(apiService.entityKeyPrefix, apiService, $log, $scope);
         initializeJsonViewer($scope, run, apiService);
         
         $scope.getEditor = function(){
@@ -112,10 +110,10 @@ angular.module('ApiExplorer')
             $log.log(apiService.selectedVersion);
             switch(apiService.selectedVersion){
                case "v1.0":
-                  $scope.$parent.$parent.entityKeyPrefix = "v1.0";
+                  apiService.entityKeyPrefix = "v1.0";
                   break;
               case "beta":
-                  $scope.$parent.$parent.entityKeyPrefix = "beta";
+                  apiService.entityKeyPrefix = "beta";
             }
             apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + apiService.selectedVersion + "/");
             $scope.$parent.text = apiService.text;
@@ -154,7 +152,7 @@ angular.module('ApiExplorer')
         
         
         $scope.searchTextChange = function(searchText){  
-              $scope.$parent.text = apiService.text;
+              //$scope.$parent.text = apiService.text;
               if(apiService.text.charAt(apiService.text.length-1) != '/'){
                 apiService.text += '/';
           }
@@ -163,15 +161,17 @@ angular.module('ApiExplorer')
       $scope.getMatches = function(query) {
           $log.log("Getting matches");
           $log.log($scope.urlArray);
+          $log.log(getEntityName(query));
+          $log.log(apiService.entity.name);
           
           //maybe this should be in the version controller?
          $scope.$parent.text = apiService.text;
           return $scope.urlArray.filter( function(option){
               var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
               var queryIsEmpty = (getEntityName(query).length == 0);
-              var isAnId = $scope.$parent.entityNameIsAnId;
+              var isAnId = apiService.entityNameIsAnId;
               if(isAnId){
-                  var previousEntity = apiService.cache.get($scope.$parent.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
+                  var previousEntity = apiService.cache.get(apiService.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
               }
               var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
               return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
@@ -189,6 +189,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.history = [];
     $scope.historySelected = null;
     $scope.text = apiService.text;
+    $scope.entityItem = null;
  
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
@@ -214,81 +215,85 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     }
 
+    $scope.selectedItemChange = function(item){
+       $log.log("selected item changed to " + item);
+       $scope.entityItem = item; 
+       $log.log(item);     
+    }
     
-    $scope.submit = function (entityItem, query) {
+    $scope.submit = function (query) {
         $log.log("in submit");
         $scope.text = query; 
         $log.log(query);
         
-        if(entityItem){
+        if($scope.entityItem){
             $log.log("submitting " + $scope.text);
-            $log.log(entityItem);
+            $log.log($scope.entityItem);
         }
         
-        parseMetadata($scope.$parent.entityKeyPrefix, apiService, $log, $scope);
+        parseMetadata(apiService.entityKeyPrefix, apiService, $log, $scope);
         
-        if ($scope.text != apiService.text) {
-            apiService.text = $scope.text;
-            
-            if(apiService.text != null && apiService.text.charAt(apiService.text.length-1) != '/'){
-                apiService.text += '/';
-                $scope.text = apiService.text;
-            }
+        apiService.text = $scope.text;
 
-            
-           setEntity(entityItem, $scope, apiService);
-            
-            if ($scope.userInfo.isAuthenticated) {
-                
-                $scope.previousString = apiService.text
-            
-                //create an object to store the api call
-                var historyObj = {};
-
-                historyObj.urlText = $scope.previousString,
-                historyObj.selectedVersion = apiService.selectedVersion;
-                historyObj.htmlOption = apiService.selectedOption;
-
-                if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
-                    historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
-                }else{
-                    historyObj.jsonInput ="";
-                }
-                
-                $scope.showJsonViewer = true;
-                $scope.showImage = false;
-
-                $scope.progressbar.reset();
-                $scope.progressbar.start();
-                
-                var postBody = "";
-                if ($scope.jsonEditor != undefined) {
-                    postBody = $scope.jsonEditor.getSession().getValue();
-                }
-                var startTime = new Date();
-                var endTime = null;
-                apiService.performQuery(apiService.selectedOption)($scope.text, postBody).success(function (results, status, headers, config) {
-                    if (isImageResponse(headers)) { 
-                        handleImageResponse($scope, apiService, headers);
-                    } else if (isHtmlResponse(headers)) {  
-                        handleHtmlResponse($scope, startTime, results, headers, $mdToast);
-                    } else if (isXmlResponse(results)) {
-                        handleXmlResponse($scope, startTime, results, headers, $mdToast);
-                    } else {
-                        handleJsonResponse($scope, startTime, results, headers, $mdToast);
-                        dynamicallyPopulateURLsForEntitySets(apiService, results);
-                    }
-                    
-                    historyObj.success = "success";
-                    
-                }).error(function (err, status) {
-                    handleJsonResponse($scope, startTime, err, null, $mdToast);
-                    historyObj.success = "error";
-                });
-                
-                //add history object to the array
-                $scope.history.push(historyObj);
-            }
+        if(apiService.text != null && apiService.text.charAt(apiService.text.length-1) != '/'){
+            apiService.text += '/';
+            $scope.text = apiService.text;
         }
+
+
+       //moved above
+       setEntity($scope.entityItem, $scope, apiService, $log);
+
+        if ($scope.userInfo.isAuthenticated) {
+
+            $scope.previousString = apiService.text;
+
+            //create an object to store the api call
+            var historyObj = {};
+
+            historyObj.urlText = $scope.previousString,
+            historyObj.selectedVersion = apiService.selectedVersion;
+            historyObj.htmlOption = apiService.selectedOption;
+
+            if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
+                historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
+            }else{
+                historyObj.jsonInput ="";
+            }
+
+            $scope.showJsonViewer = true;
+            $scope.showImage = false;
+
+            $scope.progressbar.reset();
+            $scope.progressbar.start();
+
+            var postBody = "";
+            if ($scope.jsonEditor != undefined) {
+                postBody = $scope.jsonEditor.getSession().getValue();
+            }
+            var startTime = new Date();
+            var endTime = null;
+            apiService.performQuery(apiService.selectedOption)($scope.text, postBody).success(function (results, status, headers, config) {
+                if (isImageResponse(headers)) { 
+                    handleImageResponse($scope, apiService, headers);
+                } else if (isHtmlResponse(headers)) {  
+                    handleHtmlResponse($scope, startTime, results, headers, $mdToast);
+                } else if (isXmlResponse(results)) {
+                    handleXmlResponse($scope, startTime, results, headers, $mdToast);
+                } else {
+                    handleJsonResponse($scope, startTime, results, headers, $mdToast);
+                    dynamicallyPopulateURLsForEntitySets(apiService, results);
+                }
+
+                historyObj.success = "success";
+
+            }).error(function (err, status) {
+                handleJsonResponse($scope, startTime, err, null, $mdToast);
+                historyObj.success = "error";
+            });
+
+            //add history object to the array
+            $scope.history.push(historyObj);
+            }
     };
 }]);

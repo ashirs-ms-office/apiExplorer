@@ -234,20 +234,40 @@ var getPreviousCall = function(URL, entityName){
 }
 
 
-var setEntity = function(entityItem, $scope, service){
-    if(entityItem){
-        $scope.$parent.entityNameIsAnId = service.cache.get($scope.$parent.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityItem.name))];
-        if($scope.$parent.entityNameIsAnId){
-               var typeName = service.entity.entityType; 
-               service.entity = service.cache.get($scope.$parent.entityKeyPrefix + "EntityTypeData")[typeName];
-        }else{
-            service.entity = entityItem;
-        }
-     }else{
-         if(getEntityName($scope.text) == $scope.$parent.selectedVersion){
+var setEntity = function(entityItem, $scope, service, $log){
+    $log.log("setting entity to");
+    $log.log(entityItem);
+    
+    if(!entityItem){
+         $log.log("NO ENTITY ITEM");
+         if(getEntityName($scope.text) == service.selectedVersion){
              service.entity = "topLevel";
+             return;
+         }else{
+             var entityName = getEntityName($scope.text);
+             $log.log(entityName);
          }
-     }
+    }else{
+       var entityName = entityItem.name; 
+    }
+    
+    service.entityNameIsAnId = service.cache.get(service.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
+    if(service.entityNameIsAnId){
+           $log.log("entity name is an id")
+           var typeName = service.entityNameIsAnId.entityType; 
+           service.entity = service.cache.get(service.entityKeyPrefix + "EntityTypeData")[typeName];
+    }else{
+        if(!entityItem){
+              var isEntitySet = service.cache.get(service.entityKeyPrefix + "EntitySetData")[entityName];
+              var isEntityType = service.cache.get(service.entityKeyPrefix + "EntityTypeData")[entityName];
+              if(isEntitySet){
+                  entityItem = isEntitySet;
+              }else if(isEntityType){
+                  entityItem = isEntityType;
+              }
+        }
+        service.entity = entityItem;
+    }
 }
 
 

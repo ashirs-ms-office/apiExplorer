@@ -18,6 +18,11 @@ angular.module('ApiExplorer')
             
             entity: "",
             
+            
+            entityNameIsAnId: false,
+            
+            entityKeyPrefix: "v1",
+            
             performQuery: function (queryType) {
                 if (queryType == "GET") {
                     return function (query, postString) {

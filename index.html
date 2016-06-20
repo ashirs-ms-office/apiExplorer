@@ -29,7 +29,7 @@
     <br />
     <div class="container body-content" ng-controller="FormCtrl">
         <div class="autocomplete" ng-controller="datalistCtrl">
-        <form class="main-query" ng-submit="submit(item, searchText)">
+        <form class="main-query">
                     <md-autocomplete flex
                                      md-selected-item="selectedItem" 
                                      md-no-cache="true"
@@ -39,15 +39,14 @@
                                      md-item-text="text + item.name" 
                                      md-floating-label="Enter a request"
                                      md-min-length="0" 
-                                     md-selected-item-change="$parent.submit(item, searchText)"
+                                     md-selected-item-change="$parent.selectedItemChange(item)"
                                      placeholder="{{text}}">
+                        
+                                  <!-- md-selected-item-change="$parent.submit(item, searchText)" -->
                     <md-item-template> 
                         <span md-highlight-text="searchText">{{text + item.name}}</span>
-
                     </md-item-template>
                 </md-autocomplete>
-         </form>
-        </div>
         <div layout="row" layout-align="space-between">
               <md-input-container flex=75>
                     <!-- FIX THIS TO BE ORDERED CORRECTLY --> 
@@ -62,10 +61,13 @@
                     <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>
                 </md-input-container>
                <md-input-container>
-                    <md-button class="md-raised" type="submit" ng-click="submit(item, searchText)" ng-disabled="!userInfo.isAuthenticated"> Go </md-button>
+                   <!-- ITEM IS NULL???? -->
+                    <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> Go </md-button>
                </md-input-container>
+            
          </div>
-               
+        </form>
+        </div>   
 
 
         <img id="img" width="250px" height="250px" ng-show="showImage" />
