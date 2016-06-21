@@ -255,19 +255,19 @@ var setEntity = function(entityItem, $scope, service, $log){
        var entityName = entityItem.name; 
     }
     
-    if(service.cache.get(service.entityKeyPrefix + "EntitySetData")){
-        service.entityNameIsAnId = service.cache.get(service.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
+    if(service.cache.get(service.selectedVersion + "EntitySetData")){
+        service.entityNameIsAnId = service.cache.get(service.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
     }else{
       //WHY IS THIS GETTING CLEARED???
     }
     if(service.entityNameIsAnId){
            $log.log("entity name is an id")
            var typeName = service.entityNameIsAnId.entityType; 
-           service.entity = service.cache.get(service.entityKeyPrefix + "EntityTypeData")[typeName];
+           service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
     }else{
         if(!entityItem){
-              var isEntitySet = service.cache.get(service.entityKeyPrefix + "EntitySetData")[entityName];
-              var isEntityType = service.cache.get(service.entityKeyPrefix + "EntityTypeData")[entityName];
+              var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
+              var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
               if(isEntitySet){
                   entityItem = isEntitySet;
               }else if(isEntityType){
@@ -279,17 +279,17 @@ var setEntity = function(entityItem, $scope, service, $log){
 }
 
 
-var parseMetadata = function(entityKeyPrefix, service, $log, $scope){
+var parseMetadata = function(service, $log, $scope){
     var entitySetData, entityTypeData;
-    if(!service.cache.get(entityKeyPrefix + "Metadata")){
+    if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");
          service.getV1Metadata().success(function (results){
                 results = JSON.stringify(results, null, 4).trim();
-                service.cache.put(entityKeyPrefix + "Metadata", results);
+                service.cache.put(service.selectedVersion + "Metadata", results);
                 entitySetData = getEntitySets(results, $log);
-                service.cache.put(entityKeyPrefix + "EntitySetData", entitySetData);
+                service.cache.put(service.selectedVersion + "EntitySetData", entitySetData);
                 entityTypeData = getEntityTypes(results, $log);
-                service.cache.put(entityKeyPrefix + "EntityTypeData", entityTypeData);
+                service.cache.put(service.selectedVersion + "EntityTypeData", entityTypeData);
                 $log.log("metadata successfully parsed");
                 if(service.entity == ""){
                    service.entity = "topLevel";

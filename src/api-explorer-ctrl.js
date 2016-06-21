@@ -7,7 +7,7 @@ angular.module('ApiExplorer')
         $scope.showImage = false;
 
         
-        parseMetadata(apiService.entityKeyPrefix, apiService, $log, $scope);
+        parseMetadata(apiService, $log, $scope);
         initializeJsonViewer($scope, run, apiService);
         
         $scope.getEditor = function(){
@@ -55,7 +55,7 @@ angular.module('ApiExplorer')
         $scope.$watch("getOption()", function(event, args) {
             $log.log($scope.selectedOption);
             apiService.selectedOption = $scope.selectedOption;
-            apiService.text = "https://graph.microsoft.com/v1.0/";
+            apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
             if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                 apiService.showJsonEditor = true;
             } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
@@ -109,13 +109,7 @@ angular.module('ApiExplorer')
         $scope.$watch("getVersion()", function(event, args) {
             apiService.selectedVersion = $scope.selectedVersion;
             $log.log(apiService.selectedVersion);
-            switch(apiService.selectedVersion){
-               case "v1.0":
-                  apiService.entityKeyPrefix = "v1.0";
-                  break;
-              case "beta":
-                  apiService.entityKeyPrefix = "beta";
-            }
+            
             apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + apiService.selectedVersion + "/");
             $scope.$parent.text = apiService.text;
         }, true);
@@ -171,7 +165,7 @@ angular.module('ApiExplorer')
                   var queryIsEmpty = (getEntityName(query).length == 0);
                   var isAnId = apiService.entityNameIsAnId;
                   if(isAnId){
-                      var previousEntity = apiService.cache.get(apiService.entityKeyPrefix + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
+                      var previousEntity = apiService.cache.get(apiService.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
                   }
                   var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
                   return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
@@ -235,7 +229,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $log.log($scope.entityItem);
         }
         
-        parseMetadata(apiService.entityKeyPrefix, apiService, $log, $scope);
+        parseMetadata(apiService, $log, $scope);
         
         apiService.text = $scope.text;
 
