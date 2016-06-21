@@ -15,8 +15,17 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js",
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/angular-route/angular-route.js',
+      "https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal.min.js",
+      "https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal-angular.min.js",
+      'bower_components/angular-animate/angular-animate.min.js',
+      'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      'bower_components/ngprogress/build/ngprogress.min.js',
+      "http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js",
+      "http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js",
       'src/api-explorer-init.js',
       'src/api-explorer-app.js',
       'src/api-explorer-svc.js',

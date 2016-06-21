@@ -1,18 +1,24 @@
-describe("Controller: ApiExplorerCtrl", function(){
+describe("ApiExplorer", function(){
     
-    /*beforeEach(module("ApiExplorer"));
-    
-    var MainCtrl,
-        scope;
-    
-    beforeEach(inject(function ($controller, $rootScope){
-        scope = $rootScope.$new();
-        MainCtrl = $controller("MainCtrl", {
-          $scope: scope  
-        });
-    }));*/
-    
-  it("should be true", function(){
-     expect(true).toBeTruthy();
-  });
+    beforeEach(function(){
+       module("ApiExplorer");
+    }); 
+
+    describe("Controller: DropdownCtrl", function(){
+
+        var scope, $log, ApiExplorerService;
+
+
+        beforeEach(inject(function ($rootScope, $controller, _$log_, ApiExplorerSvc){
+            $log = _$log_;
+            scope = $rootScope.$new();
+            dropdownController = $controller("DropdownCtrl", {
+              $scope: scope  
+            });
+        }));
+
+      it("should be true", function(){
+         expect(true).toBeTruthy();
+      });
+    });
 });
