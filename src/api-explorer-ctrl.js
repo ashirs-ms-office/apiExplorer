@@ -127,13 +127,7 @@ angular.module('ApiExplorer')
         $scope.$watch("getEntity()", function(event, args){
             $log.log("entity changed - changing URLs");
             if(apiService.entity == "topLevel"){
-                switch(apiService.selectedVersion){
-                    case "v1.0":
-                       $scope.urlOptions = apiService.cache.get("v1EntitySetData");
-                       break;
-                    case "beta":
-                       $scope.urlOptions = apiService.cache.get("betaEntitySetData")
-                }
+                     $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
             }else if(apiService.entity != null){
                  $scope.urlOptions = apiService.entity.URLS;  
             }
@@ -147,7 +141,7 @@ angular.module('ApiExplorer')
         
         
         $scope.searchTextChange = function(searchText){  
-              if(apiService.text.charAt(apiService.text.length-1) != '/'){
+              if(apiService.text && apiService.text.charAt(apiService.text.length-1) != '/'){
                 apiService.text += '/';
           }
         }
@@ -168,7 +162,7 @@ angular.module('ApiExplorer')
                       var previousEntity = apiService.cache.get(apiService.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
                   }
                   var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
-                  return (isAnId && queryInOption) || queryIsEntityName || queryIsEmpty || queryInOption;
+                  return /*(isAnId && queryInOption) ||*/ queryIsEntityName || queryIsEmpty || queryInOption;
               });
          }else{
              return [apiService.text];
