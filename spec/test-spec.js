@@ -211,7 +211,7 @@ describe("ApiExplorer", function(){
         var $scope, $log, ApiExplorerService;
         var historyObjs = [];
         
-        beforeEach(inject(function ($rootScope, $controller, _$log_, ApiExplorerSvc){
+        beforeEach(inject(function ($rootScope, $controller, _$log_, ApiExplorerSvc, $httpBackend){
             $log = _$log_;
             $scope = $rootScope.$new();
             apiService = ApiExplorerSvc;
@@ -313,23 +313,73 @@ describe("ApiExplorer", function(){
         });
         
         describe("when submit is called", function(){
-                it("should set scope.text and service.text to equal the query + /", function(){
-                    
-                  setEntity = jasmine.createSpy();
-
-                  $scope.submit("query");
-                  expect($scope.text).toEqual("query/");
-                  expect(apiService.text).toEqual("query/");
-
-                 $scope.submit("query/");
-                 expect($scope.text).toEqual("query/");
-                 expect(apiService.text).toEqual("query/");
+            
+                beforeEach(function(){
+                    $scope.userInfo.isAuthenticated = true;
                 });
             
-                /*it("should create a history object", function(){
-                       
-                });*/
-                
+                it("should set scope.text and service.text to equal the query + /", function(){
+                    
+                     setEntity = jasmine.createSpy();
+
+                     $scope.submit("query");
+                     expect($scope.text).toEqual("query/");
+                     expect(apiService.text).toEqual("query/");
+
+                     $scope.submit("query/");
+                     expect($scope.text).toEqual("query/");
+                     expect(apiService.text).toEqual("query/");
+                });
+            
+                it("should create a history object and add it to the array when the query is not null", function(){
+                      var historyLength = $scope.history.length;
+                      $scope.submit("query");
+                      expect(historyLength+1).toBe($scope.history.length);
+
+                      $scope.submit(null)
+                      expect(historyLength+1).toBe($scope.history.length);
+                 });
+                    
+                 it("should have all of the properties of the current submission", function(){
+                      
+                        $scope.submit("query");
+                        var recentHistoryObj = $scope.history[0];
+                        expect(recentHistoryObj.urlText).toEqual(apiService.text);
+                        expect(recentHistoryObj.selectedVersion).toEqual(apiService.selectedVersion);
+                        expect(recentHistoryObj.htmlOption).toEqual(apiService.selectedOption);
+                      
+                        if(recentHistoryObj.htmlOption == "POST" || recentHistoryObj.historyOption == "PATCH"){
+                             expect(recentHistoryObj.jsonInput).toEqual($scope.jsonEditor.getSession().getValue());
+                        }else{
+                            expect(recentHistoryObj.jsonInput).toEqual("");
+                        }
+                      
+                  });
+            
+            
+                it("should perform the query", function(){
+                    
+                    
+                    /*$httpBackend.when('GET'
+                    , "validQuery").respond({foo: 'bar'})
+                    spyOn(apiService, "performQuery").and.callThrough();
+                    parseMetadata = jasmine.createSpy();
+                    $scope.submit("validQuery"); 
+                    expect(apiService.performQuery).toHaveBeenCalledWith(apiService.selectedOption);
+                    
+                    handleImageResponseSpy = jasmine.createSpy("handleImageResponse");
+                    handleImageResponseSpy.and.callThrough();
+                    handleHtmlResponseSpy = jasmine.createSpy("handleHtmlResponse");
+                    handleHtmlResponseSpy.and.callThrough(); 
+                    handleXmlResponseSpy = jasmine.createSpy("handleXmlResponse");
+                    handleXmlResponseSpy.and.callThrough();
+                    handleJsonResponseSpy = jasmine.createSpy("handleJsonResponse")
+                    handleJsonResponseSpy.and.callThrough();
+                    
+                    if(isImageResponse(headers)){
+                        expect(handleImageResponseSpy).toHaveBeenCalled();
+                    }*/
+                });
         });
     });
 });

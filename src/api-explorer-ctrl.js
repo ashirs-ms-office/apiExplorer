@@ -179,6 +179,14 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.historySelected = null;
     $scope.text = apiService.text;
     $scope.entityItem = null;
+    
+  /*  $scope.getText = function(){
+        return apiService.text;
+    }
+    
+    $scope.$watch("getText()", function(event, args) {
+         $scope.text = apiService.text;
+    });*/
  
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
@@ -284,6 +292,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
             //add history object to the array
             $scope.history.unshift(historyObj);
-            }
+        }
     };
 }]);
