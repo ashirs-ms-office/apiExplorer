@@ -148,7 +148,6 @@ angular.module('ApiExplorer')
       $scope.getMatches = function(query) {
           
          if(apiService.selectedOption == "GET"){
-             $log.log($scope.urlArray);
               return $scope.urlArray.filter( function(option){
                   var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
                   var queryIsEmpty = (getEntityName(query).length == 0);
