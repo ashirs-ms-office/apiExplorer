@@ -7,7 +7,7 @@ angular.module('ApiExplorer')
         $scope.showImage = false;
 
         
-        parseMetadata(apiService, $log, $scope);
+        parseMetadata(apiService, $log);
         initializeJsonViewer($scope, run, apiService);
         
         $scope.getEditor = function(){
@@ -53,20 +53,18 @@ angular.module('ApiExplorer')
         }
 
         $scope.$watch("getOption()", function(newVal, oldVal) {
-            if(newVal != oldVal){
-                $log.log($scope.selectedOption);
-                apiService.selectedOption = $scope.selectedOption;
-                $log.log("resetting text");
-                apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
-                if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                    apiService.showJsonEditor = true;
-                } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
-                    apiService.showJsonEditor = false;
+            $log.log($scope.selectedOption);
+            apiService.selectedOption = $scope.selectedOption;
+            $log.log("resetting text");
+            apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
+            if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
+                apiService.showJsonEditor = true;
+            } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
+                apiService.showJsonEditor = false;
 
-                }
             }
             
-        }, true);
+        });
 
     }]);  
 
@@ -111,14 +109,12 @@ angular.module('ApiExplorer')
         }
 
         $scope.$watch("getVersion()", function(newVal, oldVal) {
-            if(oldVal != newVal){
                 apiService.selectedVersion = $scope.selectedVersion;
                 $log.log("switching to: " + apiService.selectedVersion);
-                parseMetadata(apiService, $log, $scope);
+                parseMetadata(apiService, $log);
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
-            }
             
-        }, true);
+        });
 }]);
 
 angular.module('ApiExplorer')
@@ -241,7 +237,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         $log.log("submitting " + apiService.text);
         
-        parseMetadata(apiService, $log, $scope);
+        parseMetadata(apiService, $log);
 
         setEntity($scope.entityItem, $scope, apiService, $log);
 

@@ -275,7 +275,7 @@ var setEntity = function(entityItem, $scope, service, $log){
 }
 
 
-var parseMetadata = function(service, $log, $scope){
+var parseMetadata = function(service, $log){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");

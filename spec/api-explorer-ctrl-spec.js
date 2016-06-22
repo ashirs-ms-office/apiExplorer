@@ -73,6 +73,8 @@ describe("ApiExplorer", function(){
                 it("should update the apiService.selectedVersion", function(){
                     
                      for(var i=0; i<$scope.items.length; i++){
+                         console.log("old: " + apiService.selectedVersion);
+                         console.log("new: " + $scope.items[i]);
                          $scope.selectedVersion = $scope.items[i];
                          $scope.$digest();
                          expect(apiService.selectedVersion).toEqual($scope.selectedVersion);
