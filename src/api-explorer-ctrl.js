@@ -147,8 +147,6 @@ angular.module('ApiExplorer')
         }
         
       $scope.getMatches = function(query) {
-          $log.log("Getting matches");
-          $log.log($scope.urlArray);
           
           //maybe this should be in the version controller?
          $scope.$parent.text = apiService.text;
@@ -196,10 +194,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             
             if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
                 apiService.showJsonEditor = true;
-                $scope.jsonEditor.getSession().setValue(input.jsonInput);
+                if($scope.jsonEditor){
+                    $scope.jsonEditor.getSession().setValue(input.jsonInput);
+                }else{
+                    $log.log("error: json editor watch event not firing");
+                }
             }else{
                 //clear jsonEditor
-                //$scope.jsonEditor.getSession().setValue("");
+                if($scope.jsonEditor){
+                    $scope.jsonEditor.getSession().setValue("");
+                }
                 apiService.showJsonEditor = false;
             }
             
@@ -208,40 +212,36 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     }
 
     $scope.selectedItemChange = function(item){
-       $log.log("selected item changed to " + item);
        $scope.entityItem = item; 
-       $log.log(item);     
     }
     
     $scope.submit = function (query) {
-        $log.log("in submit");
-        $scope.text = query; 
-        $log.log(query);
         
-        if($scope.entityItem){
-            $log.log("submitting " + $scope.text);
-            $log.log($scope.entityItem);
+        if(!query){
+            return;
         }
+        
+        if(query.charAt(query.length-1) != '/'){
+            query += '/';
+        }
+        
+        $scope.text = query; 
+        apiService.text = $scope.text;
+        
+        
+        $log.log("submitting " + $scope.text);
         
         parseMetadata(apiService, $log, $scope);
-        
-        apiService.text = $scope.text;
 
-        if(apiService.text != null && apiService.text.charAt(apiService.text.length-1) != '/'){
-            apiService.text += '/';
-            $scope.text = apiService.text;
-        }
-
-       setEntity($scope.entityItem, $scope, apiService, $log);
+        setEntity($scope.entityItem, $scope, apiService, $log);
 
         if ($scope.userInfo.isAuthenticated) {
 
-            $scope.previousString = apiService.text;
 
             //create an object to store the api call
             var historyObj = {};
 
-            historyObj.urlText = $scope.previousString,
+            historyObj.urlText = apiService.text;
             historyObj.selectedVersion = apiService.selectedVersion;
             historyObj.htmlOption = apiService.selectedOption;
 

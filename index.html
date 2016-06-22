@@ -60,15 +60,6 @@
                          </md-menu-item>
                      </md-menu-content>
                   </md-menu>
-                  
-                  
-                     <!--<label> history </label> 
-                    <md-select id="back-button" ng-model="historySelected" placeholder="history" ng-disabled="history.length==0">
-                       <md-option ng-value="call" ng-repeat="call in history | orderby:'id':true track by $index">
-                        <md-option ng-value="{{call}}" ng-repeat="call in history" ng-class="call.success" ng-click="historyOnClick(call)" >
-                            {{ call.urlText }} 
-                        </md-option> 
-                    </md-select>-->
                </md-input-container>
                 <md-input-container ng-controller="settingsCtrl">
                     <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>

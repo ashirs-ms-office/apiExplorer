@@ -206,4 +206,130 @@ describe("ApiExplorer", function(){
             });
         });
     });
+    
+    describe("Controller: FormCtrl", function(){
+        var $scope, $log, ApiExplorerService;
+        var historyObjs = [];
+        
+        beforeEach(inject(function ($rootScope, $controller, _$log_, ApiExplorerSvc){
+            $log = _$log_;
+            $scope = $rootScope.$new();
+            apiService = ApiExplorerSvc;
+            formControl = $controller("FormCtrl", {
+              $scope: $scope  
+            });
+        }));
+        
+        describe("when a history object is clicked", function(){
+            beforeEach(function(){
+                $scope.userInfo.isAuthenticated = true;
+                spyOn($scope, "submit");
+                var mockHistoryObjGet = {
+                     urlText: "previousString/",
+                     selectedVersion: "beta",
+                     htmlOption: "GET",
+                     jsonInput: "",
+                     success: "success"
+                 };
+
+                historyObjs.push(mockHistoryObjGet);
+
+                 var mockHistoryObjPost = {
+                    urlText: "previousString/",
+                    selectedVersion: "beta",
+                    htmlOption: "POST",
+                    jsonInput: "postingContent",
+                    success: "error"
+                 };
+
+
+                historyObjs.push(mockHistoryObjPost);
+
+                 var mockHistoryObjPatch = {
+                     urlText: "previousString/",
+                     selectedVersion: "v1.0",
+                     htmlOption: "PATCH",
+                     jsonInput: "content",
+                     success: "success"
+                 };
+
+
+                historyObjs.push(mockHistoryObjPatch);
+
+                 var mockHistoryObjDelete = {
+                     urlText: "previousString/",
+                     selectedVersion: "v1.0",
+                     htmlOption: "DELETE",
+                     jsonInput: "",
+                     success: "error"
+                 };
+             
+             
+                historyObjs.push(mockHistoryObjDelete);
+            });
+            
+            
+           it("should set the $scope.text equal to the history URL", function(){
+                 for(var i=0; i<historyObjs.length; i++){
+                     $scope.historyOnClick(historyObjs[i]);
+                     expect($scope.text).toEqual(historyObjs[i].urlText);
+                 }
+           });
+            
+           it("should set the apiService.selectedVersion to the history selectedVersion", function(){
+               
+                 for(var i=0; i<historyObjs.length; i++){
+                   
+                   $scope.historyOnClick(historyObjs[i]);      expect(apiService.selectedVersion).toEqual(historyObjs[i].selectedVersion);
+                }
+           });
+            
+            
+           it("should set the apiService.selectedOption to the history html Option", function(){
+                for(var i=0; i<historyObjs.length; i++){
+                    $scope.historyOnClick(historyObjs[i]);
+                    expect(apiService.selectedOption).toEqual(historyObjs[i].htmlOption);
+                }
+           });
+            
+            it("should show the JSON editor if the htmlOption is post or patch", function(){
+                for(var i=0; i<historyObjs.length; i++){
+                    $scope.historyOnClick(historyObjs[i]);
+                    if(historyObjs[i].htmlOption == 'POST' || historyObjs[i].htmlOption == 'PATCH'){
+                        expect(apiService.showJsonEditor).toBeTruthy();
+                    }else if(historyObjs[i].htmlOption == 'GET' || historyObjs[i].htmlOption == 'DELETE'){
+                        expect(apiService.showJsonEditor).toBeFalsy();
+                    }
+                }
+            });
+            
+        });
+        
+        describe("when the selected item is changed", function(){
+              it("should set the entityItem to that item", function(){
+                     $scope.selectedItemChange("test");
+                     expect($scope.entityItem).toEqual("test");
+              });
+        });
+        
+        describe("when submit is called", function(){
+                it("should set scope.text and service.text to equal the query + /", function(){
+                    
+                  setEntity = jasmine.createSpy();
+
+                  $scope.submit("query");
+                  expect($scope.text).toEqual("query/");
+                  expect(apiService.text).toEqual("query/");
+
+                 $scope.submit("query/");
+                 expect($scope.text).toEqual("query/");
+                 expect(apiService.text).toEqual("query/");
+                });
+            
+                /*it("should create a history object", function(){
+                       
+                });*/
+                
+        });
+    });
 });

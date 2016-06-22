@@ -255,11 +255,8 @@ var setEntity = function(entityItem, $scope, service, $log){
        var entityName = entityItem.name; 
     }
     
-    if(service.cache.get(service.selectedVersion + "EntitySetData")){
-        service.entityNameIsAnId = service.cache.get(service.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
-    }else{
-      //WHY IS THIS GETTING CLEARED???
-    }
+    service.entityNameIsAnId = service.cache.get(service.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
+    
     if(service.entityNameIsAnId){
            $log.log("entity name is an id")
            var typeName = service.entityNameIsAnId.entityType; 
