@@ -243,8 +243,7 @@ var setEntity = function(entityItem, $scope, service, $log){
     $log.log(entityItem);
     
     if(!entityItem){
-         $log.log("NO ENTITY ITEM");
-         if(getEntityName(srvice.text) == service.selectedVersion){
+         if(getEntityName(service.text) == service.selectedVersion){
              service.entity = "topLevel";
              return;
          }else{
@@ -280,7 +279,7 @@ var parseMetadata = function(service, $log, $scope){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");
-         service.getV1Metadata().success(function (results){
+         service.getMetadata().success(function (results){
                 results = JSON.stringify(results, null, 4).trim();
                 service.cache.put(service.selectedVersion + "Metadata", results);
                 entitySetData = getEntitySets(results, $log);

@@ -52,16 +52,20 @@ angular.module('ApiExplorer')
                 return $scope.selectedOption;
         }
 
-        $scope.$watch("getOption()", function(event, args) {
-            $log.log($scope.selectedOption);
-            apiService.selectedOption = $scope.selectedOption;
-            apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
-            if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                apiService.showJsonEditor = true;
-            } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
-                apiService.showJsonEditor = false;
+        $scope.$watch("getOption()", function(newVal, oldVal) {
+            if(newVal != oldVal){
+                $log.log($scope.selectedOption);
+                apiService.selectedOption = $scope.selectedOption;
+                $log.log("resetting text");
+                apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
+                if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
+                    apiService.showJsonEditor = true;
+                } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
+                    apiService.showJsonEditor = false;
 
+                }
             }
+            
         }, true);
 
     }]);  
@@ -106,11 +110,14 @@ angular.module('ApiExplorer')
             return $scope.selectedVersion;
         }
 
-        $scope.$watch("getVersion()", function(event, args) {
-            apiService.selectedVersion = $scope.selectedVersion;
-            $log.log(apiService.selectedVersion);
+        $scope.$watch("getVersion()", function(newVal, oldVal) {
+            if(oldVal != newVal){
+                apiService.selectedVersion = $scope.selectedVersion;
+                $log.log("switching to: " + apiService.selectedVersion);
+                parseMetadata(apiService, $log, $scope);
+                apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
+            }
             
-            apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + apiService.selectedVersion + "/");
         }, true);
 }]);
 

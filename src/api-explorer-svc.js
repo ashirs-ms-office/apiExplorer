@@ -51,15 +51,8 @@ angular.module('ApiExplorer')
                 return null;
             },
             
-            getV1Metadata: function(){
-                 return this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
-                
-            },
-            
-            getBetaMetadata: function(){
-                return this.performQuery("GET")("https://graph.microsoft.com/v1.0/$metadata");
-                
+            getMetadata: function(){
+                 return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
             }
-            
         };
     }]);
