@@ -215,8 +215,12 @@ var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
 }
     
 var myTrim = function(word){
-      if(word != null){
-          return word.replace(/\/$/, "");
+      var returnWord = word;
+      if(returnWord != null){
+          while(returnWord.charAt(returnWord.length-1) == "/"){
+              returnWord = returnWord.replace(/\/$/, "");
+          }
+          return returnWord; 
       }
 } 
 
@@ -234,7 +238,7 @@ var getPreviousCall = function(URL, entityName){
 }
 
 
-var setEntity = function(entityItem, $scope, service, $log){
+var setEntity = function(entityItem, service, $log){
     if(service.selectedOption != "GET"){
         return;
     }

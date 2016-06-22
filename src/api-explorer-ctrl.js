@@ -239,7 +239,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         parseMetadata(apiService, $log);
 
-        setEntity($scope.entityItem, $scope, apiService, $log);
+        setEntity($scope.entityItem, apiService, $log);
 
         if ($scope.userInfo.isAuthenticated) {
 

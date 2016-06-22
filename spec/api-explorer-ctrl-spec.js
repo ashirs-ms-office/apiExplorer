@@ -4,6 +4,30 @@ describe("ApiExplorer", function(){
         module("ApiExplorer");
     }); 
 
+    
+    describe("Controller: ApiExplorerCtrl", function(){
+        var  $scope, $log, ApiExplorerService;
+        
+        beforeEach(inject(function ($rootScope, $controller, _$log_, ApiExplorerSvc){
+            $log = _$log_;
+            $scope = $rootScope.$new();
+            apiService = ApiExplorerSvc;
+            dropdownController = $controller("DropdownCtrl", {
+              $scope: $scope  
+            });
+        }));
+        
+        describe("when the service.showJsonEditor value changes", function(){
+              it("should initialize the editor when the bool is true", function(){
+                   spyOn(window, "initializeJsonEditor");
+                   apiService.showJsonEditor = true;
+                   $scope.$apply();
+                   expect(initializeJsonEditor).toHaveBeenCalled();
+              });
+        });
+        
+    });
+    
     describe("Controller: DropdownCtrl", function(){
 
         var $scope, $log, ApiExplorerService;
