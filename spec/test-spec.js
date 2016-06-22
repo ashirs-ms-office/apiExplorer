@@ -79,11 +79,10 @@ describe("ApiExplorer", function(){
                      }
                 });
             
-                it("should change the service and scope text to reflect the updated version", function(){
+                it("should change the service text to reflect the updated version", function(){
                      for(var i=0; i<$scope.items.length; i++){
                          $scope.selectedOption = $scope.items[i];
                          expect(apiService.text).toEqual("https://graph.microsoft.com/" + apiService.selectedVersion + "/");
-                         expect($scope.$parent.$text).toEqual(apiService.text);
                      }
                 });
                
@@ -166,10 +165,6 @@ describe("ApiExplorer", function(){
         })
         
         describe("When the autocomplete control calls getMatches()", function(){
-              it("should set the parent text to the apiService text", function(){
-                  expect($scope.$parent.text).toEqual(service.text);
-              });
-            
             
             describe("When the selectedOption is GET", function(){
                  describe("and the queryIsEmpty", function(){

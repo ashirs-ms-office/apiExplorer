@@ -111,7 +111,6 @@ angular.module('ApiExplorer')
             $log.log(apiService.selectedVersion);
             
             apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, "https://graph.microsoft.com/" + apiService.selectedVersion + "/");
-            $scope.$parent.text = apiService.text;
         }, true);
 }]);
 
@@ -148,10 +147,8 @@ angular.module('ApiExplorer')
         
       $scope.getMatches = function(query) {
           
-          //maybe this should be in the version controller?
-         $scope.$parent.text = apiService.text;
          if(apiService.selectedOption == "GET"){
-             
+             $log.log($scope.urlArray);
               return $scope.urlArray.filter( function(option){
                   var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
                   var queryIsEmpty = (getEntityName(query).length == 0);
@@ -180,13 +177,13 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.text = apiService.text;
     $scope.entityItem = null;
     
-  /*  $scope.getText = function(){
+    $scope.getText = function(){
         return apiService.text;
     }
     
     $scope.$watch("getText()", function(event, args) {
          $scope.text = apiService.text;
-    });*/
+    });
  
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
@@ -233,11 +230,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             query += '/';
         }
         
-        $scope.text = query; 
-        apiService.text = $scope.text;
+        apiService.text = query;
         
         
-        $log.log("submitting " + $scope.text);
+        $log.log("submitting " + apiService.text);
         
         parseMetadata(apiService, $log, $scope);
 
@@ -271,7 +267,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             }
             var startTime = new Date();
             var endTime = null;
-            apiService.performQuery(apiService.selectedOption)($scope.text, postBody).success(function (results, status, headers, config) {
+            apiService.performQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers);
                 } else if (isHtmlResponse(headers)) {  

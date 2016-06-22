@@ -244,18 +244,18 @@ var setEntity = function(entityItem, $scope, service, $log){
     
     if(!entityItem){
          $log.log("NO ENTITY ITEM");
-         if(getEntityName($scope.text) == service.selectedVersion){
+         if(getEntityName(srvice.text) == service.selectedVersion){
              service.entity = "topLevel";
              return;
          }else{
-             var entityName = getEntityName($scope.text);
+             var entityName = getEntityName(service.text);
              $log.log(entityName);
          }
     }else{
        var entityName = entityItem.name; 
     }
     
-    service.entityNameIsAnId = service.cache.get(service.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall($scope.text, entityName))];
+    service.entityNameIsAnId = service.cache.get(service.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall(service.text, entityName))];
     
     if(service.entityNameIsAnId){
            $log.log("entity name is an id")
