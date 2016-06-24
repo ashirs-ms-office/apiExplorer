@@ -123,7 +123,6 @@ angular.module('ApiExplorer')
                 $log.log("switching to: " + apiService.selectedVersion);
                 parseMetadata(apiService, $log, adalService);
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
-            
         });
 }]);
 
@@ -144,10 +143,16 @@ angular.module('ApiExplorer')
                  $scope.urlOptions = apiService.entity.URLS;  
             }
             
-            $scope.urlArray = [];
-            for(var x in $scope.urlOptions){
-                 $scope.urlArray.push($scope.urlOptions[x]);
-           }
+            //FIGURE OUT A WAY TO KEEP EVERYTHING WHEN BACKSPACE
+           // if($scope.urlOptions && Object.keys($scope.urlOptions).length> 0){
+                //$scope.urlArray = [];
+                for(var x in $scope.urlOptions){
+                    $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
+                    $scope.urlArray.push($scope.urlOptions[x]);
+                }
+           // }
+            
+            
             
         }, true);
         
@@ -162,7 +167,7 @@ angular.module('ApiExplorer')
           
          if(apiService.selectedOption == "GET"){
               return $scope.urlArray.filter( function(option){
-                  var queryInOption = (option.name.indexOf(getEntityName(query))>-1);
+                  var queryInOption = (option.autocompleteVal.indexOf(getEntityName(query))>-1);
                   var queryIsEmpty = (getEntityName(query).length == 0);
                   var isAnId = apiService.entityNameIsAnId;
                   if(isAnId){

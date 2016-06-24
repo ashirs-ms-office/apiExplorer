@@ -36,13 +36,13 @@
                                      md-search-text="searchText" 
                                      md-search-text-change="searchTextChange(searchText)"
                                      md-items="item in getMatches(searchText)" 
-                                     md-item-text="text + item.name" 
+                                     md-item-text="item.autocompleteVal" 
                                      md-min-length="0" 
                                      md-selected-item-change="$parent.selectedItemChange(item)"
                                      placeholder="{{text}}">
                         
                     <md-item-template> 
-                        <span md-highlight-text="searchText">{{text + item.name}}</span>
+                        <span md-highlight-text="searchText">{{item.autocompleteVal}}</span>
                     </md-item-template>
                 </md-autocomplete>
             <br />
