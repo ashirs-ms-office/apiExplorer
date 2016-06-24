@@ -203,7 +203,7 @@ var getEntityTypes = function(XML, $log){
     return entityTypesArray;
 }
 
-var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
+/*var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
     if(service.entity != null && service.entity.isEntitySet){
         service.entity.URLS = [];
         for(var i=0; i<jsonObj.value.length && i<10; i++){
@@ -212,7 +212,7 @@ var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
             service.entity.URLS.push(urlObject);
         }
     }
-}
+}*/
     
 var myTrim = function(word){
       var returnWord = word;
@@ -264,6 +264,7 @@ var setEntity = function(entityItem, service, $log){
            $log.log("entity name is an id")
            var typeName = service.entityNameIsAnId.entityType; 
            service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
+          // service.entity = "id";
     }else{
         if(!entityItem){
               var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
@@ -279,7 +280,7 @@ var setEntity = function(entityItem, service, $log){
 }
 
 
-var parseMetadata = function(service, $log){
+var parseMetadata = function(service, $log, adalService){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");

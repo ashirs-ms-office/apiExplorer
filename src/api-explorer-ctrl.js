@@ -7,8 +7,17 @@ angular.module('ApiExplorer')
         $scope.showImage = false;
 
         
-        parseMetadata(apiService, $log);
         initializeJsonViewer($scope, run, apiService);
+        if($scope.userInfo.isAuthenticated){
+            parseMetadata(apiService, $log, adalService);
+        }
+        
+        $scope.$on("adal:loginSuccess", function () {
+            console.log("login success");
+            parseMetadata(apiService, $log, adalService);
+
+        });
+
         
         $scope.getEditor = function(){
             return apiService.showJsonEditor;
@@ -23,6 +32,7 @@ angular.module('ApiExplorer')
         });
 
         $scope.login = function () {
+            $log.log(adalService.l)
             adalService.login();
         };
         $scope.logout = function () {
@@ -95,7 +105,7 @@ angular.module('ApiExplorer').controller('settingsCtrl', ['$scope', '$log', '$md
 }]);
 
 angular.module('ApiExplorer')
-    .controller('VersionCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
+    .controller('VersionCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'adalAuthenticationService', function ($scope, $log, apiService, adalService) {
 
         $scope.selectedVersion = apiService.selectedVersion;
         
@@ -111,7 +121,7 @@ angular.module('ApiExplorer')
         $scope.$watch("getVersion()", function(newVal, oldVal) {
                 apiService.selectedVersion = $scope.selectedVersion;
                 $log.log("switching to: " + apiService.selectedVersion);
-                parseMetadata(apiService, $log);
+                parseMetadata(apiService, $log, adalService);
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
             
         });
@@ -157,6 +167,7 @@ angular.module('ApiExplorer')
                   var isAnId = apiService.entityNameIsAnId;
                   if(isAnId){
                       var previousEntity = apiService.cache.get(apiService.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
+                    //print nothing
                   }
                   var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
                   return /*(isAnId && queryInOption) ||*/ queryIsEntityName || queryIsEmpty || queryInOption;
@@ -237,7 +248,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         $log.log("submitting " + apiService.text);
         
-        parseMetadata(apiService, $log);
+       // parseMetadata(apiService, $log);
 
         setEntity($scope.entityItem, apiService, $log);
 
@@ -278,7 +289,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     handleXmlResponse($scope, startTime, results, headers, $mdToast);
                 } else {
                     handleJsonResponse($scope, startTime, results, headers, $mdToast);
-                    dynamicallyPopulateURLsForEntitySets(apiService, results);
+//                    dynamicallyPopulateURLsForEntitySets(apiService, results);
                 }
 
                 historyObj.success = "success";
