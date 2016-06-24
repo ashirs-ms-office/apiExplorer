@@ -239,6 +239,7 @@ var getPreviousCall = function(URL, entityName){
 
 
 var setEntity = function(entityItem, service, $log){
+    
     if(service.selectedOption != "GET"){
         return;
     }

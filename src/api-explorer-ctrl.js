@@ -165,7 +165,7 @@ angular.module('ApiExplorer')
         
       $scope.getMatches = function(query) {
           
-         if(apiService.selectedOption == "GET"){
+         if(apiService.cache.get(apiService.selectedVersion + "EntitySetData") && apiService.selectedOption == "GET"){
               return $scope.urlArray.filter( function(option){
                   var queryInOption = (option.autocompleteVal.indexOf(getEntityName(query))>-1);
                   var queryIsEmpty = (getEntityName(query).length == 0);
@@ -175,10 +175,13 @@ angular.module('ApiExplorer')
                     //print nothing
                   }
                   var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
-                  return /*(isAnId && queryInOption) ||*/ queryIsEntityName || queryIsEmpty || queryInOption;
+                  return /*(isAnId && queryInOption) || queryIsEntityName ||*/ queryIsEmpty || queryInOption;
               });
          }else{
-             return [apiService.text];
+             var obj = {
+                 autocompleteVal: apiService.text
+             }
+             return [obj];
          }
      }
         
@@ -254,8 +257,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $log.log("submitting " + apiService.text);
         
        // parseMetadata(apiService, $log);
-
-        setEntity($scope.entityItem, apiService, $log);
+        if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+            setEntity($scope.entityItem, apiService, $log);
+        }
 
         if ($scope.userInfo.isAuthenticated) {
 
