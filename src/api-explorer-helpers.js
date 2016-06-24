@@ -66,7 +66,9 @@ var showDuration = function($scope, startTime, $mdToast) {
         hideDelay(3000).
         position('bottom right')
     );
-    $scope.progressbar.complete();
+    $scope.submitting = false;
+
+    //$scope.progressbar.complete();
 }
 
 var showHeaders = function($scope, headers) {

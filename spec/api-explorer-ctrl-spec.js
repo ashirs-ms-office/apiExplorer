@@ -192,26 +192,14 @@ describe("ApiExplorer", function(){
         
         describe("When the autocomplete control calls getMatches()", function(){
             
+            //parseMetadata
+
             describe("When the selectedOption is GET", function(){
+                
                  describe("and the queryIsEmpty", function(){
                        it("should return all urlOptions", function(){
                            expect($scope.getMatches("")).toEqual($scope.urlArray);
                        });
-                 });
-
-                 describe("and the queryIsEntityName", function(){
-                     it("should return all urlOptions", function(){
-                         expect($scope.getMatches("URL/" + service.entity.name)).toEqual($scope.urlArray);
-                     });
-                 });
-
-                 describe("and the query is an id", function(){
-                     describe("and the queryIsEntityName", function(){
-                         it("should return all urlOptions", function(){
-                             service.isAnId = true;
-                             expect($scope.getMatches("URL/" + service.entity.name + "/id123456789")).toEqual($scope.urlArray);    
-                         });
-                     });
                  });
             });
             

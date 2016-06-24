@@ -65,7 +65,6 @@
                     <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>
                 </md-input-container>
                <md-input-container>
-                   <!-- ITEM IS NULL???? -->
                     <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> Go </md-button>
                </md-input-container>
             
@@ -73,9 +72,10 @@
         </form>
         </div>   
 
-
+        
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div id="jsonEditor" ng-show="showJsonEditor"></div>
+        <div> <md-progress-linear md-mode="indeterminate" ng-show="submitting"></md-progress-linear> </div>
         <div id="jsonViewer" ng-show="showJsonViewer"></div>
         <br/>
         <uib-accordion>

@@ -128,11 +128,21 @@ angular.module('ApiExplorer')
 
 angular.module('ApiExplorer')
     .controller('datalistCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
-        $scope.urlOptions = [];
+        $scope.urlOptions = {};
         $scope.urlArray = []; 
+        $scope.urlArrayHash = {};
         
         $scope.getEntity = function(){
             return apiService.entity;
+        }
+        
+        $scope.urlHashFunction = function(urlObj){
+            var hash = urlObj.autocompleteVal.length;
+            for(var i=0; i<urlObj.name.length; i++){
+                hash += urlObj.name.charCodeAt(i);
+            }
+            
+            return hash;
         }
     
         $scope.$watch("getEntity()", function(event, args){
@@ -143,16 +153,41 @@ angular.module('ApiExplorer')
                  $scope.urlOptions = apiService.entity.URLS;  
             }
             
-            //FIGURE OUT A WAY TO KEEP EVERYTHING WHEN BACKSPACE
-           // if($scope.urlOptions && Object.keys($scope.urlOptions).length> 0){
-                //$scope.urlArray = [];
-                for(var x in $scope.urlOptions){
-                    $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
-                    $scope.urlArray.push($scope.urlOptions[x]);
+            //for each new URL to add
+            for(var x in $scope.urlOptions){
+                $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
+                $log.log("attempting to add: " + $scope.urlOptions[x].autocompleteVal);
+                //find the hash bucket that it would be in
+                var hashNumber = $scope.urlHashFunction($scope.urlOptions[x]);
+                var bucket = $scope.urlArrayHash[hashNumber.toString()];
+                //if it exists
+                if(bucket){
+                    $log.log("bucket " + hashNumber + " already exists");
+                    var inBucket = false;
+                    //for each value already in the hash, 
+                     for(var i=0; i<bucket.length; i++){
+                        //check to see if its the value to add
+                        if(bucket[i].autocompleteVal === $scope.urlOptions[x].autocompleteVal){
+                            $log.log("value already in bucket");
+                            inBucket = true;
+                            break;
+                        } 
+                     }
+                     
+                    if(!inBucket){
+                         $log.log("value not yet in bucket");
+                        //if its not, add it
+                         bucket.push($scope.urlOptions[x]);
+                         $scope.urlArray.push($scope.urlOptions[x]);
+                    }
+                    
+                }else{
+                    $log.log("bucket " + hashNumber + " does not yet exist");
+                    //if the bucket does not already exist, create a new array and add it
+                     $scope.urlArrayHash[hashNumber.toString()] = [$scope.urlOptions[x]];
+                     $scope.urlArray.push($scope.urlOptions[x]);
                 }
-           // }
-            
-            
+            }
             
         }, true);
         
@@ -169,12 +204,12 @@ angular.module('ApiExplorer')
               return $scope.urlArray.filter( function(option){
                   var queryInOption = (option.autocompleteVal.indexOf(getEntityName(query))>-1);
                   var queryIsEmpty = (getEntityName(query).length == 0);
-                  var isAnId = apiService.entityNameIsAnId;
+                  /*var isAnId = apiService.entityNameIsAnId;
                   if(isAnId){
                       var previousEntity = apiService.cache.get(apiService.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall(query, getEntityName(query)))];
                     //print nothing
-                  }
-                  var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));
+                  }*/
+                  /*var queryIsEntityName = (getEntityName(query) == apiService.entity.name) || (isAnId && previousEntity != null && (previousEntity.entityType == apiService.entity.name));*/
                   return /*(isAnId && queryInOption) || queryIsEntityName ||*/ queryIsEmpty || queryInOption;
               });
          }else{
@@ -189,7 +224,7 @@ angular.module('ApiExplorer')
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', '$mdToast', function ($scope, $log, apiService, ngProgressFactory, $mdToast){
     $scope.duration = "";
-    $scope.progressbar = ngProgressFactory.createInstance();
+    //$scope.progressbar = ngProgressFactory.createInstance();
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.responseHeaders = "";
@@ -242,7 +277,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     }
     
     $scope.submit = function (query) {
-        
+
         if(!query){
             return;
         }
@@ -262,7 +297,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
 
         if ($scope.userInfo.isAuthenticated) {
-
+            $scope.submitting = true;
 
             //create an object to store the api call
             var historyObj = {};
@@ -280,8 +315,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $scope.showJsonViewer = true;
             $scope.showImage = false;
 
-            $scope.progressbar.reset();
-            $scope.progressbar.start();
+            //$scope.progressbar.reset();
+            //$scope.progressbar.start();
 
             var postBody = "";
             if ($scope.jsonEditor != undefined) {
