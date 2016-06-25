@@ -66,7 +66,7 @@ var showDuration = function($scope, startTime, $mdToast) {
         hideDelay(3000).
         position('bottom right')
     );
-    $scope.submitting = false;
+    $scope.progressVisibility = "hidden";
 
     //$scope.progressbar.complete();
 }

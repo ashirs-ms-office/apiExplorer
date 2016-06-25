@@ -224,13 +224,13 @@ angular.module('ApiExplorer')
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', '$mdToast', function ($scope, $log, apiService, ngProgressFactory, $mdToast){
     $scope.duration = "";
-    //$scope.progressbar = ngProgressFactory.createInstance();
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.responseHeaders = "";
     $scope.history = [];
     $scope.historySelected = null;
     $scope.text = apiService.text;
+    $scope.progressVisibility = "hidden";
     $scope.entityItem = null;
     
     $scope.getText = function(){
@@ -297,7 +297,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
 
         if ($scope.userInfo.isAuthenticated) {
-            $scope.submitting = true;
+            $scope.progressVisibility = "not-hidden";
 
             //create an object to store the api call
             var historyObj = {};
