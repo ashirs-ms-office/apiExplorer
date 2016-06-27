@@ -135,6 +135,21 @@ angular.module('ApiExplorer')
         $scope.getEntity = function(){
             return apiService.entity;
         }
+
+        $scope.formatValue = function(val){
+             var formattedString = val;
+             //log.log("$mdAutocompleteCtrl");
+             var element = document.getElementsByTagName("md-virtual-repeat-container")[0];
+             $log.log(element[0]);
+             //$log.log(element.ove)
+             $log.log("scroll width: " + element.scrollWidth);
+             $log.log("client width: " + element.clientWidth);
+             while(element.scrollWidth > element.clientWidth){
+                 $log.log("formatting");
+                formattedString = replaceEntityWithEllipses(formattedString);   
+             }
+             return formattedString;
+        }
         
         $scope.urlHashFunction = function(urlObj){
             var hash = urlObj.autocompleteVal.length;

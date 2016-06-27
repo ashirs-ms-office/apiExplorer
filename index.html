@@ -39,10 +39,11 @@
                                      md-item-text="item.autocompleteVal" 
                                      md-min-length="0" 
                                      md-selected-item-change="$parent.selectedItemChange(item)"
+                                     md-menu-class="autocomplete-custom-template"
                                      placeholder="{{text}}">
                         
                     <md-item-template> 
-                        <span md-highlight-text="searchText">{{item.autocompleteVal}}</span>
+                       <span md-highlight-text="searchText">{{formatValue(item.autocompleteVal)}} </span>
                     </md-item-template>
                 </md-autocomplete>
             <br />

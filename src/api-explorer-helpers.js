@@ -71,6 +71,8 @@ var showDuration = function($scope, startTime, $mdToast) {
     //$scope.progressbar.complete();
 }
 
+
+
 var showHeaders = function($scope, headers) {
     if (headers != null) {
         $scope.responseHeaders = JSON.stringify(headers(), null, 4).trim();
@@ -302,5 +304,10 @@ var parseMetadata = function(service, $log, adalService){
                  $log.log("metadata could not be parsed");
          });
      }
+}
+
+var replaceEntityWithEllipses = function(val){
+    
+    return "REPLACED";
 }
     
