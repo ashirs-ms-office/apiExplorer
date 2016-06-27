@@ -9,12 +9,12 @@ angular.module('ApiExplorer')
         
         initializeJsonViewer($scope, run, apiService);
         if($scope.userInfo.isAuthenticated){
-            parseMetadata(apiService, $log, adalService);
+            parseMetadata(apiService, $log, $scope);
         }
         
         $scope.$on("adal:loginSuccess", function () {
             console.log("login success");
-            parseMetadata(apiService, $log, adalService);
+            parseMetadata(apiService, $log, $scope);
 
         });
 
@@ -63,17 +63,18 @@ angular.module('ApiExplorer')
         }
 
         $scope.$watch("getOption()", function(newVal, oldVal) {
-            $log.log($scope.selectedOption);
-            apiService.selectedOption = $scope.selectedOption;
-            $log.log("resetting text");
-            apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
-            if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                apiService.showJsonEditor = true;
-            } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
-                apiService.showJsonEditor = false;
+            if(oldVal !== newVal){
+                $log.log($scope.selectedOption);
+                apiService.selectedOption = $scope.selectedOption;
+                $log.log("resetting text");
+                apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
+                if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
+                    apiService.showJsonEditor = true;
+                } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
+                    apiService.showJsonEditor = false;
 
+                }
             }
-            
         });
 
     }]);  
@@ -119,10 +120,14 @@ angular.module('ApiExplorer')
         }
 
         $scope.$watch("getVersion()", function(newVal, oldVal) {
+            if(oldVal !== newVal){
                 apiService.selectedVersion = $scope.selectedVersion;
                 $log.log("switching to: " + apiService.selectedVersion);
-                parseMetadata(apiService, $log, adalService);
+                $scope.$root.$broadcast("clearUrlOptions");
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
+                apiService.entity = "topLevel";
+                parseMetadata(apiService, $log, $scope);
+            }
         });
 }]);
 
@@ -136,18 +141,29 @@ angular.module('ApiExplorer')
             return apiService.entity;
         }
 
+        $scope.getText = function(){
+            return apiService.text;
+        }
+        
+    
+    $scope.$watch("getText()", function(event, args) {
+         $scope.text = apiService.text;
+         this.searchText = $scope.text;
+    });
+        
         $scope.formatValue = function(val){
              var formattedString = val;
-             //log.log("$mdAutocompleteCtrl");
-             var element = document.getElementsByTagName("md-virtual-repeat-container")[0];
-             $log.log(element[0]);
+           /*  //log.log("$mdAutocompleteCtrl");
+             var element = document.getElementById("autocompleteText");
+            // $log.log(element.clientWidth);
+             //$log.log(element);
              //$log.log(element.ove)
-             $log.log("scroll width: " + element.scrollWidth);
-             $log.log("client width: " + element.clientWidth);
-             while(element.scrollWidth > element.clientWidth){
+             //$log.log("scroll width: " + element.scrollWidth);
+             //$log.log("client width: " + element.clientWidth);
+             //while(element.scrollWidth > element.clientWidth){
                  $log.log("formatting");
                 formattedString = replaceEntityWithEllipses(formattedString);   
-             }
+             }*/
              return formattedString;
         }
         
@@ -159,11 +175,26 @@ angular.module('ApiExplorer')
             
             return hash;
         }
-    
-        $scope.$watch("getEntity()", function(event, args){
-            $log.log("entity changed - changing URLs");
-            if(apiService.entity == "topLevel"){
-                     $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
+        
+        
+/*        $scope.$watch("getText()", function(event, args){
+               
+        });*/
+        
+        
+        $scope.$on("clearUrlOptions", function(){
+            $log.log("clearing options");
+            $scope.urlOptions = {};
+            $scope.urlArray = [];
+            $scope.urlArrayHash = {};
+        });
+        
+        
+        $scope.$on("updateUrlOptions", function(){
+            $log.log("updating url options");
+            $log.log(apiService.entity);
+            if(apiService.entity === "topLevel"){
+                 $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
             }else if(apiService.entity != null){
                  $scope.urlOptions = apiService.entity.URLS;  
             }
@@ -171,50 +202,53 @@ angular.module('ApiExplorer')
             //for each new URL to add
             for(var x in $scope.urlOptions){
                 $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
-                $log.log("attempting to add: " + $scope.urlOptions[x].autocompleteVal);
                 //find the hash bucket that it would be in
                 var hashNumber = $scope.urlHashFunction($scope.urlOptions[x]);
                 var bucket = $scope.urlArrayHash[hashNumber.toString()];
                 //if it exists
                 if(bucket){
-                    $log.log("bucket " + hashNumber + " already exists");
                     var inBucket = false;
                     //for each value already in the hash, 
                      for(var i=0; i<bucket.length; i++){
                         //check to see if its the value to add
                         if(bucket[i].autocompleteVal === $scope.urlOptions[x].autocompleteVal){
-                            $log.log("value already in bucket");
                             inBucket = true;
                             break;
                         } 
                      }
                      
                     if(!inBucket){
-                         $log.log("value not yet in bucket");
                         //if its not, add it
                          bucket.push($scope.urlOptions[x]);
                          $scope.urlArray.push($scope.urlOptions[x]);
                     }
                     
                 }else{
-                    $log.log("bucket " + hashNumber + " does not yet exist");
                     //if the bucket does not already exist, create a new array and add it
                      $scope.urlArrayHash[hashNumber.toString()] = [$scope.urlOptions[x]];
                      $scope.urlArray.push($scope.urlOptions[x]);
                 }
             }
+        });
+    
+        $scope.$watch("getEntity()", function(event, args){
+            $log.log("entity changed - changing URLs");
+            $scope.$emit("updateUrlOptions");
             
         }, true);
         
         
         $scope.searchTextChange = function(searchText){  
+            
+              //apiService.text = searchText;
+            
               if(apiService.text && apiService.text.charAt(apiService.text.length-1) != '/'){
                 apiService.text += '/';
           }
         }
         
-      $scope.getMatches = function(query) {
-          
+       $scope.getMatches = function(query) {
+           $log.log("getting matches");
          if(apiService.cache.get(apiService.selectedVersion + "EntitySetData") && apiService.selectedOption == "GET"){
               return $scope.urlArray.filter( function(option){
                   var queryInOption = (option.autocompleteVal.indexOf(getEntityName(query))>-1);
@@ -258,7 +292,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
  
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
-        msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args);
+        msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args, apiService);
     });
     
     //function called when link in the back button history is clicked
@@ -283,7 +317,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 apiService.showJsonEditor = false;
             }
             
-            $scope.submit($scope.text);
+            $scope.submit(apiService.text);
         }
     }
 

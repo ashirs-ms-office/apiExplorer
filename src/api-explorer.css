@@ -115,15 +115,6 @@ body {
      visibility: visible;
 }
 
-.autocomplete-format li{
-  /*white-space: nowrap;*/
-  /*text-overflow: ellipsis;*/
-  color: green;
-  /*overflow: hidden;*/
-}
-.autocomplete-format li:after {
-  content: attr(data-filetype);
-  position: absolute;
-  left: 100%;
-  top: 0;
-}
+/*.md-autocomplete-suggestions-container{
+    overflow-x: hidden;
+}*/

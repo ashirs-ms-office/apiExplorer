@@ -192,25 +192,44 @@ describe("ApiExplorer", function(){
         
         describe("When the autocomplete control calls getMatches()", function(){
             
-            //parseMetadata
 
             describe("When the selectedOption is GET", function(){
                 
-                 describe("and the queryIsEmpty", function(){
+                describe("and the cache is not populated", function(){
+                    it("should return an array with just the topLevel URL text", function(){
+                       var obj = {
+                           autocompleteVal: service.text
+                       }
+                       expect($scope.getMatches("query")).toEqual([obj]);
+                    });
+                });
+                
+                describe("and the cache is populated", function(){
+                    
+                    beforeEach(function() {
+                        parseMetadata(service, $log);
+                        $scope.$apply();
+                    });
+                    
+                    describe("and the queryIsEmpty", function(){
                        it("should return all urlOptions", function(){
                            expect($scope.getMatches("")).toEqual($scope.urlArray);
                        });
-                 });
+                     });
+                });
             });
             
             describe("When the selectedOption is not GET", function(){
                 it("should return an array with just the topLevel URL text", function(){
+                   var obj = {
+                           autocompleteVal: service.text
+                   }
                    service.selectedOption = "POST";
-                   expect($scope.getMatches("query")).toEqual([service.text]);
+                   expect($scope.getMatches("query")).toEqual([obj]);
                    service.selectedOption = "DELETE";
-                   expect($scope.getMatches("query")).toEqual([service.text]);
+                   expect($scope.getMatches("query")).toEqual([obj]);
                    service.selectedOption = "PATCH";
-                   expect($scope.getMatches("query")).toEqual([service.text]);
+                   expect($scope.getMatches("query")).toEqual([obj]);
                 });
             });
         });

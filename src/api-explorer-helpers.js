@@ -285,7 +285,7 @@ var setEntity = function(entityItem, service, $log){
 }
 
 
-var parseMetadata = function(service, $log, adalService){
+var parseMetadata = function(service, $log, $scope){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");
@@ -300,9 +300,12 @@ var parseMetadata = function(service, $log, adalService){
                 if(service.entity == ""){
                    service.entity = "topLevel";
                 }
+          $scope.$root.$broadcast("updateUrlOptions");
          }).error(function(err, status){
                  $log.log("metadata could not be parsed");
          });
+     }else{
+          $scope.$root.$broadcast("updateUrlOptions");
      }
 }
 
