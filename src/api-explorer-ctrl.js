@@ -32,7 +32,6 @@ angular.module('ApiExplorer')
         });
 
         $scope.login = function () {
-            $log.log(adalService.l)
             adalService.login();
         };
         $scope.logout = function () {
@@ -64,9 +63,8 @@ angular.module('ApiExplorer')
 
         $scope.$watch("getOption()", function(newVal, oldVal) {
             if(oldVal !== newVal){
-                $log.log($scope.selectedOption);
+                $log.log("switching to: " + $scope.selectedOption);
                 apiService.selectedOption = $scope.selectedOption;
-                $log.log("resetting text");
                 apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                     apiService.showJsonEditor = true;
@@ -151,22 +149,6 @@ angular.module('ApiExplorer')
          this.searchText = $scope.text;
     });
         
-        $scope.formatValue = function(val){
-             var formattedString = val;
-           /*  //log.log("$mdAutocompleteCtrl");
-             var element = document.getElementById("autocompleteText");
-            // $log.log(element.clientWidth);
-             //$log.log(element);
-             //$log.log(element.ove)
-             //$log.log("scroll width: " + element.scrollWidth);
-             //$log.log("client width: " + element.clientWidth);
-             //while(element.scrollWidth > element.clientWidth){
-                 $log.log("formatting");
-                formattedString = replaceEntityWithEllipses(formattedString);   
-             }*/
-             return formattedString;
-        }
-        
         $scope.urlHashFunction = function(urlObj){
             var hash = urlObj.autocompleteVal.length;
             for(var i=0; i<urlObj.name.length; i++){
@@ -175,11 +157,6 @@ angular.module('ApiExplorer')
             
             return hash;
         }
-        
-        
-/*        $scope.$watch("getText()", function(event, args){
-               
-        });*/
         
         
         $scope.$on("clearUrlOptions", function(){
@@ -239,8 +216,6 @@ angular.module('ApiExplorer')
         
         
         $scope.searchTextChange = function(searchText){  
-            
-              //apiService.text = searchText;
             
               if(apiService.text && apiService.text.charAt(apiService.text.length-1) != '/'){
                 apiService.text += '/';
@@ -372,8 +347,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $scope.showJsonViewer = true;
             $scope.showImage = false;
 
-            //$scope.progressbar.reset();
-            //$scope.progressbar.start();
 
             var postBody = "";
             if ($scope.jsonEditor != undefined) {

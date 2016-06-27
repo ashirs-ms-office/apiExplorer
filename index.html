@@ -38,12 +38,9 @@
                                      md-items="item in getMatches(searchText)" 
                                      md-item-text="item.autocompleteVal" 
                                      md-min-length="0" 
-                                     md-selected-item-change="$parent.selectedItemChange(item)"
-                                     md-menu-class="autocomplete-custom-template">
+                                     md-selected-item-change="$parent.selectedItemChange(item)">
                         
-                    <md-item-template> 
-                       <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{formatValue(item.autocompleteVal)}} </span>
-                    </md-item-template>
+                       <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
                 </md-autocomplete>
             <br />
         <div layout="row" layout-align="space-between">
