@@ -39,8 +39,7 @@
                                      md-item-text="item.autocompleteVal" 
                                      md-min-length="0" 
                                      md-selected-item-change="$parent.selectedItemChange(item)"
-                                     md-menu-class="autocomplete-custom-template"
-                                    >
+                                     md-menu-class="autocomplete-custom-template">
                         
                     <md-item-template> 
                        <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{formatValue(item.autocompleteVal)}} </span>
@@ -66,7 +65,11 @@
                     <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>
                 </md-input-container>
                <md-input-container>
-                    <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> Go </md-button>
+                    <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
+                        Go </md-button>     
+                       <md-tooltip  md-direction="top" ng-show="!userInfo.isAuthenticated">
+                           login! 
+                        </md-tooltip> 
                </md-input-container>
             
          </div>

@@ -325,6 +325,14 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
        $scope.entityItem = item; 
     }
     
+    $scope.showLoginToast = function(){
+        $mdToast.show({
+           hideDelay: 3000,
+           position: 'top right',
+           templateUrl: "login-toast.html"
+        });
+    }
+    
     $scope.submit = function (query) {
 
         if(!query){
@@ -394,6 +402,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
             //add history object to the array
             $scope.history.unshift(historyObj);
+        }else{
+            //user is not logged in
+            $log.log("not logged in");
+            $scope.showLoginToast();
         }
     };
 }]);
