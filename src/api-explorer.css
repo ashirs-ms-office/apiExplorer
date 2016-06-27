@@ -115,6 +115,11 @@ body {
      visibility: visible;
 }
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+
 /*.md-autocomplete-suggestions-container{
     overflow-x: hidden;
 }*/
