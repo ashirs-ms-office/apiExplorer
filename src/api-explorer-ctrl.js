@@ -298,7 +298,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     //function called when link in the back button history is clicked
     $scope.historyOnClick = function(input){
         if($scope.userInfo.isAuthenticated){
-            $scope.text = input.urlText;
+            apiService.text = input.urlText;
             apiService.selectedVersion = input.selectedVersion;
             apiService.selectedOption = input.htmlOption;
             
