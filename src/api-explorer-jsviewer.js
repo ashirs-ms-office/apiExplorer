@@ -5,7 +5,7 @@ function initializeJsonViewer($scope, run, apiService) {
     jsonViewer.setOptions({
         readOnly: true,
         highlightActiveLine: false,
-        highlightGutterLine: false
+        highlightGutterLine: false,
     });
     jsonViewer.setShowPrintMargin(false);
     jsonViewer.getSession().setUseWorker(false);
