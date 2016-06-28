@@ -7,7 +7,7 @@ angular.module('ApiExplorer')
         $scope.showImage = false;
 
         
-        initializeJsonViewer($scope, run, apiService);
+        initializeJsonViewer($scope, run, apiService, $log);
         if($scope.userInfo.isAuthenticated){
             parseMetadata(apiService, $log, $scope);
         }
@@ -256,6 +256,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
     $scope.entityItem = null;
+    $scope.selectedIndex = 0;
+    $scope.hasAResponse = false;
     
     $scope.getText = function(){
         return apiService.text;
@@ -297,7 +299,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             }
         }
     }
-
+    
+    
+    $scope.requestBodyDisabled = function(){
+         if((apiService.selectedOption == "POST") || (apiService.selectedOption == "PATCH")){
+             return false;
+         }else{
+             return true;
+         }
+    }
+    
     $scope.submit = function () {
         $scope.$emit('clearUrls');
         if ($scope.text) {
@@ -429,12 +440,15 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
 
                 historyObj.success = "success";
+                $scope.hasAResponse = true;
 
             }).error(function (err, status) {
                 handleJsonResponse($scope, startTime, err, null, $mdToast);
                 historyObj.success = "error";
+                $scope.hasAResponse = true;
             });
 
+            $scope.selectedIndex = 0;
             //add history object to the array
             $scope.history.unshift(historyObj);
         }else{

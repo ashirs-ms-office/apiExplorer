@@ -74,16 +74,23 @@
         </div>   
 
         <img id="img" width="250px" height="250px" ng-show="showImage" />
-        <div id="jsonEditor" ng-show="showJsonEditor"></div>
         <div ng-class="progressVisibility"> <md-progress-linear md-mode="indeterminate"></md-progress-linear> </div>
-        <div id="jsonViewer" ng-show="showJsonViewer"></div>
-
-        <br/>
-        <uib-accordion>
-            <uib-accordion-group heading="Response Headers" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
-                <pre id="responseHeaderDetails">{{responseHeaders}}</pre>
-            </uib-accordion-group>
-        </uib-accordion>
+        
+        <md-tabs md-dynamic-height md-selected=selectedIndex>
+            <md-tab label="response body"> 
+                <md-tab-body>
+                    <div id="jsonViewer" ng-show="showJsonViewer"></div>
+                </md-tab-body>
+            </md-tab>
+            <md-tab label="request body" ng-disabled="requestBodyDisabled()">
+                <div id="jsonEditor" ng-show="showJsonEditor"></div>
+            </md-tab>
+            <md-tab label="response headers" ng-disabled="!hasAResponse">
+                <div id=responseHeaders>
+                  <pre id="responseHeaderDetails">{{responseHeaders}}</pre>
+                </div>
+            </md-tab>
+        </md-tabs>
 
     </div>
 
