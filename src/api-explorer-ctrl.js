@@ -206,6 +206,7 @@ angular.module('ApiExplorer')
                      $scope.urlArray.push($scope.urlOptions[x]);
                 }
             }
+
         });
     
         $scope.$watch("getEntity()", function(event, args){
