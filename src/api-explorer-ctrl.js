@@ -258,6 +258,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.entityItem = null;
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
+    $scope.statusCode = "";
     
     $scope.getText = function(){
         return apiService.text;
@@ -346,19 +347,19 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 var endTime = null;
                 apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
                     if (isImageResponse(headers)) { 
-                        handleImageResponse($scope, apiService, headers);
+                        handleImageResponse($scope, apiService, headers, status);
                     } else if (isHtmlResponse(headers)) {  
-                        handleHtmlResponse($scope, startTime, results, headers);
+                        handleHtmlResponse($scope, startTime, results, headers, status);
                     } else if (isXmlResponse(results)) {
-                        handleXmlResponse($scope, startTime, results, headers);
+                        handleXmlResponse($scope, startTime, results, headers, status);
                     } else {
-                        handleJsonResponse($scope, startTime, results, headers);
+                        handleJsonResponse($scope, startTime, results, headers, status);
                     }
                     
                     historyObj.success = "success";
                     
                 }).error(function (err, status) {
-                    handleJsonResponse($scope, startTime, err, null);
+                    handleJsonResponse($scope, startTime, err, null, status);
                     historyObj.success = "error";
                 });
                 
@@ -430,21 +431,21 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             var endTime = null;
             apiService.performQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
-                    handleImageResponse($scope, apiService, headers);
+                    handleImageResponse($scope, apiService, headers, status);
                 } else if (isHtmlResponse(headers)) {  
-                    handleHtmlResponse($scope, startTime, results, headers, $mdToast);
+                    handleHtmlResponse($scope, startTime, results, headers, $mdToast, status);
                 } else if (isXmlResponse(results)) {
-                    handleXmlResponse($scope, startTime, results, headers, $mdToast);
+                    handleXmlResponse($scope, startTime, results, headers, $mdToast, status);
                 } else {
-                    handleJsonResponse($scope, startTime, results, headers, $mdToast);
-//                    dynamicallyPopulateURLsForEntitySets(apiService, results);
+                    handleJsonResponse($scope, startTime, results, headers, $mdToast, status);
+//                  dynamicallyPopulateURLsForEntitySets(apiService, results);
                 }
 
                 historyObj.success = "success";
                 $scope.hasAResponse = true;
 
             }).error(function (err, status) {
-                handleJsonResponse($scope, startTime, err, null, $mdToast);
+                handleJsonResponse($scope, startTime, err, null, $mdToast, status);
                 historyObj.success = "error";
                 $scope.hasAResponse = true;
             });

@@ -79,6 +79,10 @@ var showHeaders = function($scope, headers) {
     }
 }
 
+var showStatus = function($scope, status){
+    $scope.statusCode = "Status Code: " + status;
+}
+
 var showResults = function ($scope, results, headers) {
     $scope.jsonViewer.setValue("");
 
@@ -87,7 +91,7 @@ var showResults = function ($scope, results, headers) {
     $scope.jsonViewer.getSession().insert(0, results);
 }
 
-var handleImageResponse = function ($scope, apiService, headers) {
+var handleImageResponse = function ($scope, apiService, headers, status) {
     apiService.performQuery('GET_BINARY')($scope.text, "").success(function (results, status, headers, config) {
         var arr = new Uint8Array(results);
 
@@ -103,29 +107,33 @@ var handleImageResponse = function ($scope, apiService, headers) {
         $scope.showJsonViewer = false;
         $scope.showImage = true;
         showHeaders($scope, headers);
+        showStatus($scope, status);
 
         $scope.progressbar.complete();
     });
 }
 
-var handleHtmlResponse = function ($scope, startTime, results, headers, $mdToast) {
+var handleHtmlResponse = function ($scope, startTime, results, headers, $mdToast, status){
     setJsonViewerContentType("html");
     showDuration($scope, startTime, $mdToast);
     showResults($scope, results, headers);
+    showStatus($scope, status);
 }
 
-var handleJsonResponse = function ($scope, startTime, results, headers, $mdToast) {
+var handleJsonResponse = function ($scope, startTime, results, headers, $mdToast, status){
     setJsonViewerContentType("json");
     results = JSON.stringify(results, null, 4);
     showDuration($scope, startTime, $mdToast);
     showResults($scope, results, headers);
+    showStatus($scope, status);
 }
 
-var handleXmlResponse = function ($scope, startTime, results, headers, $mdToast) {
+var handleXmlResponse = function ($scope, startTime, results, headers, $mdToast, status) {
     setJsonViewerContentType("xml");
     results = formatXml(results);
     showDuration($scope, startTime, $mdToast);
     showResults($scope, results, headers);
+    showStatus($scope, status);
 }
 
 var isImageResponse = function (headers) {
