@@ -102,10 +102,6 @@ body {
     background-color: #0078d7;
 }
 
-/*.linear-color {
-    //doesn't work :(
-    color: #0078d7; 
-}*/
 
 .hidden{
     visibility: hidden;
@@ -119,7 +115,3 @@ body {
   display: none !important;
 }
 
-
-/*.md-autocomplete-suggestions-container{
-    overflow-x: hidden;
-}*/

@@ -265,6 +265,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
          $scope.text = apiService.text;
     });
  
+
+    $scope.$emit('populateUrls');
+
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
         msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args, apiService);
@@ -290,6 +293,65 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     $scope.jsonEditor.getSession().setValue("");
                 }
                 apiService.showJsonEditor = false;
+
+            }
+        }
+    }
+
+    $scope.submit = function () {
+        $scope.$emit('clearUrls');
+        if ($scope.text) {
+            
+            $log.log($scope.text);
+            
+            if ($scope.userInfo.isAuthenticated) {
+                $scope.previousString = $scope.text;
+            
+                //create an object to store the api call
+                var historyObj = {};
+
+                historyObj.urlText = $scope.previousString,
+                historyObj.selectedVersion = $scope.$parent.selectedVersion;
+                historyObj.htmlOption = $scope.selectedOptions;
+
+                if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
+                    historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
+                }else{
+                    historyObj.jsonInput ="";
+                }
+                
+                $scope.showJsonViewer = true;
+                $scope.showImage = false;
+
+                $scope.progressbar.reset();
+                $scope.progressbar.start();
+                
+                var postBody = "";
+                if ($scope.jsonEditor != undefined) {
+                    postBody = $scope.jsonEditor.getSession().getValue();
+                }
+                var startTime = new Date();
+                var endTime = null;
+                apiService.performQuery($scope.selectedOptions)($scope.text, postBody).success(function (results, status, headers, config) {
+                    if (isImageResponse(headers)) { 
+                        handleImageResponse($scope, apiService, headers);
+                    } else if (isHtmlResponse(headers)) {  
+                        handleHtmlResponse($scope, startTime, results, headers);
+                    } else if (isXmlResponse(results)) {
+                        handleXmlResponse($scope, startTime, results, headers);
+                    } else {
+                        handleJsonResponse($scope, startTime, results, headers);
+                    }
+                    
+                    historyObj.success = "success";
+                    
+                }).error(function (err, status) {
+                    handleJsonResponse($scope, startTime, err, null);
+                    historyObj.success = "error";
+                });
+                
+                //add history object to the array
+                $scope.history.push(historyObj);
             }
             
             $scope.submit($scope.text);
