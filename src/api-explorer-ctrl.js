@@ -297,6 +297,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 apiService.showJsonEditor = false;
 
             }
+            $scope.submit($scope.text);
         }
     }
     
