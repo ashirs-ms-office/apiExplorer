@@ -1,8 +1,25 @@
 'use strict';
 
 angular.module('ApiExplorer')
-    .factory('ApiExplorerSvc', ['$http', function ($http) {
+    .factory('ApiExplorerSvc', ['$http', '$cacheFactory', function ($http, $cacheFactory) {
         return {
+            
+            text: 'https://graph.microsoft.com/v1.0/',
+            
+            selectedVersion: "v1.0",
+            
+            selectedOption: "GET",
+            
+            showJsonEditor: false,
+            
+            showJsonViewer: true,
+            
+            cache: $cacheFactory('myCache'),
+            
+            entity: "",
+            
+            entityNameIsAnId: false,
+            
             performQuery: function (queryType) {
                 if (queryType == "GET") {
                     return function (query, postString) {
@@ -32,6 +49,10 @@ angular.module('ApiExplorer')
                 }
                 
                 return null;
+            },
+            
+            getMetadata: function(){
+                 return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
             }
         };
     }]);

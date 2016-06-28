@@ -70,6 +70,10 @@ body {
     color: #333;
 }
 
+.main-query{
+    width: 100%;
+}
+
 .panel-heading{
     color: #333;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -93,3 +97,29 @@ body {
 .error{
     color: red;
 }
+
+.md-toolbar-tools{
+    background-color: #0078d7;
+}
+
+/*.linear-color {
+    //doesn't work :(
+    color: #0078d7; 
+}*/
+
+.hidden{
+    visibility: hidden;
+}
+
+.not-hidden{
+     visibility: visible;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+
+/*.md-autocomplete-suggestions-container{
+    overflow-x: hidden;
+}*/
