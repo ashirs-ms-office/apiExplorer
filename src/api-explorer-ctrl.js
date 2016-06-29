@@ -48,6 +48,9 @@ angular.module('ApiExplorer')
     
         $scope.selectedOption = apiService.selectedOption;
 
+        $scope.onItemClick = function(choice){
+            $scope.selectedOption = choice;
+        }
 
         $scope.items = [
             'GET',
@@ -56,6 +59,9 @@ angular.module('ApiExplorer')
             'DELETE'
           ];
     
+        $scope.getServiceOption = function(){
+            return apiService.selectedOption;
+        }
     
         $scope.getOption = function(){
                 return $scope.selectedOption;

@@ -58,6 +58,25 @@
                      </md-menu-content>
                   </md-menu>
                </md-input-container>
+            
+                 <md-input-container ng-controller="DropdownCtrl">
+                    <md-menu>
+                        <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+                              {{getServiceOption()}}
+                        </md-button>
+                         <md-menu-content>
+<!--
+                            <md-select id="http-verb-button" ng-model="selectedOption">
+-->                        <md-menu-item ng-repeat="choice in items">
+                                <md-button ng-click="onItemClick(choice)">
+                                   {{ choice }}
+                               </md-button>
+                             </md-menu-item>
+                            <!--</md-select>-->
+                        </md-menu-content>
+                    </md-menu>
+                </md-input-container>
+            
                 <md-input-container ng-controller="settingsCtrl">
                     <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>
                 </md-input-container>

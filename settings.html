@@ -9,14 +9,7 @@
 <br />
 
 <div layout="row" layout-align="space-around">
-     <md-input-container ng-controller="DropdownCtrl">
-         <label> Http verb </label>
-        <md-select id="http-verb-button" ng-model="selectedOption">
-            <md-option ng-value="choice" ng-repeat="choice in items" ng-click="onItemClick(choice)">
-               {{ choice }}
-           </md-option>
-        </md-select>
-   </md-input-container>
+
 
      <md-input-container ng-controller="VersionCtrl">
          <label> Version </label>
