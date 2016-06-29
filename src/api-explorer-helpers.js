@@ -167,6 +167,9 @@ var getContentType = function(headers) {
     }
 }
 
+
+
+
 var getEntitySets = function(XML, $log){
     var entitySetArray = {};
     var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;
@@ -189,17 +192,15 @@ var getEntitySets = function(XML, $log){
 
 
 
-var getEntityTypes = function(XML, $log){
-    var entityTypesArray = {};
-    var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
-    for(var i=0; i<entityTypes.length; i++){
+var createEntityTypeObject = function(returnArray, DOMarray){
+    for(var i=0; i<DOMarray.length; i++){
            var EntityType = {};
-           var name = entityTypes[i].attributes[0].nodeValue;
+           var name = DOMarray[i].attributes[0].nodeValue;
            name = name.substring(2, name.length-2);
            EntityType.name = name;
            EntityType.isEntitySet = false;
            EntityType.URLS = [];
-           var children = entityTypes[i].children;
+           var children = DOMarray[i].children;
            for(var j=0; j<children.length; j++){
                  if(children[j].attributes.length > 0){
                      var childName = children[j].attributes[0].nodeValue;
@@ -210,8 +211,19 @@ var getEntityTypes = function(XML, $log){
                  }
            }
         
-            entityTypesArray[EntityType.name] = EntityType;
-    }
+            returnArray[EntityType.name] = EntityType;
+    }    
+    return returnArray;
+}
+
+var getEntityTypes = function(XML, $log){
+    var entityTypesArray = {};
+    var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
+    entityTypesArray = createEntityTypeObject(entityTypesArray, entityTypes);
+    
+    var complexTypes = $(($.parseHTML(XML))[2]).find("ComplexType");
+    entityTypesArray = createEntityTypeObject(entityTypesArray, complexTypes);
+    
     return entityTypesArray;
 }
 
@@ -279,7 +291,7 @@ var setEntity = function(entityItem, service, $log){
            service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
           // service.entity = "id";
     }else{
-        if(!entityItem){
+        //if(!entityItem){
               var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
               var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
               if(isEntitySet){
@@ -287,7 +299,7 @@ var setEntity = function(entityItem, service, $log){
               }else if(isEntityType){
                   entityItem = isEntityType;
               }
-        }
+        //}
         service.entity = entityItem;
     }
 }

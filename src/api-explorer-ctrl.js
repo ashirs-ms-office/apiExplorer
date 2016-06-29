@@ -173,7 +173,7 @@ angular.module('ApiExplorer')
             if(apiService.entity === "topLevel"){
                  $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
             }else if(apiService.entity != null){
-                 $scope.urlOptions = apiService.entity.URLS;  
+                $scope.urlOptions = apiService.entity.URLS;  
             }
             
             //for each new URL to add
