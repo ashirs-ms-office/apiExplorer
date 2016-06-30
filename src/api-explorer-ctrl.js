@@ -405,9 +405,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $log.log("submitting " + apiService.text);
         
        // parseMetadata(apiService, $log);
-        if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+        /*if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
             setEntity($scope.entityItem, apiService, $log);
-        }
+        }*/
 
         if ($scope.userInfo.isAuthenticated) {
             $scope.progressVisibility = "not-hidden";
@@ -449,11 +449,19 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
                 historyObj.success = "success";
                 $scope.hasAResponse = true;
+                
+                
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                    setEntity($scope.entityItem, apiService, $log, true);
+                }
 
             }).error(function (err, status) {
                 handleJsonResponse($scope, startTime, err, null, $mdToast, status);
                 historyObj.success = "error";
                 $scope.hasAResponse = true;
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                    setEntity($scope.entityItem, apiService, $log, false);
+                }
             });
 
             $scope.selectedIndex = 0;
