@@ -29,6 +29,5 @@ var msGraphLinkResolution = function ($scope, body, args, service) {
     if(service.text && service.text.charAt(service.text.length-1) != '/'){
                 service.text += '/';
     }
-    $scope.selectedItemChange(null);
     $scope.submit(service.text);
 }

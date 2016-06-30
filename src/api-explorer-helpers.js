@@ -262,7 +262,7 @@ var getPreviousCall = function(URL, entityName){
 }
 
 
-var setEntity = function(entityItem, service, $log){
+var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     
     if(service.selectedOption != "GET"){
         return;
@@ -271,23 +271,26 @@ var setEntity = function(entityItem, service, $log){
     $log.log("setting entity to");
     $log.log(entityItem);
     
-    if(!entityItem){
-         if(getEntityName(service.text) == service.selectedVersion){
+    $log.log(lastCallSuccessful);
+    
+   if(getEntityName(service.text) == service.selectedVersion){
              service.entity = "topLevel";
              return;
-         }else{
-             var entityName = getEntityName(service.text);
-             $log.log(entityName);
-         }
     }else{
-       var entityName = entityItem.name; 
+       var entityName = getEntityName(service.text);
     }
     
-    service.entityNameIsAnId = service.cache.get(service.selectedVersion + "EntitySetData")[getEntityName(getPreviousCall(service.text, entityName))];
+    var entitySetName = getEntityName(getPreviousCall(service.text, entityName));
+    if(entityName === "me" && lastCallSuccessful){
+        entitySetName = "users";
+    }
+    
+    var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entitySetName];
+    service.entityNameIsAnId = entitySet && lastCallSuccessful;
     
     if(service.entityNameIsAnId){
-           $log.log("entity name is an id")
-           var typeName = service.entityNameIsAnId.entityType; 
+           $log.log("entity name is an id");
+           var typeName = entitySet.entityType; 
            service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
           // service.entity = "id";
     }else{
