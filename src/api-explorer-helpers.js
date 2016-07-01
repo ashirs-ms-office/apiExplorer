@@ -192,7 +192,15 @@ var getEntitySets = function(XML, $log){
 
 
 
-var createEntityTypeObject = function(returnArray, DOMarray){
+var findNameIndex = function(array){
+    for(var i=0; i<array.length; i++){
+        if(array[i].name === "name"){
+            return i;
+        }
+    }
+}
+
+var createEntityTypeObject = function(returnArray, DOMarray, $log){
     for(var i=0; i<DOMarray.length; i++){
            var EntityType = {};
            var name = DOMarray[i].attributes[0].nodeValue;
@@ -203,7 +211,8 @@ var createEntityTypeObject = function(returnArray, DOMarray){
            var children = DOMarray[i].children;
            for(var j=0; j<children.length; j++){
                  if(children[j].attributes.length > 0){
-                     var childName = children[j].attributes[0].nodeValue;
+                     var nameIndex = findNameIndex(children[j].attributes);
+                     var childName = children[j].attributes[nameIndex].nodeValue;
                      childName = childName.substring(2, childName.length-2);
                      var urlObject = {};
                      urlObject.name = childName;
@@ -219,10 +228,10 @@ var createEntityTypeObject = function(returnArray, DOMarray){
 var getEntityTypes = function(XML, $log){
     var entityTypesArray = {};
     var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
-    entityTypesArray = createEntityTypeObject(entityTypesArray, entityTypes);
+    entityTypesArray = createEntityTypeObject(entityTypesArray, entityTypes, $log);
     
     var complexTypes = $(($.parseHTML(XML))[2]).find("ComplexType");
-    entityTypesArray = createEntityTypeObject(entityTypesArray, complexTypes);
+    entityTypesArray = createEntityTypeObject(entityTypesArray, complexTypes, $log);
     
     return entityTypesArray;
 }
@@ -269,9 +278,7 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     }
     
     $log.log("setting entity to");
-    $log.log(entityItem);
     
-    $log.log(lastCallSuccessful);
     
    if(getEntityName(service.text) == service.selectedVersion){
              service.entity = "topLevel";
@@ -280,13 +287,15 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
        var entityName = getEntityName(service.text);
     }
     
+    $log.log(entityName);
+    
     var entitySetName = getEntityName(getPreviousCall(service.text, entityName));
     if(entityName === "me" && lastCallSuccessful){
         entitySetName = "users";
     }
     
     var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entitySetName];
-    service.entityNameIsAnId = entitySet && lastCallSuccessful;
+    service.entityNameIsAnId = entitySet && lastCallSuccessful && (entitySetName != "me");
     
     if(service.entityNameIsAnId){
            $log.log("entity name is an id");
