@@ -96,19 +96,13 @@
         <div ng-class="progressVisibility"> <md-progress-linear md-mode="indeterminate"></md-progress-linear> </div>
         
         <md-tabs md-dynamic-height md-selected=selectedIndex>
-            <md-tab label="response body"> 
+            <md-tab label="response"> 
                 <md-tab-body>
                     <div id="jsonViewer" ng-show="showJsonViewer"></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab label="request body" ng-disabled="requestBodyDisabled()">
+            <md-tab label="request" ng-disabled="requestBodyDisabled()">
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
-            </md-tab>
-            <md-tab label="response headers" ng-disabled="!hasAResponse">
-                <div id=responseHeaders>
-                <pre id="statusCodeDetails">{{statusCode}} </pre>
-                <pre id="responseHeaderDetails">{{responseHeaders}}</pre>
-                </div>
             </md-tab>
         </md-tabs>
 

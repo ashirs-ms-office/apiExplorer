@@ -256,7 +256,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.duration = "";
     $scope.listData = "requestList";
     $scope.photoData = "";
-    $scope.responseHeaders = "";
     $scope.history = [];
     $scope.historySelected = null;
     $scope.text = apiService.text;
@@ -264,7 +263,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.entityItem = null;
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
-    $scope.statusCode = "";
     
     $scope.getText = function(){
         return apiService.text;
