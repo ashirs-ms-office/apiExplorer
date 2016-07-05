@@ -101,10 +101,14 @@ body {
 /* css classses for coloring back links based on success/failure */
 .success{
     color: #92C700;
+    padding-left: 20px;
+    border-left: 2px solid #808080;
 }
 
 .error{
     color: #FF6A00;
+    padding-left: 20px;
+    border-left: 2px solid #808080;
 }
 
 .hidden{

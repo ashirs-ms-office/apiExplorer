@@ -3,6 +3,10 @@
 
 <head>
     <title>Microsoft Graph Explorer</title>
+<!-- <script>
+    if (window.location.protocol != "https:")
+    window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+    </script>-->
 </head>
 
 <body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document" ng-cloak>
@@ -49,7 +53,6 @@
              </md-menu-content>
           </md-menu>
 
-            
          <md-menu ng-controller="VersionCtrl">
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
                    {{getServiceVersion()}}
@@ -62,7 +65,6 @@
                </md-menu-item>
            </md-menu-content>
        </md-menu>
-            
             
         <md-menu ng-controller="DropdownCtrl">
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
