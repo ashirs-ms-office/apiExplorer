@@ -17,8 +17,9 @@ body {
     padding: 0 0 0 0;
 }
 
-.md-input-container{
+.md-menu{
     padding: 0 0 0 0;
+    margin: 0 0 0 0;
 }
 
 #jsonViewer {
@@ -53,17 +54,6 @@ body {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
-
-#history-button{
-    border-radius: 0;
-    border-left: 0;
-}
-
-#version-button{
-    border-radius:0;
-    border-right: 0;
-}
-
 
 #queryBar {
     border-right: 0;

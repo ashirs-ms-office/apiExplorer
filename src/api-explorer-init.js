@@ -23,20 +23,20 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         );
         
         $mdThemingProvider.definePalette('O365PrimaryPalette', {
-                '50': 'a7c5f1',
-                '100': '91b6ee',
-                '200': '7ba7ea',
-                '300': '6599e7', //primary
-                '400': '4f8ae3',
-                '500': '4685e2', //primary - blue
+                '50': 'e9f0fc',
+                '100': 'd3e2f8',
+                '200': 'bdd3f5',
+                '300': '91b6ee', 
+                '400': '6599e7',
+                '500': '4685e2', //blue
                 '600': '387be0',
                 '700': '226ddd',
-                '800': '1f62c7', //primary
+                '800': '1f62c7', 
                 '900': '1c57b0',
-                'A100': 'FF6A00', //warm
-                'A200': 'FF6A00', //accent
-                'A400': 'FF6A00', //accent - orange
-                'A700': 'FF6A00', //accent
+                'A100': 'FF6A00', 
+                'A200': 'FF6A00', 
+                'A400': 'FF6A00', 
+                'A700': 'FF6A00', 
                 'contrastDefaultColor': 'light',   
                 'contrastDarkColors': ['50', '100', 
                  '200', '300', '400', 'A100'],
@@ -49,7 +49,7 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 '200': 'ffa666',
                 '300': 'ff974d', 
                 '400': 'ff8833',
-                '500': 'FF6A00', 
+                '500': 'FF6A00', //orange
                 '600': 'e66000',
                 '700': 'cc5500',
                 '800': 'b34a00', 
