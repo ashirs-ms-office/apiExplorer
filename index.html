@@ -51,8 +51,12 @@
                      </md-button>
                      <md-menu-content width="6">
                          <md-menu-item ng-repeat="call in history">
-                             <md-button ng-value={{call}} ng-class="call.success" ng-click="historyOnClick(call)">
-                                {{call.urlText}}
+                             <md-button ng-value={{call}} ng-click="historyOnClick(call)">
+                                {{call.urlText }}
+                                 <span flex></span>
+                                 <div ng-class="call.success"> 
+                                     {{call.statusCode}}
+                                 </div>
                               </md-button>
                          </md-menu-item>
                      </md-menu-content>
@@ -77,9 +81,21 @@
                     </md-menu>
                 </md-input-container>
             
-                <md-input-container ng-controller="settingsCtrl">
-                    <md-button class="md-raised" ng-click="showDialog($event)"> Settings </md-button>
-                </md-input-container>
+            <md-input-container ng-controller="VersionCtrl">
+                <md-menu>
+                    <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+                           {{getVersion()}}
+                    </md-button>
+                   <md-menu-content>
+                       <md-menu-item ng-repeat="choice in items">
+                             <md-button ng-click="onItemClick(choice)">
+                                 {{choice}}
+                             </md-button>
+                       </md-menu-item>
+                   </md-menu-content>
+               </md-menu>
+            </md-input-container>
+            
                <md-input-container>
                     <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
                         Go </md-button>     
@@ -101,7 +117,7 @@
                     <div id="jsonViewer" ng-show="showJsonViewer"></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab label="request" ng-disabled="requestBodyDisabled()">
+            <md-tab label="request body" ng-disabled="requestBodyDisabled()">
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
             </md-tab>
         </md-tabs>

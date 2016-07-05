@@ -63,7 +63,7 @@ var showDuration = function($scope, startTime, $mdToast) {
     $mdToast.show(
         $mdToast.simple().
         textContent($scope.duration).
-        hideDelay(3000).
+        hideDelay(0).
         position('bottom right')
     );
     $scope.progressVisibility = "hidden";
