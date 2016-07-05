@@ -13,6 +13,14 @@ body {
     height: 65vh;
 }
 
+.md-button{
+    padding: 0 0 0 0;
+}
+
+.md-input-container{
+    padding: 0 0 0 0;
+}
+
 #jsonViewer {
     position: relative;
     height: 65vh;

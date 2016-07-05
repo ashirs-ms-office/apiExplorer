@@ -30,21 +30,9 @@
     <div class="container body-content" ng-controller="FormCtrl">
         <div class="autocomplete" ng-controller="datalistCtrl">
         <form class="main-query">
-                    <md-autocomplete flex
-                                     md-selected-item="text" 
-                                     md-no-cache="true"
-                                     md-search-text="searchText" 
-                                     md-search-text-change="searchTextChange(searchText)"
-                                     md-items="item in getMatches(searchText)" 
-                                     md-item-text="item.autocompleteVal" 
-                                     md-min-length="0" 
-                                     md-selected-item-change="$parent.selectedItemChange(item)">
-                        
-                       <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
-                </md-autocomplete>
-            <br />
-        <div layout="row" layout-align="space-between">
-              <md-input-container flex=75>
+                   
+        <div layout="row" layout-align="start center">
+              <md-input-container flex=7>
                   <md-menu>
                      <md-button class="md-raised" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0">
                          History 
@@ -63,7 +51,10 @@
                   </md-menu>
                </md-input-container>
             
-                 <md-input-container ng-controller="DropdownCtrl">
+               
+             
+            
+                 <md-input-container ng-controller="DropdownCtrl" flex=7>
                     <md-menu>
                         <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
                               {{getServiceOption()}}
@@ -81,7 +72,7 @@
                     </md-menu>
                 </md-input-container>
             
-            <md-input-container ng-controller="VersionCtrl">
+            <md-input-container ng-controller="VersionCtrl" flex=10>
                 <md-menu>
                     <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
                            {{getVersion()}}
@@ -96,7 +87,20 @@
                </md-menu>
             </md-input-container>
             
-               <md-input-container>
+           <md-autocomplete flex
+                             md-selected-item="text" 
+                             md-no-cache="true"
+                             md-search-text="searchText" 
+                             md-search-text-change="searchTextChange(searchText)"
+                             md-items="item in getMatches(searchText)" 
+                             md-item-text="item.autocompleteVal" 
+                             md-min-length="0" 
+                             md-selected-item-change="$parent.selectedItemChange(item)">
+
+               <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
+         </md-autocomplete>
+            
+               <md-input-container flex=10>
                     <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
                         Go </md-button>     
                        <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
