@@ -98,8 +98,14 @@ angular.module('ApiExplorer')
             return $scope.selectedVersion;
         }
         
+      $scope.getServiceVersion = function(){
+            return apiService.selectedVersion;
+        }
+    
+        
         $scope.onItemClick = function(choice){
             $scope.selectedVersion = choice;
+            apiService.selectedVersion = choice;
         }
 
         $scope.$watch("getVersion()", function(newVal, oldVal) {
