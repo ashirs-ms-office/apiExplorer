@@ -37,7 +37,7 @@
                    
         <div layout="row" layout-align="start center">
           <md-menu>
-             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0">
+             <md-button ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0">
                  History 
              </md-button>
              <md-menu-content width="6">
@@ -54,7 +54,7 @@
           </md-menu>
 
          <md-menu ng-controller="VersionCtrl">
-            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+            <md-button ng-click="$mdOpenMenu($event)">
                    {{getServiceVersion()}}
             </md-button>
            <md-menu-content>
@@ -67,7 +67,7 @@
        </md-menu>
             
         <md-menu ng-controller="DropdownCtrl">
-            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+            <md-button ng-click="$mdOpenMenu($event)">
                   {{getServiceOption()}}
             </md-button>
              <md-menu-content>
@@ -98,7 +98,7 @@
          </md-autocomplete>
             
        
-        <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
+        <md-button type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
             Go </md-button>     
         <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
                login to use the graph explorer! 
