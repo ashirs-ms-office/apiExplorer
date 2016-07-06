@@ -13,10 +13,14 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         adalProvider.init({
                 instance: 'https://login.microsoftonline.com/',
                 tenant: 'common',
-                clientId: '2e8459fe-87ef-4286-af70-f33a307563aa',
+                clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16', //'2e8459fe-87ef-4286-af70-f33a307563aa',
                 endpoints: {
-                    "https://graph.microsoft.com": "https://graph.microsoft.com"
+                    "https://graph.microsoft.com":{
+                        scope:["https://graph.microsoft.com/mail.read"]
+                    }
                 },
+            
+                scope:["https://graph.microsoft.com/mail.read"],
                 cacheLocation: 'localStorage'
             },
             $httpProvider
