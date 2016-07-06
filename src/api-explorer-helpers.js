@@ -199,6 +199,14 @@ var findNameIndex = function(array){
     }
 }
 
+var findTypeIndex = function(array){
+    for(var i=0; i<array.length; i++){
+        if(array[i].name === "type"){
+            return i;
+        }
+    }
+}
+
 var createEntityTypeObject = function(returnArray, DOMarray, $log){
     for(var i=0; i<DOMarray.length; i++){
            var EntityType = {};
@@ -211,10 +219,18 @@ var createEntityTypeObject = function(returnArray, DOMarray, $log){
            for(var j=0; j<children.length; j++){
                  if(children[j].attributes.length > 0){
                      var nameIndex = findNameIndex(children[j].attributes);
+                     var typeIndex = findTypeIndex(children[j].attributes);
                      var childName = children[j].attributes[nameIndex].nodeValue;
                      childName = childName.substring(2, childName.length-2);
+                     var collection = children[j].attributes[typeIndex].nodeValue;
+                     collection = collection.substring(2, 12);
+                     var type = children[j].attributes[typeIndex].nodeValue;
+                     var index = type.indexOf("graph.")
+                     type = type.substring(index+6, type.length-3);
                      var urlObject = {};
+                     urlObject.isACollection = (collection === "Collection") && (index >0);
                      urlObject.name = childName;
+                     urlObject.type = type;
                      EntityType.URLS.push(urlObject);
                  }
            }
@@ -288,17 +304,44 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     
     $log.log(entityName);
     
-    var entitySetName = getEntityName(getPreviousCall(service.text, entityName));
+    var prevCallName = getEntityName(getPreviousCall(service.text, entityName));
+    var twoPrevCallsName = getEntityName(getPreviousCall(getPreviousCall(service.text, entityName), prevCallName));
     if(entityName === "me" && lastCallSuccessful){
-        entitySetName = "users";
+        prevCallName = "users";
+    }else if(twoPrevCallsName === "me" && lastCallSuccessful){
+        twoPrevCallsName = "user";
     }
     
-    var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entitySetName];
-    service.entityNameIsAnId = entitySet && lastCallSuccessful && (entitySetName != "me");
+    var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[prevCallName];
+    var twoPrevEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[twoPrevCallsName];
+    var twoPrevEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[twoPrevCallsName];
+    var collection = false;
+    $log.log(prevCallName);
+    if(twoPrevEntitySet){
+        for(var i=0; i<twoPrevEntitySet.URLS.length; i++){
+            if(twoPrevEntitySet.URLS[i].name == prevCallName){
+                collection = twoPrevEntitySet.URLS[i].isACollection;
+            }
+        }
+    }else if(twoPrevEntityType){
+        for(var i=0; i<twoPrevEntityType.URLS.length; i++){
+            if(twoPrevEntityType.URLS[i].name == prevCallName){
+                collection = twoPrevEntityType.URLS[i].isACollection;
+                var collectionType = twoPrevEntityType.URLS[i].type;
+            }
+        }
+    }
+    
+    service.entityNameIsAnId = (entitySet && lastCallSuccessful && (prevCallName != "me")) || (collection && lastCallSuccessful);
     
     if(service.entityNameIsAnId){
            $log.log("entity name is an id");
-           var typeName = entitySet.entityType; 
+           var typeName;
+           if(collection){
+               typeName = collectionType;
+           }else if(entitySet){
+               typeName = entitySet.entityType; 
+           }
            service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
           // service.entity = "id";
     }else{
