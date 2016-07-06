@@ -16,6 +16,8 @@ angular.module('ApiExplorer')
             
             cache: $cacheFactory('myCache'),
             
+         /*   id: null,*/
+            
             entity: "",
             
             entityNameIsAnId: false,

@@ -163,17 +163,32 @@ angular.module('ApiExplorer')
             $log.log(apiService.entity);
             if(apiService.entity === "topLevel"){
                  $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
+                 apiService.entity.name = apiService.selectedVersion;
             }else if(apiService.entity != null){
                 $scope.urlOptions = apiService.entity.URLS;  
             }
             
             //for each new URL to add
             for(var x in $scope.urlOptions){
+                
+/*                if(apiService.entityNameIsAnId){
+                    $scope.urlOptions[x].autocompleteVal = getPreviousCall(apiService.text, getEntityName(apiService.text)) + "/...";
+                }else{
+                    $scope.urlOptions[x].autocompleteVal = apiService.text;
+                }
+                
+                if(apiService.text.charAt(($scope.urlOptions[x].autocompleteVal).length-1) != '/'){
+                    $scope.urlOptions[x].autocompleteVal +=  ('/' + $scope.urlOptions[x].name);
+                }else{
+                    $scope.urlOptions[x].autocompleteVal += $scope.urlOptions[x].name;
+                }*/
+                
                 if(apiService.text.charAt((apiService.text).length-1) != '/'){
                     $scope.urlOptions[x].autocompleteVal = apiService.text + '/' + $scope.urlOptions[x].name;
                 }else{
                     $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
                 }
+                
                 //find the hash bucket that it would be in
                 var hashNumber = $scope.urlHashFunction($scope.urlOptions[x]);
                 var bucket = $scope.urlArrayHash[hashNumber.toString()];
@@ -211,8 +226,25 @@ angular.module('ApiExplorer')
         
         
        $scope.getMatches = function(query) {
+         
+           
          if(apiService.cache.get(apiService.selectedVersion + "EntitySetData") && apiService.selectedOption == "GET"){
               return $scope.urlArray.filter( function(option){
+                  
+                 /* var searchQuery;
+                  
+                  if(getEntityName(query) === getEntityName(apiService.text)){
+                     searchQuery = (getPreviousCall(apiService.text, getEntityName(apiService.text))) + "/.../";
+                  }else if(apiService.entityNameIsAnId){
+                    searchQuery = (getPreviousCall(apiService.text, getEntityName(apiService.text))) + "/.../" + getEntityName(query);
+                    apiService.id = getEntityName(apiService.text);
+                  }else{
+                    searchQuery = query;   
+                  }
+                  
+                  var queryInOption = (option.autocompleteVal.indexOf(searchQuery)>-1);
+                  var queryIsEmpty = (getEntityName(searchQuery).length == 0);*/
+                  
                   var queryInOption = (option.autocompleteVal.indexOf(query)>-1);
                   var queryIsEmpty = (getEntityName(query).length == 0);
                   
@@ -302,6 +334,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             return;
         }
         
+        //apiService.text = unshortenURL(query, apiService);
         apiService.text = query;
         
         

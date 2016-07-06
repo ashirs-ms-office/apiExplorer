@@ -279,6 +279,15 @@ var getEntityName = function(URL){
      }
      return returnWord;
 }
+/*
+var unshortenURL = function(URL, service){
+   if(!URL){
+       return;
+   }
+    
+   return URL.replace("...", service.id);
+}*/
+
 
 var getPreviousCall = function(URL, entityName){
     var index = URL.indexOf(entityName);
