@@ -108,7 +108,10 @@
 
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <br />
-        <div ng-class="progressVisibility"> <md-progress-linear md-mode="indeterminate"></md-progress-linear> </div>
+        <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
+            <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
+            <span layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"> {{duration}} </span>
+        </div>
         
         
         <md-tabs md-dynamic-height md-selected=selectedIndex>
@@ -123,7 +126,7 @@
         </md-tabs>
         
         <br />
-        <div id="adminConsent" layout="row" layout-align="center center" ng-show="insufficientPrivileges">
+        <div id="adminConsent" layout="row" layout-align="start center" ng-show="insufficientPrivileges">
             <span flex=75> You don't have privileges to complete this query. Are you an admin? </span>
             <md-button ng-click="addAdminScopes()"> YES </md-button>
             <md-button ng-click="getAdminTennant()"> NO </md-button>

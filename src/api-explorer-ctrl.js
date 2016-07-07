@@ -228,14 +228,15 @@ angular.module('ApiExplorer')
         
     }]);
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', '$mdToast', function ($scope, $log, apiService, ngProgressFactory, $mdToast){
-    $scope.duration = "";
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', function ($scope, $log, apiService, ngProgressFactory){
+    $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.history = [];
     $scope.historySelected = null;
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
+    $scope.durationVisibility = "hidden";
     $scope.entityItem = null;
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
@@ -343,11 +344,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
                 } else if (isHtmlResponse(headers)) {  
-                    handleHtmlResponse($scope, startTime, results, headers, $mdToast, status);
+                    handleHtmlResponse($scope, startTime, results, headers, status);
                 } else if (isXmlResponse(results)) {
-                    handleXmlResponse($scope, startTime, results, headers, $mdToast, status);
+                    handleXmlResponse($scope, startTime, results, headers, status);
                 } else {
-                    handleJsonResponse($scope, startTime, results, headers, $mdToast, status);
+                    handleJsonResponse($scope, startTime, results, headers,status);
 //                  dynamicallyPopulateURLsForEntitySets(apiService, results);
                 }
 
@@ -362,7 +363,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
                 $scope.insufficientPrivileges = false;
             }).error(function (err, status) {
-                handleJsonResponse($scope, startTime, err, null, $mdToast, status);
+                handleJsonResponse($scope, startTime, err, null, status);
                 historyObj.success = "error";
                 historyObj.statusCode = status;
                 $scope.hasAResponse = true;
