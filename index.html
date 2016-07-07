@@ -121,6 +121,13 @@
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
             </md-tab>
         </md-tabs>
+        
+        <br />
+        <div id="adminConsent" layout="row" layout-align="center center" ng-show="insufficientPrivileges">
+            <span flex=75> You don't have privileges to complete this query. Are you an admin? </span>
+            <md-button ng-click="addAdminScopes()"> YES </md-button>
+            <md-button ng-click="getAdminTennant()"> NO </md-button>
+        </div>
 
     </div>
 

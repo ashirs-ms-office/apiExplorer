@@ -239,6 +239,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.entityItem = null;
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
+    $scope.insufficientPrivileges = false;
     
     $scope.getText = function(){
         return apiService.text;
@@ -359,6 +360,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     setEntity($scope.entityItem, apiService, $log, true);
                 }
 
+                $scope.insufficientPrivileges = false;
             }).error(function (err, status) {
                 handleJsonResponse($scope, startTime, err, null, $mdToast, status);
                 historyObj.success = "error";
@@ -366,6 +368,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 $scope.hasAResponse = true;
                 if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
                     setEntity($scope.entityItem, apiService, $log, false);
+                }
+                
+                if(status === 401 || status === 403){
+                    $scope.insufficientPrivileges = true;
                 }
             });
 

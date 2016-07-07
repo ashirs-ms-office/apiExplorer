@@ -1,5 +1,6 @@
 body {
     padding-top: 70px;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
 .nav,
@@ -81,6 +82,12 @@ body {
 
 .main-query{
     width: 100%;
+}
+
+#adminConsent{
+    background-color: #4685e2;
+    color: #FFFFFF;
+    padding-left: 1em;
 }
 
 .panel-heading{
