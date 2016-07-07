@@ -30,6 +30,7 @@ angular.module('ApiExplorer')
                 initializeJsonEditor($scope);
             }
         });
+        
 
         $scope.login = function () {
             adalService.login();
@@ -228,7 +229,7 @@ angular.module('ApiExplorer')
         
     }]);
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', function ($scope, $log, apiService, ngProgressFactory){
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', function ($scope, $log, apiService, ngProgressFactory, adalService){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
@@ -284,6 +285,17 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     }
     
+    
+    $scope.addAdminScopes = function(){
+        adalService.config.scope = ["https://graph.microsoft.com/user.read.All",
+                                    "https://graph.microsoft.com/user.readWrite.All",
+                                    "https://graph.microsoft.com/directory.read.All",
+                                    "https://graph.microsoft.com/directory.readWrite.All",
+                                    "https://graph.microsoft.com/directory.accessAsUser.All",
+                                    "https://graph.microsoft.com/group.read.All",
+                                    "https://graph.microsoft.com/group.readWrite.All"];
+        adalService.login();                                                                                                      
+    }
     
     $scope.requestBodyDisabled = function(){
          if((apiService.selectedOption == "POST") || (apiService.selectedOption == "PATCH")){
