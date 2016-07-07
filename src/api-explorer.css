@@ -49,7 +49,7 @@ body {
 }
 
 #duration {
-    border: 1px dotted #808080;
+    /*border: 1px dotted #808080;*/
     padding: 5px;
     color: #4685e2;
     margin: 10px;
