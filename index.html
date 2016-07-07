@@ -32,22 +32,7 @@
         <form class="main-query">
                    
         <div layout="row" layout-align="start center">
-          <md-menu>
-             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0">
-                 History 
-             </md-button>
-             <md-menu-content width="6">
-                 <md-menu-item ng-repeat="call in history">
-                     <md-button ng-value={{call}} ng-click="historyOnClick(call)">
-                        {{call.urlText }}
-                         <span flex></span>
-                         <div ng-class="call.success"> 
-                             {{call.statusCode}}
-                         </div>
-                      </md-button>
-                 </md-menu-item>
-             </md-menu-content>
-          </md-menu>
+          
 
             
          <md-menu ng-controller="VersionCtrl">
@@ -80,7 +65,22 @@
             </md-menu-content>
         </md-menu>
             
-            
+            <md-menu>
+             <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" >
+                 <img class="historyIcon" src = "./icons/VSO_History_16x.svg">
+             </md-button>
+             <md-menu-content width="6">
+                 <md-menu-item ng-repeat="call in history">
+                     <md-button ng-value={{call}} ng-click="historyOnClick(call)">
+                        {{call.urlText }}
+                         <span flex></span>
+                         <div ng-class="call.success"> 
+                             {{call.statusCode}}
+                         </div>
+                      </md-button>
+                 </md-menu-item>
+             </md-menu-content>
+          </md-menu>
        
            <md-autocomplete flex
                              md-selected-item="text" 

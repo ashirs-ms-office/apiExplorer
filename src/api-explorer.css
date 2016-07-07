@@ -105,6 +105,11 @@ body {
     font-size:18px;
 }
 
+.historyIcon{
+    min-height: 100%;
+    min-width: 100%;
+}
+
 /* css classses for coloring back links based on success/failure */
 .success{
     color: #92C700;
