@@ -27,8 +27,9 @@
        <div layout="row" layout-align="space-around center">
        <span flex=45> Version: </span>
        <md-menu ng-controller="VersionCtrl">
-            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+            <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                    {{getServiceVersion()}}
+                  <span> &or; </span>
             </md-button>
            <md-menu-content>
                <md-menu-item ng-repeat="choice in items">
