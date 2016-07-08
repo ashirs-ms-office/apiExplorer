@@ -1,5 +1,5 @@
 angular.module('ApiExplorer')
-    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', '$mdDialog', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, $mdDialog, apiService) {
+    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
         
         $scope.showJsonEditor = apiService.showJsonEditor;
@@ -229,7 +229,15 @@ angular.module('ApiExplorer')
         
     }]);
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', function ($scope, $log, apiService, ngProgressFactory, adalService){
+function DialogController($scope, $mdDialog) {
+
+  $scope.cancel = function() {
+    $mdDialog.cancel();
+  };
+
+}
+
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
@@ -242,6 +250,15 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
+    
+    $scope.openSettings = function(){
+        $mdDialog.show({
+            templateUrl: "settings.html",
+            controller: DialogController,
+            clickOutsideToClose:true,
+        });
+    }
+    
     
     $scope.getText = function(){
         return apiService.text;
@@ -287,6 +304,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     
     
     $scope.addAdminScopes = function(){
+        $log.log("requesting admin priviliges");
         adalService.config.scope = ["https://graph.microsoft.com/user.read.All",
                                     "https://graph.microsoft.com/user.readWrite.All",
                                     "https://graph.microsoft.com/directory.read.All",
