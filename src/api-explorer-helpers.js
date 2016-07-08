@@ -322,6 +322,7 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     }
     
     var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[prevCallName];
+    var entityType = service.cache.get(service.selectedVersion + "EntityTypeData")[prevCallName]; 
     var twoPrevEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[twoPrevCallsName];
     var twoPrevEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[twoPrevCallsName];
     var collection = false;
@@ -341,7 +342,7 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
         }
     }
     
-    service.entityNameIsAnId = (entitySet && lastCallSuccessful && (prevCallName != "me")) || (collection && lastCallSuccessful);
+    service.entityNameIsAnId = (((entitySet && !entityType) || (entitySet && twoPrevCallsName === service.selectedVersion))&& lastCallSuccessful && (prevCallName != "me")) || (collection && lastCallSuccessful);
     
     if(service.entityNameIsAnId){
            $log.log("entity name is an id");
@@ -357,10 +358,16 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
         //if(!entityItem){
               var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
               var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
-              if(isEntitySet){
+              if(isEntitySet && !isEntityType){
                   entityItem = isEntitySet;
-              }else if(isEntityType){
+              }else if(isEntityType && !isEntitySet){
                   entityItem = isEntityType;
+              }else if(isEntitySet && isEntityType){
+                   if(prevCallName === service.selectedVersion){
+                       entityItem = isEntitySet
+                   }else{
+                       entityItem = isEntityType;
+                   }
               }
         //}
         service.entity = entityItem;
