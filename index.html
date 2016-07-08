@@ -71,8 +71,8 @@
         </md-menu>
             
             <md-menu>
-             <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" >
-                 <img class="historyIcon" src = "./icons/VSO_History_16x.svg">
+             <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
+                 <img class="historyIcon" src = "./icons/VSO_History_16x.svg" >
              </md-button>
              <md-menu-content width="6">
                  <md-menu-item ng-repeat="call in history">
@@ -96,17 +96,21 @@
                              md-item-text="item.autocompleteVal" 
                              md-min-length="0" 
                              md-selected-item-change="$parent.selectedItemChange(item)">
-
+               
+         
                <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
+
          </md-autocomplete>
             
        
         <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
-            Go </md-button>     
-        <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
+
+            Go 
+
+        </md-button>     
+         <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
                login to use the graph explorer! 
          </md-tooltip> 
-            
          </div>
         </form>
         </div>   
@@ -114,7 +118,7 @@
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
             <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
-            <span layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"> {{duration}} </span>
+            <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"> {{duration}} </span>
         </div>
         
         

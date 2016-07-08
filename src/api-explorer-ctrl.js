@@ -255,7 +255,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $mdDialog.show({
             templateUrl: "settings.html",
             controller: DialogController,
-            clickOutsideToClose:true,
+            clickOutsideToClose:true
         });
     }
     
