@@ -305,7 +305,6 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     
     
    if(getEntityName(service.text) == service.selectedVersion){
-             service.entity = "topLevel";
              return;
     }else{
        var entityName = getEntityName(service.text);
@@ -388,7 +387,8 @@ var parseMetadata = function(service, $log, $scope){
                 service.cache.put(service.selectedVersion + "EntityTypeData", entityTypeData);
                 $log.log("metadata successfully parsed");
                 if(service.entity == ""){
-                   service.entity = "topLevel";
+                   service.entity = {};
+                   service.entity.name = service.selectedVersion;
                 }
           $scope.$root.$broadcast("updateUrlOptions");
          }).error(function(err, status){

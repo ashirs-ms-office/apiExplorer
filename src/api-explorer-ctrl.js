@@ -140,6 +140,14 @@ angular.module('ApiExplorer')
          this.searchText = $scope.text;
     });
         
+    $scope.searchTextChange = function(searchText){
+        if((searchText.charAt(searchText.length-1) === '/') && (getEntityName(searchText) !== apiService.entity.name)){
+            $log.log(getEntityName(searchText))
+            $log.log(apiService.entity.name);
+            $log.log("SWITCH");
+        }
+    }
+        
         $scope.urlHashFunction = function(urlObj){
             var hash = urlObj.autocompleteVal.length;
             for(var i=0; i<urlObj.name.length; i++){
@@ -161,7 +169,7 @@ angular.module('ApiExplorer')
         $scope.$on("updateUrlOptions", function(){
             $log.log("updating url options");
             $log.log(apiService.entity);
-            if(apiService.entity === "topLevel"){
+            if(apiService.entity && apiService.entity.name === apiService.selectedVersion){
                  $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
                  apiService.entity.name = apiService.selectedVersion;
             }else if(apiService.entity != null){
