@@ -55,6 +55,7 @@ angular.module('ApiExplorer')
             
             getMetadata: function(){
                  return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+
             }
         };
     }]);

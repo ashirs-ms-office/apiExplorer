@@ -167,8 +167,6 @@ var getContentType = function(headers) {
 }
 
 
-
-
 var getEntitySets = function(XML, $log){
     var entitySetArray = {};
     var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;

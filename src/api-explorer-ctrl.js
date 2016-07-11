@@ -79,13 +79,12 @@ angular.module('ApiExplorer')
 
                 }
             }
-        });
-
- }]);  
-
-
+        }
+    });  
+        
 angular.module('ApiExplorer')
     .controller('VersionCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'adalAuthenticationService', function ($scope, $log, apiService, adalService) {
+        $scope.selectedVersion = "Version";
 
         $scope.selectedVersion = apiService.selectedVersion;
         
@@ -353,6 +352,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             setEntity($scope.entityItem, apiService, $log);
         }*/
 
+
         if ($scope.userInfo.isAuthenticated) {
             $scope.progressVisibility = "not-hidden";
 
@@ -396,6 +396,30 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 $scope.hasAResponse = true;
                 
                 
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                    setEntity($scope.entityItem, apiService, $log, true);
+                }
+
+            }).error(function (err, status) {
+                handleJsonResponse($scope, startTime, err, null, $mdToast, status);
+                historyObj.success = "error";
+                historyObj.statusCode = status;
+                $scope.hasAResponse = true;
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                    setEntity($scope.entityItem, apiService, $log, false);
+                }
+            });
+
+            $scope.selectedIndex = 0;
+            //add history object to the array
+            $scope.history.unshift(historyObj);
+        }else{
+            //user is not logged in
+            $log.log("not logged in");
+            $scope.showLoginToast();
+        }
+    };
+}]);
                 if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
                     setEntity($scope.entityItem, apiService, $log, true);
                 }
