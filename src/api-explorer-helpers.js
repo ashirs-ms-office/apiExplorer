@@ -56,19 +56,13 @@ var formatXml = function (xml) {
 
     return formatted;
 };
-var showDuration = function($scope, startTime, $mdToast) {
+var showDuration = function($scope, startTime) {
     var endTime = new Date();
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
-    $mdToast.show(
-        $mdToast.simple().
-        textContent($scope.duration).
-        hideDelay(0).
-        position('bottom right')
-    );
-    $scope.progressVisibility = "hidden";
 
-    //$scope.progressbar.complete();
+    $scope.progressVisibility = "hidden";
+    $scope.durationVisibility = "not-hidden";
 }
 
 
@@ -115,23 +109,23 @@ var handleImageResponse = function ($scope, apiService, headers, status) {
     });
 }
 
-var handleHtmlResponse = function ($scope, startTime, results, headers, $mdToast, status){
+var handleHtmlResponse = function ($scope, startTime, results, headers,  status){
     setJsonViewerContentType("html");
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
-var handleJsonResponse = function ($scope, startTime, results, headers, $mdToast, status){
+var handleJsonResponse = function ($scope, startTime, results, headers, status){
     setJsonViewerContentType("json");
     results = JSON.stringify(results, null, 4);
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
-var handleXmlResponse = function ($scope, startTime, results, headers, $mdToast, status) {
+var handleXmlResponse = function ($scope, startTime, results, headers,  status) {
     setJsonViewerContentType("xml");
     results = formatXml(results);
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
@@ -182,7 +176,6 @@ var getEntitySets = function(XML, $log){
            type = type.substring(index+6, type.length-2);
            EntitySet.entityType = type;
            entitySetArray[EntitySet.name] = EntitySet;
-           //entitySetArray.push(EntitySet);
     }
     return entitySetArray;
 }
@@ -249,17 +242,6 @@ var getEntityTypes = function(XML, $log){
     return entityTypesArray;
 }
 
-/*var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
-    if(service.entity != null && service.entity.isEntitySet){
-        service.entity.URLS = [];
-        for(var i=0; i<jsonObj.value.length && i<10; i++){
-            var urlObject = {};
-            urlObject.name = jsonObj.value[i].id;
-            service.entity.URLS.push(urlObject);
-        }
-    }
-}*/
-    
 var myTrim = function(word){
       var returnWord = word;
       if(returnWord != null){
@@ -277,14 +259,6 @@ var getEntityName = function(URL){
      }
      return returnWord;
 }
-/*
-var unshortenURL = function(URL, service){
-   if(!URL){
-       return;
-   }
-    
-   return URL.replace("...", service.id);
-}*/
 
 
 var getPreviousCall = function(URL, entityName){
@@ -350,9 +324,7 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
                typeName = entitySet.entityType; 
            }
            service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
-          // service.entity = "id";
     }else{
-        //if(!entityItem){
               var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
               var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
               if(isEntitySet && !isEntityType){
@@ -366,7 +338,6 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
                        entityItem = isEntityType;
                    }
               }
-        //}
         service.entity = entityItem;
     }
 }
@@ -384,10 +355,9 @@ var parseMetadata = function(service, $log, $scope){
                 entityTypeData = getEntityTypes(results, $log);
                 service.cache.put(service.selectedVersion + "EntityTypeData", entityTypeData);
                 $log.log("metadata successfully parsed");
-                if(service.entity == ""){
-                   service.entity = {};
-                   service.entity.name = service.selectedVersion;
-                }
+                var entityObj = {};
+                entityObj.name = service.selectedVersion;
+                service.entity = entityObj;
           $scope.$root.$broadcast("updateUrlOptions");
          }).error(function(err, status){
                  $log.log("metadata could not be parsed");
@@ -396,9 +366,3 @@ var parseMetadata = function(service, $log, $scope){
           $scope.$root.$broadcast("updateUrlOptions");
      }
 }
-
-var replaceEntityWithEllipses = function(val){
-    
-    return "REPLACED";
-}
-    
