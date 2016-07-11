@@ -47,6 +47,10 @@ angular.module('ApiExplorer')
     
         $scope.selectedOption = apiService.selectedOption;
 
+        $scope.onItemClick = function(choice){
+            $scope.selectedOption = choice;
+        }
+
         $scope.items = [
             'GET',
             'POST',
@@ -74,12 +78,12 @@ angular.module('ApiExplorer')
                 }
             }
         });
-            
-
     }]);  
         
 angular.module('ApiExplorer')
     .controller('VersionCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'adalAuthenticationService', function ($scope, $log, apiService, adalService) {
+
+        $scope.selectedVersion = "Version";
 
         $scope.selectedVersion = apiService.selectedVersion;
         
@@ -152,6 +156,16 @@ angular.module('ApiExplorer')
         $scope.urlArray = [];
         $scope.urlArrayHash = {};
     });
+        
+   $scope.urlHashFunction = function(urlObj){
+            var hash = urlObj.autocompleteVal.length;
+            for(var i=0; i<urlObj.name.length; i++){
+                hash += urlObj.name.charCodeAt(i);
+            }
+            
+            return hash;
+   }
+        
 
 
     $scope.$on("updateUrlOptions", function(){
@@ -225,7 +239,6 @@ angular.module('ApiExplorer')
          }
          return [obj];
      }
-
  }
         
 }]);
@@ -244,7 +257,13 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.hasAResponse = false;
     
     $scope.getText = function(){
-
+        return apiService.text;
+    }
+    
+    $scope.$watch("getText()", function(event, args) {
+         $scope.text = apiService.text;
+    });
+ 
         return apiService.text;
     }
     
@@ -299,13 +318,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     
     $scope.submit = function (query) {
 
-
         if(!query){
             return;
         }
         
         apiService.text = query;
-
         
         
         $log.log("submitting " + apiService.text);
@@ -329,10 +346,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $scope.showJsonViewer = true;
             $scope.showImage = false;
 
+
             var postBody = "";
             if ($scope.jsonEditor != undefined) {
                 postBody = $scope.jsonEditor.getSession().getValue();
-
             }
             var startTime = new Date();
             var endTime = null;

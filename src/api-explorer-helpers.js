@@ -60,6 +60,8 @@ var showDuration = function($scope, startTime) {
     var endTime = new Date();
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
+
+
     $scope.progressVisibility = "hidden";
     $scope.durationVisibility = "not-hidden";
 }
@@ -161,7 +163,6 @@ var getContentType = function(headers) {
 
 
 
-
 var getEntitySets = function(XML, $log){
     var entitySetArray = {};
     var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;
@@ -251,8 +252,6 @@ var myTrim = function(word){
           }
           return returnWord; 
       }
-
-
 } 
 
 var getEntityName = function(URL){
@@ -275,7 +274,6 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     if(service.selectedOption != "GET"){
         return;
     }
-
     $log.log("setting entity to");
     
     
@@ -312,7 +310,6 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
             if(twoPrevEntityType.URLS[i].name == prevCallName){
                 collection = twoPrevEntityType.URLS[i].isACollection;
                 var collectionType = twoPrevEntityType.URLS[i].type;
-
             }
         }
     }
@@ -370,4 +367,3 @@ var parseMetadata = function(service, $log, $scope){
           $scope.$root.$broadcast("updateUrlOptions");
      }
 }
-

@@ -121,15 +121,6 @@ body {
     padding-left: 10px;
 }
 
-.md-toolbar-tools{
-    background-color: #0078d7;
-}
-
-/*.linear-color {
-    //doesn't work :(
-    color: #0078d7; 
-}*/
-
 .hidden{
     visibility: hidden;
 }
@@ -141,5 +132,3 @@ body {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
-
-
