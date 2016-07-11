@@ -5,7 +5,6 @@ angular.module('ApiExplorer')
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
-
         initializeJsonViewer($scope, run, apiService, $log);
         if($scope.userInfo.isAuthenticated){
             parseMetadata(apiService, $log, $scope);
@@ -47,6 +46,7 @@ angular.module('ApiExplorer')
     
         $scope.selectedOption = apiService.selectedOption;
 
+
         $scope.onItemClick = function(choice){
             $scope.selectedOption = choice;
         }
@@ -65,6 +65,7 @@ angular.module('ApiExplorer')
         $scope.getOption = function(){
                 return $scope.selectedOption;
         }
+
         $scope.$watch("getOption()", function(newVal, oldVal) {
             if(oldVal !== newVal){
                 $log.log("switching to: " + $scope.selectedOption);
@@ -105,7 +106,6 @@ angular.module('ApiExplorer')
             $scope.selectedVersion = choice;
             apiService.selectedVersion = choice;
         }
-
         $scope.$watch("getVersion()", function(newVal, oldVal) {
             if(oldVal !== newVal){
                 apiService.selectedVersion = $scope.selectedVersion;
@@ -128,6 +128,7 @@ angular.module('ApiExplorer')
         
         $scope.getEntity = function(){
             return apiService.entity;
+
         }
 
         $scope.getText = function(){
@@ -166,7 +167,6 @@ angular.module('ApiExplorer')
             return hash;
    }
         
-
 
     $scope.$on("updateUrlOptions", function(){
         $log.log("updating url options");
@@ -264,13 +264,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
          $scope.text = apiService.text;
     });
  
-        return apiService.text;
-    }
-    
-    $scope.$watch("getText()", function(event, args) {
-         $scope.text = apiService.text;
-    });
-
     // custom link re-routing logic to resolve links
     $scope.$parent.$on("urlChange", function (event, args) {
         msGraphLinkResolution($scope, $scope.$parent.jsonViewer.getSession().getValue(), args, apiService);
