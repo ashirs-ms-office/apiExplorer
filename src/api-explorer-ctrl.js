@@ -141,6 +141,15 @@ angular.module('ApiExplorer')
          this.searchText = $scope.text;
     });
         
+   $scope.searchTextChange = function(searchText){
+        if(searchText.charAt(searchText.length-1) === "/" && getEntityName(searchText) !== apiService.entity.name){
+            if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                apiService.text = searchText;
+                setEntity(getEntityName(searchText), apiService, $log, true);
+            }
+        }
+   }
+   
    $scope.urlHashFunction = function(urlObj){
             var hash = urlObj.autocompleteVal.length;
             for(var i=0; i<urlObj.name.length; i++){
@@ -224,7 +233,6 @@ angular.module('ApiExplorer')
 
 
    $scope.getMatches = function(query) {
-
      if(apiService.cache.get(apiService.selectedVersion + "EntitySetData") && apiService.selectedOption == "GET"){
           return $scope.urlArray.filter( function(option){
 
@@ -373,7 +381,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 
                 
                 if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
-                    setEntity($scope.entityItem, apiService, $log, true);
+                    setEntity($scope.entityItem, apiService, $log, true, apiService.text);
                 }
 
             }).error(function (err, status) {
@@ -382,7 +390,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 historyObj.statusCode = status;
                 $scope.hasAResponse = true;
                 if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
-                    setEntity($scope.entityItem, apiService, $log, false);
+                    setEntity($scope.entityItem, apiService, $log, false, apiService.text);
                 }
             });
 
