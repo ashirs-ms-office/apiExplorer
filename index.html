@@ -37,7 +37,7 @@
         <div layout="row" layout-align="start center">
             
         <!-- History button -->
-        <md-menu>
+        <md-menu md-offset="0 45">
          <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length<=1" aria-label="history">
               <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
          </md-button>
@@ -55,10 +55,10 @@
        </md-menu>
 
          <!-- Version Button -->
-         <md-menu  ng-controller="VersionCtrl">
+         <md-menu md-offset="0 45" ng-controller="VersionCtrl">
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                    {{getServiceVersion()}}
-                   <span> &or; </span>
+                <span> &or; </span>
             </md-button>
            <md-menu-content>
                <md-menu-item ng-repeat="choice in items">
@@ -70,7 +70,7 @@
        </md-menu>
             
         <!-- HTTP verb button -->
-        <md-menu  ng-controller="DropdownCtrl">
+        <md-menu md-offset="0 45" ng-controller="DropdownCtrl">
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                   {{getServiceOption()}}
                   <span> &or; </span>
