@@ -3,9 +3,13 @@
 
 <head>
     <title>Microsoft Graph Explorer</title>
+<!-- <script>
+    if (window.location.protocol != "https:")
+    window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+    </script>-->
 </head>
 
-<body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document">
+<body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document" ng-cloak>
     <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
         <div class="container">
             <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
@@ -26,80 +30,110 @@
             </div>
         </div>
     </nav>
-
-    <!--    move this into the controller-->
-    <div ng-controller="datalistCtrl">
-        <datalist id="requestList">
-            <option data-ng-repeat="ttl in urlOptions" value="{{ttl}}">
-        </datalist>
-    </div>
-
+    <br />
     <div class="container body-content" ng-controller="FormCtrl">
-        <div class="input-group">
-            <div class="input-group-btn" ng-controller="DropdownCtrl">
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="http-verb-button" type="button" class="btn btn-default" ng-bind="$parent.selectedOptions" uib-dropdown-toggle>
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="choice in items">
-                            <a ng-click="OnItemClick(choice)">{{choice}}</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="back-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="history.length == 0"> 
-                            Back <span class="caret"> </span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="call in history | orderBy:'id':true track by $index">
-                            <a ng-click="historyOnClick(call)" ng-class="call.success"> {{call.urlText}} </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <form class="main-query" ng-submit="submit()">
-                <!--    the style addition is for compatibility with IE11-->
-                <input type="text" ng-model="text" name="text" class="form-control" placeholder="query" list="requestList" id="queryBar" style="height: 38px" autocomplete="off" />
-            </form>
-            <div class="input-group-btn" id="duration" ng-show="showDuration">
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="timeButton" type="button" class="btn btn-default" ng-model="duration" name="duration">
-                        {{duration}}
-                    </button>
-                </div>
-            </div>
-            <div class="input-group-btn" ng-controller="VersionCtrl" >
-                <div class="btn-group" uib-dropdown on-toggle="toggled(open)">
-                    <button id="version-button" type="button" class="btn btn-default" ng-bind="$parent.$parent.selectedVersion" uib-dropdown-toggle >
-                         <span class="caret"></span>
-                    </button>
-                    <ul class="uib-dropdown-menu">
-                        <li ng-repeat="choice in items">
-                            <a ng-click="OnItemClick(choice)">{{choice}}</a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <button id="go-button" type="button" class="btn btn-default"  ng-click="submit()" ng-disabled="!userInfo.isAuthenticated"> Go </button>
-            </div>
-        </div>
+        <div class="autocomplete" ng-controller="datalistCtrl">
+        <form class="main-query">
+                   
+        <div layout="row" layout-align="start center">
+          <md-menu>
+             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0">
+                 History 
+             </md-button>
+             <md-menu-content width="6">
+                 <md-menu-item ng-repeat="call in history">
+                     <md-button ng-value={{call}} ng-click="historyOnClick(call)">
+                        {{call.urlText }}
+                         <span flex></span>
+                         <div ng-class="call.success"> 
+                             {{call.statusCode}}
+                         </div>
+                      </md-button>
+                 </md-menu-item>
+             </md-menu-content>
+          </md-menu>
+
+         <md-menu  ng-controller="VersionCtrl">
+            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+                   {{getServiceVersion()}}
+            </md-button>
+           <md-menu-content>
+               <md-menu-item ng-repeat="choice in items">
+                     <md-button ng-click="onItemClick(choice)">
+                         {{choice}}
+                     </md-button>
+               </md-menu-item>
+           </md-menu-content>
+       </md-menu>
+            
+        <md-menu  ng-controller="DropdownCtrl">
+            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
+                  {{getServiceOption()}}
+            </md-button>
+             <md-menu-content>
+<!--
+                <md-select id="http-verb-button" ng-model="selectedOption">
+-->                        <md-menu-item ng-repeat="choice in items">
+                    <md-button ng-click="onItemClick(choice)">
+                       {{ choice }}
+                   </md-button>
+                 </md-menu-item>
+                <!--</md-select>-->
+            </md-menu-content>
+        </md-menu>
+            
+            
+       
+           <md-autocomplete flex
+                             role="combobox"
+                             md-selected-item="text" 
+                             md-no-cache="true"
+                             md-search-text="searchText" 
+                             md-search-text-change="searchTextChange(searchText)"
+                             md-items="item in getMatches(searchText)" 
+                             md-item-text="item.autocompleteVal" 
+                             md-min-length="0" 
+                             md-selected-item-change="$parent.selectedItemChange(item)">
+
+               <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
+         </md-autocomplete>
+            
+       
+        <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
+            Go </md-button>     
+        <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
+               login to use the graph explorer! 
+         </md-tooltip> 
+            
+         </div>
+        </form>
+        </div>   
+
         <img id="img" width="250px" height="250px" ng-show="showImage" />
-        <div id="jsonEditor" ng-show="showJsonEditor"></div>
-        <div id="jsonViewer" ng-show="showJsonViewer"></div>
-        <br/>
-        <uib-accordion>
-            <uib-accordion-group heading="Response Headers" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
-                <pre id="responseHeaderDetails">{{responseHeaders}}</pre>
-            </uib-accordion-group>
-        </uib-accordion>
+        <br />
+        <div ng-class="progressVisibility"> <md-progress-linear md-mode="indeterminate"></md-progress-linear> </div>
+        
+        
+        <md-tabs md-dynamic-height md-selected=selectedIndex>
+            <md-tab label="response"> 
+                <md-tab-body>
+                    <div id="jsonViewer" ng-show="showJsonViewer"></div>
+                </md-tab-body>
+            </md-tab>
+            <md-tab label="request body" ng-disabled="requestBodyDisabled()">
+                <div id="jsonEditor" ng-show="showJsonEditor"></div>
+            </md-tab>
+        </md-tabs>
 
     </div>
 
     <!--    scripts are loaded here-->
     <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
     <link rel="stylesheet" href="./src/api-explorer.css">
     <link rel="stylesheet" href="./bower_components/ngprogress/ngProgress.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+   
     <!-- Ace not available currently on bower -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
     <script src="./src/api-explorer-helpers.js"></script>
@@ -110,10 +144,17 @@
     <script src="./bower_components/angular-route/angular-route.min.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="./bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+    <scipt src="./lib/angular-mocks.js"></scipt>
+
+     <!-- Angular Material Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
     <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal.min.js"></script>
     <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal-angular.min.js"></script>
 
     <script src="./bower_components/ngprogress/build/ngprogress.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js"></script>
 
     <script src="./src/api-explorer-init.js"></script>
     <script src="./src/api-explorer-app.js"></script>

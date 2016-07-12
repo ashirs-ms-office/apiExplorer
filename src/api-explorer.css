@@ -9,10 +9,31 @@ body {
     cursor: pointer;
 }
 
+.md-tab{
+    height: 65vh;
+}
+
+.md-button{
+    padding: 0 0 0 0;
+    border-radius: 0px;
+}
+
+.md-menu{
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
 
 #jsonViewer {
     position: relative;
     height: 65vh;
+    background: rgb(230, 230, 230);
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    margin-top: 10px;
+}
+
+#responseHeaders{
+    position: relative;
     background: rgb(230, 230, 230);
     border: 1px solid #ccc;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
@@ -27,24 +48,13 @@ body {
     margin-top: 10px;
 }
 
-#timeButton {
+#duration {
     border-radius: 0;
     background: rgb(256, 256, 256);
     border-right: 1px solid #ccc;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
 }
-
-#history-button{
-    border-radius: 0;
-    border-left: 0;
-}
-
-#version-button{
-    border-radius:0;
-    border-right: 0;
-}
-
 
 #queryBar {
     border-right: 0;
@@ -70,6 +80,10 @@ body {
     color: #333;
 }
 
+.main-query{
+    width: 100%;
+}
+
 .panel-heading{
     color: #333;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -87,9 +101,27 @@ body {
 
 /* css classses for coloring back links based on success/failure */
 .success{
-    color: green;
+    color: #92C700;
+    padding-left: 20px;
+    border-left: 2px solid #808080;
 }
 
 .error{
-    color: red;
+    color: #FF6A00;
+    padding-left: 20px;
+    border-left: 2px solid #808080;
 }
+
+.hidden{
+    visibility: hidden;
+}
+
+.not-hidden{
+     visibility: visible;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+

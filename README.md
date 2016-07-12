@@ -7,4 +7,3 @@ This app is hosted on:
 https://graphexplorer2.azurewebsites.net
 
 https://graph.microsoft.io/en-us/graph-explorer .
-
