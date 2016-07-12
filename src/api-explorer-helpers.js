@@ -353,9 +353,12 @@ var parseMetadata = function(service, $log, $scope){
                 entityTypeData = getEntityTypes(results, $log);
                 service.cache.put(service.selectedVersion + "EntityTypeData", entityTypeData);
                 $log.log("metadata successfully parsed");
-                var entityObj = {};
-                entityObj.name = service.selectedVersion;
-                service.entity = entityObj;
+                if(service.entity == ""){
+                    var entityObj = {};
+                    entityObj.name = service.selectedVersion;
+                    service.entity = entityObj;    
+                }
+                
           $scope.$root.$broadcast("updateUrlOptions");
          }).error(function(err, status){
                  $log.log("metadata could not be parsed");

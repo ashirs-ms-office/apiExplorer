@@ -110,11 +110,7 @@ angular.module('ApiExplorer')
             if(oldVal !== newVal){
                 apiService.selectedVersion = $scope.selectedVersion;
                 $log.log("switching to: " + apiService.selectedVersion);
-                $scope.$root.$broadcast("clearUrlOptions");
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
-                var entityObj = {};
-                entityObj.name = apiService.selectedVersion
-                apiService.entity = entityObj;
                 parseMetadata(apiService, $log, $scope);
             }
         });
