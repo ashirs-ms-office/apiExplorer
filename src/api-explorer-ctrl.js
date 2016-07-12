@@ -256,6 +256,12 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
     
+    $scope.historyHeading = {};
+    $scope.historyHeading.urlText = "Query";
+    $scope.historyHeading.statusCode = "Status Code";
+    $scope.history.push($scope.historyHeading);
+    
+    
     $scope.getText = function(){
         return apiService.text;
     }
@@ -271,6 +277,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     
     //function called when link in the back button history is clicked
     $scope.historyOnClick = function(input){
+        if(input.urlText == "Query"){
+            return;
+        }
+        
         if($scope.userInfo.isAuthenticated){
             $scope.text = input.urlText;
             apiService.selectedVersion = input.selectedVersion;
@@ -378,7 +388,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
             $scope.selectedIndex = 0;
             //add history object to the array
-            $scope.history.unshift(historyObj);
+            $scope.history.splice(1, 0, historyObj);
         }else{
             //user is not logged in
             $log.log("not logged in");

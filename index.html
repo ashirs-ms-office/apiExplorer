@@ -35,6 +35,24 @@
         <div class="autocomplete" ng-controller="datalistCtrl" role="form">
         <form class="main-query">
         <div layout="row" layout-align="start center">
+            
+        <!-- History button -->
+        <md-menu>
+         <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length<=1" aria-label="history">
+              <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
+         </md-button>
+         <md-menu-content width="6">
+             <md-menu-item ng-repeat="call in history">
+                 <md-button ng-value={{call}} ng-click="historyOnClick(call)">
+                    {{call.urlText }}
+                     <span flex></span>
+                     <div ng-class="call.success"> 
+                         {{call.statusCode}}
+                     </div>
+                  </md-button>
+             </md-menu-item>
+         </md-menu-content>
+       </md-menu>
 
          <!-- Version Button -->
          <md-menu  ng-controller="VersionCtrl">
@@ -66,23 +84,7 @@
             </md-menu-content>
         </md-menu>
             
-        <!-- History button -->
-        <md-menu>
-         <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
-              <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
-         </md-button>
-         <md-menu-content width="6">
-             <md-menu-item ng-repeat="call in history">
-                 <md-button ng-value={{call}} ng-click="historyOnClick(call)">
-                    {{call.urlText }}
-                     <span flex></span>
-                     <div ng-class="call.success"> 
-                         {{call.statusCode}}
-                     </div>
-                  </md-button>
-             </md-menu-item>
-         </md-menu-content>
-       </md-menu>
+        
        
          
         <!-- autocomplete -->
