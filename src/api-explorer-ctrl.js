@@ -70,7 +70,7 @@ angular.module('ApiExplorer')
             if(oldVal !== newVal){
                 $log.log("switching to: " + $scope.selectedOption);
                 apiService.selectedOption = $scope.selectedOption;
-                apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/";
+                apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                     apiService.showJsonEditor = true;
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
@@ -143,7 +143,7 @@ angular.module('ApiExplorer')
         
    $scope.searchTextChange = function(searchText){
         if(searchText.charAt(searchText.length-1) === "/" && getEntityName(searchText) !== apiService.entity.name){
-            if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+            if(apiService.cache.get(apiService.selectedVersion + "Metadata") ){
                 apiService.text = searchText;
                 setEntity(getEntityName(searchText), apiService, $log, true);
             }
@@ -223,6 +223,8 @@ angular.module('ApiExplorer')
                  $scope.urlArray.push($scope.urlOptions[x]);
             }
         }
+        
+        angular.element(window).triggerHandler('resize');
     });
 
     $scope.$watch("getEntity()", function(event, args){
@@ -233,7 +235,8 @@ angular.module('ApiExplorer')
 
 
    $scope.getMatches = function(query) {
-     if(apiService.cache.get(apiService.selectedVersion + "EntitySetData") && apiService.selectedOption == "GET"){
+       $log.log("getting matches");
+     if(apiService.cache.get(apiService.selectedVersion + "EntitySetData")){
           return $scope.urlArray.filter( function(option){
 
               var queryInOption = (option.autocompleteVal.indexOf(query)>-1);

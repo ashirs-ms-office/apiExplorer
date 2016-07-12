@@ -271,9 +271,6 @@ var getPreviousCall = function(URL, entityName){
 
 var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     
-    if(service.selectedOption != "GET"){
-        return;
-    }
     $log.log("setting entity to");
     
     
