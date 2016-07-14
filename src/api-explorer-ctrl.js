@@ -221,7 +221,6 @@ angular.module('ApiExplorer')
             }
         }
         
-        angular.element(window).triggerHandler('resize');
     });
 
     $scope.$watch("getEntity()", function(event, args){

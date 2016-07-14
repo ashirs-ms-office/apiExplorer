@@ -4,7 +4,7 @@ angular.module('ApiExplorer')
     .factory('ApiExplorerSvc', ['$http', '$cacheFactory', function ($http, $cacheFactory) {
         return {
             
-            text: 'https://graph.microsoft.com/v1.0/',
+            text: 'https://graph.microsoft.com/v1.0/me',
             
             selectedVersion: "v1.0",
             
