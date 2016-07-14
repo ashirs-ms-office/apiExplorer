@@ -1,5 +1,3 @@
-
-
 <md-dialog flex=25>
     <md-toolbar>
        <div class="md-toolbar-tools">
@@ -26,7 +24,7 @@
     <div layout="column">
        <div layout="row" layout-align="space-around center">
        <span  tabindex=0 flex=45> Version: </span>
-       <md-menu ng-controller="VersionCtrl">
+       <md-menu md-offset="0 45" ng-controller="VersionCtrl">
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                    {{getServiceVersion()}}
                   <span> &or; </span>
