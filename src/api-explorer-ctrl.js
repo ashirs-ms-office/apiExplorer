@@ -1,5 +1,5 @@
 angular.module('ApiExplorer')
-    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', '$mdDialog', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, $mdDialog, apiService) {
+    .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
         
         $scope.showJsonEditor = apiService.showJsonEditor;
@@ -30,6 +30,7 @@ angular.module('ApiExplorer')
                 initializeJsonEditor($scope);
             }
         });
+        
 
         $scope.login = function () {
             adalService.login();
@@ -260,17 +261,36 @@ angular.module('ApiExplorer')
         
     }]);
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', '$mdToast', function ($scope, $log, apiService, ngProgressFactory, $mdToast){
-    $scope.duration = "";
+function DialogController($scope, $mdDialog) {
+
+  $scope.cancel = function() {
+    $mdDialog.cancel();
+  };
+
+}
+
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
+    $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.history = [];
     $scope.historySelected = null;
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
+    $scope.durationVisibility = "hidden";
     $scope.entityItem = null;
     $scope.selectedIndex = 0;
     $scope.hasAResponse = false;
+    $scope.insufficientPrivileges = false;
+    
+    $scope.openSettings = function(){
+        $mdDialog.show({
+            templateUrl: "settings.html",
+            controller: DialogController,
+            clickOutsideToClose:true
+        });
+    }
+    
     
     $scope.getText = function(){
         return apiService.text;
@@ -314,6 +334,18 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     }
     
+    
+    $scope.addAdminScopes = function(){
+        $log.log("requesting admin priviliges");
+        adalService.config.scope = ["https://graph.microsoft.com/user.read.All",
+                                    "https://graph.microsoft.com/user.readWrite.All",
+                                    "https://graph.microsoft.com/directory.read.All",
+                                    "https://graph.microsoft.com/directory.readWrite.All",
+                                    "https://graph.microsoft.com/directory.accessAsUser.All",
+                                    "https://graph.microsoft.com/group.read.All",
+                                    "https://graph.microsoft.com/group.readWrite.All"];
+        adalService.login();                                                                                                      
+    }
     
     $scope.requestBodyDisabled = function(){
          if((apiService.selectedOption == "POST") || (apiService.selectedOption == "PATCH")){
@@ -375,11 +407,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
                 } else if (isHtmlResponse(headers)) {  
-                    handleHtmlResponse($scope, startTime, results, headers, $mdToast, status);
+                    handleHtmlResponse($scope, startTime, results, headers, status);
                 } else if (isXmlResponse(results)) {
-                    handleXmlResponse($scope, startTime, results, headers, $mdToast, status);
+                    handleXmlResponse($scope, startTime, results, headers, status);
                 } else {
-                    handleJsonResponse($scope, startTime, results, headers, $mdToast, status);
+                    handleJsonResponse($scope, startTime, results, headers,status);
 //                  dynamicallyPopulateURLsForEntitySets(apiService, results);
                 }
 
@@ -392,13 +424,18 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                     setEntity($scope.entityItem, apiService, $log, true);
                 }
 
+                $scope.insufficientPrivileges = false;
             }).error(function (err, status) {
-                handleJsonResponse($scope, startTime, err, null, $mdToast, status);
+                handleJsonResponse($scope, startTime, err, null, status);
                 historyObj.success = "error";
                 historyObj.statusCode = status;
                 $scope.hasAResponse = true;
                 if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
                     setEntity($scope.entityItem, apiService, $log, false);
+                }
+                
+                if(status === 401 || status === 403){
+                    $scope.insufficientPrivileges = true;
                 }
             });
 

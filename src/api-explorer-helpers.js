@@ -56,17 +56,12 @@ var formatXml = function (xml) {
 
     return formatted;
 };
-var showDuration = function($scope, startTime, $mdToast) {
+var showDuration = function($scope, startTime) {
     var endTime = new Date();
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
-    $mdToast.show(
-        $mdToast.simple().
-        textContent($scope.duration).
-        hideDelay(0).
-        position('bottom right')
-    );
     $scope.progressVisibility = "hidden";
+    $scope.durationVisibility = "not-hidden";
 
     //$scope.progressbar.complete();
 }
@@ -115,23 +110,23 @@ var handleImageResponse = function ($scope, apiService, headers, status) {
     });
 }
 
-var handleHtmlResponse = function ($scope, startTime, results, headers, $mdToast, status){
+var handleHtmlResponse = function ($scope, startTime, results, headers, status){
     setJsonViewerContentType("html");
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
-var handleJsonResponse = function ($scope, startTime, results, headers, $mdToast, status){
+var handleJsonResponse = function ($scope, startTime, results, headers, status){
     setJsonViewerContentType("json");
     results = JSON.stringify(results, null, 4);
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
-var handleXmlResponse = function ($scope, startTime, results, headers, $mdToast, status) {
+var handleXmlResponse = function ($scope, startTime, results, headers, status) {
     setJsonViewerContentType("xml");
     results = formatXml(results);
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 

@@ -10,7 +10,7 @@
 </head>
 
 <body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document" ng-cloak>
-    <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+    <nav class="navbar navbar-fixed-top navbar-dark bg-inverse" role="banner">
         <div class="container">
             <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
                 &#9776;
@@ -32,28 +32,18 @@
     </nav>
     <br />
     <div class="container body-content" ng-controller="FormCtrl">
-        <div class="autocomplete" ng-controller="datalistCtrl">
+        <div class="autocomplete" ng-controller="datalistCtrl" role="form">
         <form class="main-query">
                    
         <div layout="row" layout-align="start center">
-          <md-menu>
-             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0">
-                 History 
-             </md-button>
-             <md-menu-content width="6">
-                 <md-menu-item ng-repeat="call in history">
-                     <md-button ng-value={{call}} ng-click="historyOnClick(call)">
-                        {{call.urlText }}
-                         <span flex></span>
-                         <div ng-class="call.success"> 
-                             {{call.statusCode}}
-                         </div>
-                      </md-button>
-                 </md-menu-item>
-             </md-menu-content>
-          </md-menu>
+          
 
+<<<<<<< HEAD
          <md-menu  ng-controller="VersionCtrl">
+=======
+            
+        <!-- <md-menu ng-controller="VersionCtrl">
+>>>>>>> incrementalAuthBranch
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
                    {{getServiceVersion()}}
             </md-button>
@@ -64,11 +54,16 @@
                      </md-button>
                </md-menu-item>
            </md-menu-content>
-       </md-menu>
+       </md-menu>-->
             
-        <md-menu  ng-controller="DropdownCtrl">
-            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
-                  {{getServiceOption()}}
+        <md-button class="md-raised" ng-click="openSettings()">
+               Settings     
+        </md-button>
+            
+        <md-menu ng-controller="DropdownCtrl">
+            <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
+                {{getServiceOption()}}
+               <span> &or; </span>
             </md-button>
              <md-menu-content>
 <!--
@@ -82,7 +77,22 @@
             </md-menu-content>
         </md-menu>
             
-            
+            <md-menu>
+             <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
+                 <img class="historyIcon" src = "./icons/VSO_History_16x.svg" >
+             </md-button>
+             <md-menu-content width="6">
+                 <md-menu-item ng-repeat="call in history">
+                     <md-button ng-value={{call}} ng-click="historyOnClick(call)">
+                            {{call.urlText }}
+                             <span flex></span>
+                             <div ng-class="call.success"> 
+                                 {{call.statusCode}}
+                             </div>
+                      </md-button>
+                 </md-menu-item>
+             </md-menu-content>
+          </md-menu>
        
            <md-autocomplete flex
                              role="combobox"
@@ -94,24 +104,30 @@
                              md-item-text="item.autocompleteVal" 
                              md-min-length="0" 
                              md-selected-item-change="$parent.selectedItemChange(item)">
-
+               
+         
                <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
+
          </md-autocomplete>
             
        
         <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
-            Go </md-button>     
-        <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
+
+            Go 
+
+        </md-button>     
+         <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
                login to use the graph explorer! 
          </md-tooltip> 
-            
          </div>
         </form>
         </div>   
 
         <img id="img" width="250px" height="250px" ng-show="showImage" />
-        <br />
-        <div ng-class="progressVisibility"> <md-progress-linear md-mode="indeterminate"></md-progress-linear> </div>
+        <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
+            <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
+            <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"> {{duration}} </span>
+        </div>
         
         
         <md-tabs md-dynamic-height md-selected=selectedIndex>
@@ -124,6 +140,13 @@
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
             </md-tab>
         </md-tabs>
+        
+        <br />
+        <div id="adminConsent" layout="row" layout-align="start center" ng-show="insufficientPrivileges">
+            <span flex=75> You don't have privileges to complete this query. Are you an admin? </span>
+            <md-button ng-click="addAdminScopes()"> YES </md-button>
+            <md-button ng-click="getAdminTennant()"> NO </md-button>
+        </div>
 
     </div>
 
@@ -150,8 +173,8 @@
 
      <!-- Angular Material Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
-    <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal.min.js"></script>
-    <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/adal-angular.min.js"></script>
+    <script src="./bower_components/adal-angular-experimental/lib/adal-angular.js"></script>
+    <script src="./bower_components/adal-angular-experimental/lib/adal.js"></script>
 
     <script src="./bower_components/ngprogress/build/ngprogress.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.2.min.js"></script>
