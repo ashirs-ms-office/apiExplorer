@@ -258,6 +258,20 @@ function DialogController($scope, $mdDialog) {
 
 }
 
+angular.module('ApiExplorer')
+.directive('onEnter', function () {
+    return function ($scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                $scope.$apply(function (){
+                   $scope.submit($scope.text);
+                });
+                event.preventDefault();
+            }
+        });
+    };
+});
+
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
@@ -280,6 +294,13 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         });
     }
     
+    $scope.openLoginDialog = function(){
+        $mdDialog.show({
+            templateUrl: "login.html",
+            controller: DialogController,
+            clickOutsideToClose:true
+        });
+    }
     
     $scope.historyHeading = {};
     $scope.historyHeading.urlText = "Query";
@@ -434,7 +455,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }else{
             //user is not logged in
             $log.log("not logged in");
-            $scope.showLoginToast();
+            $scope.openLoginDialog(); 
         }
 
     };

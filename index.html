@@ -84,7 +84,7 @@
                              md-items="item in getMatches(searchText)" 
                              md-item-text="item.autocompleteVal" 
                              md-min-length="0" 
-                             md-selected-item-change="$parent.selectedItemChange(item)">
+                             md-selected-item-change="$parent.selectedItemChange(item)" on-enter>
                
          
                <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
@@ -92,11 +92,10 @@
          </md-autocomplete>
             
        
-        <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
-
+         <md-button class="md-raised" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
             Go 
-
-        </md-button>     
+         </md-button>     
+            
          <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
                login to use the graph explorer! 
          </md-tooltip> 

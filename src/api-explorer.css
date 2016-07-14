@@ -126,6 +126,9 @@ body {
     padding-left: 10px;
 }
 
+.loginDialog{
+    padding: 5%;
+}
 
 .hidden{
     visibility: hidden;
