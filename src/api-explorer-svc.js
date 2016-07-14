@@ -22,6 +22,7 @@ angular.module('ApiExplorer')
             
             entityNameIsAnId: false,
             
+
             performQuery: function (queryType) {
                 if (queryType == "GET") {
                     return function (query, postString) {
@@ -55,6 +56,7 @@ angular.module('ApiExplorer')
             
             getMetadata: function(){
                  return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+
             }
         };
     }]);

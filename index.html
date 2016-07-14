@@ -34,62 +34,48 @@
     <div class="container body-content" ng-controller="FormCtrl">
         <div class="autocomplete" ng-controller="datalistCtrl" role="form">
         <form class="main-query">
-                   
         <div layout="row" layout-align="start center">
-          
 
-        <!-- <md-menu ng-controller="VersionCtrl">
-            <md-button class="md-raised" ng-click="$mdOpenMenu($event)">
-                   {{getServiceVersion()}}
-            </md-button>
-           <md-menu-content>
-               <md-menu-item ng-repeat="choice in items">
-                     <md-button ng-click="onItemClick(choice)">
-                         {{choice}}
-                     </md-button>
-               </md-menu-item>
-           </md-menu-content>
-       </md-menu>-->
+        <!-- History button -->
+        <md-menu md-offset="0 45">
+         <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length<=1" aria-label="history">
+              <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
+         </md-button>
+         <md-menu-content width="6">
+             <md-menu-item ng-repeat="call in history">
+                 <md-button ng-value={{call}} ng-click="historyOnClick(call)">
+                    {{call.urlText }}
+                     <span flex></span>
+                     <div ng-class="call.success"> 
+                         {{call.statusCode}}
+                     </div>
+                  </md-button>
+             </md-menu-item>
+         </md-menu-content>
+       </md-menu>
+
             
         <md-button class="md-raised" ng-click="openSettings()">
                Settings     
         </md-button>
             
-        <md-menu ng-controller="DropdownCtrl">
+        <md-menu md-offset="0 45" ng-controller="DropdownCtrl">
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                 {{getServiceOption()}}
                <span> &or; </span>
             </md-button>
              <md-menu-content>
-<!--
-                <md-select id="http-verb-button" ng-model="selectedOption">
--->                        <md-menu-item ng-repeat="choice in items">
+                       <md-menu-item ng-repeat="choice in items">
                     <md-button ng-click="onItemClick(choice)">
                        {{ choice }}
                    </md-button>
                  </md-menu-item>
-                <!--</md-select>-->
             </md-menu-content>
         </md-menu>
             
-            <md-menu>
-             <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
-                 <img class="historyIcon" src = "./icons/VSO_History_16x.svg" >
-             </md-button>
-             <md-menu-content width="6">
-                 <md-menu-item ng-repeat="call in history">
-                     <md-button ng-value={{call}} ng-click="historyOnClick(call)">
-                            {{call.urlText }}
-                             <span flex></span>
-                             <div ng-class="call.success"> 
-                                 {{call.statusCode}}
-                             </div>
-                      </md-button>
-                 </md-menu-item>
-             </md-menu-content>
-          </md-menu>
-       
-           <md-autocomplete flex
+         
+        <!-- autocomplete -->
+        <md-autocomplete flex
                              role="combobox"
                              md-selected-item="text" 
                              md-no-cache="true"
@@ -118,6 +104,8 @@
         </form>
         </div>   
 
+        
+        <!-- progress bar and duration -->
         <img id="img" width="250px" height="250px" ng-show="showImage" />
         <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
             <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
@@ -125,6 +113,7 @@
         </div>
         
         
+        <!-- response and request --> 
         <md-tabs md-dynamic-height md-selected=selectedIndex>
             <md-tab label="response"> 
                 <md-tab-body>
@@ -135,14 +124,12 @@
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
             </md-tab>
         </md-tabs>
-        
         <br />
         <div id="adminConsent" layout="row" layout-align="start center" ng-show="insufficientPrivileges">
             <span flex=75> You don't have privileges to complete this query. Are you an admin? </span>
             <md-button ng-click="addAdminScopes()"> YES </md-button>
             <md-button ng-click="getAdminTennant()"> NO </md-button>
         </div>
-
     </div>
 
     <!--    scripts are loaded here-->
