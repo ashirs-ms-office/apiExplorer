@@ -22,7 +22,7 @@
                         <a class="nav-link" href="https://msdn.microsoft.com/en-us/Library/Azure/Ad/Graph/api/api-catalog">Documentation</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" ng-show="userInfo.isAuthenticated">{{userInfo.userName}}</a>
+                        <a class="nav-link" tabindex=0 ng-show="userInfo.isAuthenticated">{{userInfo.userName}}</a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" ng-show="userInfo.isAuthenticated" ng-click="logout()">Logout</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" ng-hide="userInfo.isAuthenticated" ng-click="login()">Login</a></li>
@@ -125,7 +125,7 @@
         </md-tabs>
         <br />
         <div id="adminConsent" layout="row" layout-align="start center" ng-show="insufficientPrivileges">
-            <span flex=75> You don't have privileges to complete this query. Are you an admin? </span>
+            <span tabindex=0 flex=75> You don't have privileges to complete this query. Are you an admin? </span>
             <md-button ng-click="addAdminScopes()"> YES </md-button>
             <md-button href="http://dev.office.com/devprogram"> NO </md-button>
         </div>
