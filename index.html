@@ -9,7 +9,7 @@
     </script>-->
 </head>
 
-<body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document" ng-cloak>
+<body ng-app="ApiExplorer" ng-controller="ApiExplorerCtrl" role="document">
     <nav class="navbar navbar-fixed-top navbar-dark bg-inverse" role="banner">
         <div class="container">
             <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
@@ -22,10 +22,10 @@
                         <a class="nav-link" href="https://msdn.microsoft.com/en-us/Library/Azure/Ad/Graph/api/api-catalog">Documentation</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" tabindex=0 ng-show="userInfo.isAuthenticated">{{userInfo.userName}}</a>
+                        <a class="nav-link" tabindex=0 ng-show="userInfo.isAuthenticated" ng-cloak>{{userInfo.userName}}</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#" ng-show="userInfo.isAuthenticated" ng-click="logout()">Logout</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#" ng-hide="userInfo.isAuthenticated" ng-click="login()">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" ng-show="userInfo.isAuthenticated" ng-click="logout()" ng-cloak>Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" ng-hide="userInfo.isAuthenticated" ng-click="login()" ng-cloak>Login</a></li>
                 </ul>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div layout="row" layout-align="start center">
 
         <!-- History button -->
-        <md-menu md-offset="0 45">
+        <md-menu md-offset="0 45" ng-cloak>
          <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length<=1" aria-label="history">
               <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
          </md-button>
@@ -55,11 +55,11 @@
        </md-menu>
 
             
-        <md-button class="md-raised" ng-click="openSettings()">
+        <md-button class="md-raised" ng-click="openSettings()" ng-cloak>
                Settings     
         </md-button>
             
-        <md-menu md-offset="0 45" ng-controller="DropdownCtrl">
+        <md-menu md-offset="0 45" ng-controller="DropdownCtrl" ng-cloak>
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                 {{getServiceOption()}}
                <span> &or; </span>
@@ -84,18 +84,18 @@
                              md-items="item in getMatches(searchText)" 
                              md-item-text="item.autocompleteVal" 
                              md-min-length="0" 
-                             md-selected-item-change="$parent.selectedItemChange(item)" on-enter>
+                             md-selected-item-change="$parent.selectedItemChange(item)" on-enter ng-cloak>
             
                <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
 
          </md-autocomplete>
             
        
-         <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
+         <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated" ng-cloak> 
             Go 
          </md-button>     
             
-         <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated">
+         <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated" ng-cloak>
                login to use the graph explorer! 
          </md-tooltip> 
          </div>
@@ -104,15 +104,15 @@
 
         
         <!-- progress bar and duration -->
-        <img id="img" width="250px" height="250px" ng-show="showImage" />
+        <img id="img" width="250px" height="250px" ng-show="showImage"  ng-cloak/>
         <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
             <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
-            <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"> {{duration}} </span>
+            <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility" ng-cloak> {{duration}} </span>
         </div>
         
         
         <!-- response and request --> 
-        <md-tabs md-dynamic-height md-selected=selectedIndex>
+        <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
             <md-tab label="response"> 
                 <md-tab-body>
                     <div id="jsonViewer" ng-show="showJsonViewer"></div>
@@ -123,7 +123,7 @@
             </md-tab>
         </md-tabs>
         <br />
-        <div id="adminConsent" layout="row" layout-align="start center" ng-show="insufficientPrivileges">
+        <div id="adminConsent" layout="row" layout-align="start center" ng-show="insufficientPrivileges" ng-cloak>
             <span tabindex=0 flex=75> You don't have privileges to complete this query. Are you an admin? </span>
             <md-button ng-click="addAdminScopes()"> YES </md-button>
             <md-button href="http://dev.office.com/devprogram"> NO </md-button>

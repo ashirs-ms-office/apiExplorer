@@ -29,7 +29,9 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                         scope:["https://graph.microsoft.com/files.read"],
                         scope:["https://graph.microsoft.com/files.readWrite.selected"],
                         scope:["https://graph.microsoft.com/files.read.selected"],
-                        scope:["https://graph.microsoft.com/files.read.all"]
+                        scope:["https://graph.microsoft.com/files.read.all"],
+                        scope:["https://graph.microsoft.com/user.read.All"],
+                        scope:["https://graph.microsoft.com/user.readWrite.All"]
                     }
                 },
             
@@ -47,6 +49,8 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 scope:["https://graph.microsoft.com/files.readWrite.selected"],
                 scope:["https://graph.microsoft.com/files.read.selected"],
                 scope:["https://graph.microsoft.com/files.read.all"],
+                scope:["https://graph.microsoft.com/user.read.All"],
+                scope:["https://graph.microsoft.com/user.readWrite.All"],
                 cacheLocation: 'localStorage'
             },
             $httpProvider
