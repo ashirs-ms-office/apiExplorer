@@ -73,7 +73,9 @@ angular.module('ApiExplorer')
                 apiService.selectedOption = $scope.selectedOption;
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
+                    $scope.setSelectedTab(1);
                     apiService.showJsonEditor = true;
+                    
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                     apiService.showJsonEditor = false;
 
@@ -376,6 +378,14 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
        $scope.entityItem = item; 
     }
     
+    $scope.setSelectedTab = function(num){
+        if(num >= 2 || num < 0){
+            return;
+        }else{
+            $scope.selectedIndex = num;
+        }
+    }
+    
     $scope.submit = function (query) {
 
         if(!query){
@@ -448,7 +458,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
             });
 
-            $scope.selectedIndex = 0;
+            $scope.setSelectedTab(0);
             //add history object to the array
             $scope.history.splice(1, 0, historyObj);
         }else{
