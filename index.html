@@ -85,14 +85,13 @@
                              md-item-text="item.autocompleteVal" 
                              md-min-length="0" 
                              md-selected-item-change="$parent.selectedItemChange(item)" on-enter>
-               
-         
+            
                <span id="autocompleteText" md-highlight-text="searchText" md-highlight-flags="^i">{{item.autocompleteVal}} </span>
 
          </md-autocomplete>
             
        
-         <md-button class="md-raised" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
+         <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated"> 
             Go 
          </md-button>     
             

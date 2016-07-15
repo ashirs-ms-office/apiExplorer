@@ -217,7 +217,7 @@ angular.module('ApiExplorer')
             }else{
                 //if the bucket does not already exist, create a new array and add it
                  $scope.urlArrayHash[hashNumber.toString()] = [$scope.urlOptions[x]];
-                 $scope.urlArray.push($scope.urlOptions[x]);
+                 $scope.urlArray.unshift($scope.urlOptions[x]);
             }
         }
         
@@ -262,7 +262,7 @@ angular.module('ApiExplorer')
 .directive('onEnter', function () {
     return function ($scope, element, attrs) {
         element.bind("keydown keypress", function (event) {
-            if(event.which === 13) {
+            if(event.which === 13 && !$scope.userInfo.isAuthenticated) {
                 $scope.$apply(function (){
                    $scope.submit($scope.text);
                 });
