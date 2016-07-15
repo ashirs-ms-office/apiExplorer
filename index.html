@@ -118,7 +118,7 @@
         <img id="img" width="250px" height="250px" ng-show="showImage"  ng-cloak/>
         <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
             <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
-            <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility" ng-cloak> {{duration}} </span>
+            <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"  aria-label="excecution time {{duration}}" ng-cloak> {{duration}} </span>
         </div>
         
         <!-- admin consent bar -->
