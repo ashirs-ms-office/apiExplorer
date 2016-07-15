@@ -113,11 +113,16 @@ body {
     min-width: 100%;
 }
 
+.historyUrl{
+    padding-right: 10px;
+}
+
 /* css classses for coloring back links based on success/failure */
 .success{
     color: #92C700;
     border-left: 1px solid #808080;
     padding-left: 10px;
+    padding-right: 45px;
 }
 
 .error{

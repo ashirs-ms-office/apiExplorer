@@ -44,7 +44,9 @@
          <md-menu-content width="6">
              <md-menu-item ng-repeat="call in history">
                  <md-button ng-value={{call}} ng-click="historyOnClick(call)">
-                    {{call.urlText }}
+                    <div class="historyUrl">
+                        {{call.urlText }}
+                     </div>
                      <span flex></span>
                      <div ng-class="call.success"> 
                          {{call.statusCode}}
