@@ -55,9 +55,20 @@
        </md-menu>
 
             
-        <md-button class="md-raised" ng-click="openSettings()" ng-cloak>
-               Settings     
-        </md-button>
+             <!-- version button -->
+       <md-menu md-offset="0 45" ng-controller="VersionCtrl" ng-cloak>
+            <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
+                   {{getServiceVersion()}}
+                  <span> &or; </span>
+            </md-button>
+           <md-menu-content>
+               <md-menu-item ng-repeat="choice in items">
+                     <md-button ng-click="onItemClick(choice)">
+                         {{choice}}
+                     </md-button>
+               </md-menu-item>
+           </md-menu-content>
+         </md-menu> 
             
         <md-menu md-offset="0 45" ng-controller="DropdownCtrl" ng-cloak>
             <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
