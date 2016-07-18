@@ -15,44 +15,13 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 tenant: 'common',
                 clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16', //'2e8459fe-87ef-4286-af70-f33a307563aa',
                 endpoints: {
-                    "https://graph.microsoft.com":{
-                        scope:["https://graph.microsoft.com/calendars.read"],
-                        scope:["https://graph.microsoft.com/calendars.readWrite"],
-                        scope:["https://graph.microsoft.com/contacts.read"],
-                        scope:["https://graph.microsoft.com/contacts.readWrite"],
-                        scope:["https://graph.microsoft.com/files.read"],
-                        scope:["https://graph.microsoft.com/files.readWrite.selected"],
-                        scope:["https://graph.microsoft.com/files.read.selected"],
-                        scope:["https://graph.microsoft.com/files.read.all"],
-                        scope:["https://graph.microsoft.com/user.read"],
-                        scope:["https://graph.microsoft.com/user.readWrite"],
-                        scope:["https://graph.microsoft.com/mail.read"],
-                        scope:["https://graph.microsoft.com/mail.readWrite"],
-                        scope:["https://graph.microsoft.com/mail.send"],
-                        
-                       /* scope:["https://graph.microsoft.com/user.readBasic.All"],*/
-                        /*scope:["https://graph.microsoft.com/user.read.All"],
-                        scope:["https://graph.microsoft.com/user.readWrite.All"]*/
-                    }
-                },
-            
+                    "https://graph.microsoft.com" :{
+                    scope:["calendars.readWrite contacts.readWrite files.read.all user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all"] 
+                  } 
                 
-                scope:["https://graph.microsoft.com/calendars.read"],
-                scope:["https://graph.microsoft.com/calendars.readWrite"],
-                scope:["https://graph.microsoft.com/contacts.read"],
-                scope:["https://graph.microsoft.com/contacts.readWrite"],
-                scope:["https://graph.microsoft.com/files.read"],
-                scope:["https://graph.microsoft.com/files.readWrite.selected"],
-                scope:["https://graph.microsoft.com/files.read.selected"],
-                scope:["https://graph.microsoft.com/files.read.all"],
-                scope:["https://graph.microsoft.com/user.read"],
-                scope:["https://graph.microsoft.com/user.readWrite"],
-                scope:["https://graph.microsoft.com/mail.read"],
-                scope:["https://graph.microsoft.com/mail.readWrite"],
-                scope:["https://graph.microsoft.com/mail.send"],
-       /*       scope:["https://graph.microsoft.com/user.readBasic.All"],*/
-/*              scope:["https://graph.microsoft.com/user.read.All"],
-                scope:["https://graph.microsoft.com/user.readWrite.All"],*/
+                }, 
+                scope:["calendars.readWrite contacts.readWrite files.read.all user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all"], 
+
                 cacheLocation: 'localStorage'
             },
             $httpProvider

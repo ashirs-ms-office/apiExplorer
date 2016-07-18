@@ -356,12 +356,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
-        adalService.config.scope = [
-                                    "https://graph.microsoft.com/directory.read.All",
-                                    "https://graph.microsoft.com/directory.readWrite.All",
-                                    "https://graph.microsoft.com/directory.accessAsUser.All",
-                                    "https://graph.microsoft.com/group.read.All",
-                                    "https://graph.microsoft.com/group.readWrite.All"];
+        adalService.config.scope = ["user.readWrite.All directory.readWrite.All group.readWrite.All"];
         adalService.login();                                                                                                      
     }
     
