@@ -36,7 +36,7 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 }, 
                 scope:["calendars.readWrite contacts.readWrite files.read.all user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all"], 
 
-                cacheLocation: 'localStorage'
+                cacheLocation: 'localStorage',
             },
             $httpProvider
         );
