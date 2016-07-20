@@ -2,6 +2,13 @@ angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
         
+        $scope.$on('$locationChangeStart', function (e) {
+                if ($location.path().indexOf('access_token') > -1 ||
+                    $location.path().indexOf('id_token') > -1) {
+                    e.preventDefault();
+                }
+            });
+        
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;

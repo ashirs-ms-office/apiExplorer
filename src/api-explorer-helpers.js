@@ -336,6 +336,8 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
                    }else{
                        entityItem = isEntityType;
                    }
+              }else if(!isEntitySet && !isEntityType){
+                  /*var type = //attribute type, but stripfrom last instance of . */
               }
         service.entity = entityItem;
     }
