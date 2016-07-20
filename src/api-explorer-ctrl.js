@@ -148,7 +148,7 @@ angular.module('ApiExplorer')
     });
         
    $scope.searchTextChange = function(searchText){
-        if(searchText.charAt(searchText.length-1) === "/" && getEntityName(searchText) !== apiService.entity.name){
+        if(searchText.charAt(searchText.length-1) === "/" && apiService.entity && getEntityName(searchText) !== apiService.entity.name){
             if(apiService.cache.get(apiService.selectedVersion + "Metadata") ){
                 apiService.text = searchText;
                 setEntity(getEntityName(searchText), apiService, $log, true);
@@ -191,6 +191,8 @@ angular.module('ApiExplorer')
              apiService.entity.name = apiService.selectedVersion;
         }else if(apiService.entity != null){
             $scope.urlOptions = apiService.entity.URLS;  
+        }else{
+            return;
         }
 
         //for each new URL to add
