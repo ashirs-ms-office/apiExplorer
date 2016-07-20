@@ -218,7 +218,7 @@ var createEntityTypeObject = function(returnArray, DOMarray, $log){
                      var type = children[j].attributes[typeIndex].nodeValue;
                      var index = type.lastIndexOf(".")
                      type = type.substring(index+1, type.length-2);
-                     if(type.charAt[type.length-1] == ")"){
+                     if(type.charAt(type.length-1) == ")"){
                          type = type.substring(0, type.length-1);
                      }
                      var urlObject = {};
@@ -321,7 +321,9 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
            $log.log("entity name is an id");
            var typeName;
            if(collection){
+               $log.log("is a collection");
                typeName = collectionType;
+               $log.log(typeName);
            }else if(entitySet){
                typeName = entitySet.entityType; 
            }
