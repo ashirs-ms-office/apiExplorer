@@ -3,8 +3,8 @@ angular.module('ApiExplorer')
         var expanded = true;
 
         window.addEventListener('storage',function(e){                                                                    
-            $log.log(e.oldValue);
-            $log.log(e.newValue);
+          /*  $log.log(e.oldValue);
+            $log.log(e.newValue);*/
                if(e.storageArea===sessionStorage && e.key == "adal.error" && e.oldValue !== e.newValue && e.newValue === "interaction_required"){
                     adalService.login();
             } 
