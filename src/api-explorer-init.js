@@ -1,6 +1,6 @@
 'use strict';
 
-/*if(window !== window.parent){
+if(window !== window.parent){ 
     angular.module('ApiExplorer', ['AdalAngular'])
     .config(['$httpProvider', 'adalAuthenticationServiceProvider', function ($httpProvider, adalProvider) {
         adalProvider.init(
@@ -11,11 +11,16 @@
           $httpProvider
           );
     }]);
-}else{*/
+}else{
 
 
 angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootstrap', 'ngProgress', 'ngMaterial'])
-    .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$mdThemingProvider', function ($routeProvider, $httpProvider, adalProvider, $mdThemingProvider) {
+    .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$mdThemingProvider', '$locationProvider', function ($routeProvider, $httpProvider, adalProvider, $mdThemingProvider, $locationProvider){
+        
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
 
         $routeProvider.when("/Home", {
             controller: "ApiExplorerCtrl",
@@ -84,7 +89,7 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         $mdThemingProvider.theme('default').accentPalette('O365AccentPalette');
 }]);
     
-/*}*/
+}
 // v2 - 76a89b1b-d49c-42e0-859a-53324fe7eb6a
 //test - ce268d90-5d39-403c-a3a0-8d463140d4a9
 //real - 8a3eb86b-8149-4231-9ff3-3c50958ea0fd

@@ -8,13 +8,20 @@ angular.module('ApiExplorer')
             } 
         });*/
         
-        
+        /*
         $scope.$on('$locationChangeStart', function (e) {
                 if ($location.path().indexOf('access_token') > -1 ||
                     $location.path().indexOf('id_token') > -1) {
                     e.preventDefault();
                 }
-            });
+            });*/
+        
+        var requestVal = $location.search().request;
+        $log.log("request val: ");
+        $log.log(requestVal);
+        if(requestVal){
+            apiService.text = requestVal;
+        }
         
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
