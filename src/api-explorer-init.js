@@ -5,7 +5,6 @@ if(window !== window.parent){
     .config(['$httpProvider', 'adalAuthenticationServiceProvider', function ($httpProvider, adalProvider) {
         adalProvider.init(
           {
-              
                 clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16',
           },
           $httpProvider

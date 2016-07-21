@@ -300,7 +300,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.progressVisibility = "hidden";
     $scope.durationVisibility = "hidden";
     $scope.entityItem = null;
-    $scope.selectedIndex = 0;
+    $scope.selectedIndex = 1;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
     
@@ -469,7 +469,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
             });
 
-            $scope.setSelectedTab(0);
+            $scope.setSelectedTab(1);
             //add history object to the array
             $scope.history.splice(0, 0, historyObj);
         }else{
