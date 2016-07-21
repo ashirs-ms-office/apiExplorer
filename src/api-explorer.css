@@ -125,13 +125,18 @@ body {
     padding-right: 10px;
 }
 
+.historyTable th{
+   color: #707070;
+   font-size: 14px;
+   font-weight: 700;
+}
 
 .historyTable td, .historyTable th{
     padding: 10px;
 }
 
-.historyTable td, .historyTable tr{
-    border: 1px solid #808080;
+.historyTable td, .historyTable tr, .historyTable th{
+    border: 1px dotted #707070;
 }
 
 .historyRow:hover {
