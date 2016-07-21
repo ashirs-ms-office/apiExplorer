@@ -20,9 +20,7 @@ angular.module('ApiExplorer')
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
         initializeJsonViewer($scope, run, apiService, $log);
-        if($scope.userInfo.isAuthenticated){
-            parseMetadata(apiService, $log, $scope);
-        }
+        parseMetadata(apiService, $log, $scope);
         
         $scope.$on("adal:loginSuccess", function () {
             console.log("login success");
@@ -276,7 +274,7 @@ function DialogController($scope, $mdDialog) {
 
 }
 
-angular.module('ApiExplorer')
+/*angular.module('ApiExplorer')
 .directive('onEnter', function () {
     return function ($scope, element, attrs) {
         element.bind("keydown keypress", function (event) {
@@ -288,7 +286,7 @@ angular.module('ApiExplorer')
             }
         });
     };
-});
+});*/
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
     $scope.duration = "15 ms";
@@ -345,28 +343,26 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             return;
         }
         
-        if($scope.userInfo.isAuthenticated){
-            $scope.text = input.urlText;
-            apiService.selectedVersion = input.selectedVersion;
-            apiService.selectedOption = input.htmlOption;
-            
-            if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
-                apiService.showJsonEditor = true;
-                if($scope.jsonEditor){
-                    $scope.jsonEditor.getSession().setValue(input.jsonInput);
-                }else{
-                    $log.log("error: json editor watch event not firing");
-                }
-            }else{
-                //clear jsonEditor
-                if($scope.jsonEditor){
-                    $scope.jsonEditor.getSession().setValue("");
-                }
-                apiService.showJsonEditor = false;
+        $scope.text = input.urlText;
+        apiService.selectedVersion = input.selectedVersion;
+        apiService.selectedOption = input.htmlOption;
 
+        if(input.htmlOption == 'POST' || input.htmlOption == 'PATCH'){
+            apiService.showJsonEditor = true;
+            if($scope.jsonEditor){
+                $scope.jsonEditor.getSession().setValue(input.jsonInput);
+            }else{
+                $log.log("error: json editor watch event not firing");
             }
-            $scope.submit($scope.text);
+        }else{
+            //clear jsonEditor
+            if($scope.jsonEditor){
+                $scope.jsonEditor.getSession().setValue("");
+            }
+            apiService.showJsonEditor = false;
+
         }
+        $scope.submit($scope.text);
     }
     
     
