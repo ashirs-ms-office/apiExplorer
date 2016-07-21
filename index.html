@@ -75,7 +75,7 @@
          </md-menu> 
             
         <md-menu md-offset="0 45" ng-controller="DropdownCtrl" ng-cloak>
-            <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
+            <md-button class="md-raised" ng-disabled="!userInfo.isAuthenticated" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
                 {{getServiceOption()}}
                <span> &#9660;  </span>
             </md-button>
@@ -143,7 +143,6 @@
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
             </md-tab>
         </md-tabs>
-
     </div>
 
     <!--    scripts are loaded here-->
