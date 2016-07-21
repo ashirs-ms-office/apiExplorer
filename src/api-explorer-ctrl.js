@@ -2,13 +2,11 @@ angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
 
-        window.addEventListener('storage',function(e){                                                                    
-          /*  $log.log(e.oldValue);
-            $log.log(e.newValue);*/
+/*        window.addEventListener('storage',function(e){                                                                    
                if(e.storageArea===sessionStorage && e.key == "adal.error" && e.oldValue !== e.newValue && e.newValue === "interaction_required"){
                     adalService.login();
             } 
-        });
+        });*/
         
         
         $scope.$on('$locationChangeStart', function (e) {
