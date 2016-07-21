@@ -76,8 +76,8 @@ var showHeaders = function($scope, headers, status) {
     responseObj["Status Code"] = status;
     var responseHeaders = JSON.stringify(responseObj, null, 4).trim();
     
-    $scope.jsonEditorHeaders.getSession().setValue("");
-    $scope.jsonEditorHeaders.getSession().insert(0, responseHeaders);
+    $scope.jsonViewer.getSession().setValue("");
+    $scope.jsonViewer.getSession().insert(0, responseHeaders);
 }
 
 

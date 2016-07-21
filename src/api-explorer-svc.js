@@ -25,29 +25,30 @@ angular.module('ApiExplorer')
 
             performQuery: function (queryType) {
                 if (queryType == "GET") {
-                    return function (query, postString) {
-                        return $http.get(query);
+                    return function (query, postString, requestHeaders) {
+                        console.log(requestHeaders);
+                        return $http.get(query, {headers : requestHeaders});
                     };
                 }
                 if (queryType == "GET_BINARY") {
-                    return function (query, postString) {
-                        return $http.get(query, {responseType:"arraybuffer"});
+                    return function (query, postString, requestHeaders) {
+                        return $http.get(query, {responseType:"arraybuffer"}, {headers : requestHeaders});
                     };
                 }
                 
                 if (queryType == "POST") {
-                    return function (query, postString) {
-                        return $http.post(query, postString, {headers : "Content-Type:application/json"});
+                    return function (query, postString, requestHeaders) {
+                        return $http.post(query, postString, {headers : requestHeaders});
                     };
                 }
                 if (queryType == "PATCH") {
-                    return function (query, postString) {
-                        return $http.patch(query, postString, {headers : "Content-Type:application/json"});
+                    return function (query, postString, requestHeaders) {
+                        return $http.patch(query, postString,{headers : requestHeaders});
                     };
                 }
                 if (queryType == "DELETE") {
-                    return function (query, postString) {
-                        return $http.delete(query);
+                    return function (query, postString, requestHeaders) {
+                        return $http.delete(query, {headers : requestHeaders});
                     };
                 }
                 

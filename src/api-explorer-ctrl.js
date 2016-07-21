@@ -88,9 +88,12 @@ angular.module('ApiExplorer')
                 apiService.selectedOption = $scope.selectedOption;
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                    //$scope.setSelectedTab(1);
                     apiService.showJsonEditor = true;
-                    
+                    $scope.jsonEditorHeaders.getSession().setValue("");
+                    var header = {};
+                    header["Content-Type"] = "application/json"
+                    var requestHeaders = JSON.stringify(header, null, 4).trim();
+                    $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                     apiService.showJsonEditor = false;
 
@@ -432,9 +435,13 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             if ($scope.jsonEditor != undefined) {
                 postBody = $scope.jsonEditor.getSession().getValue();
             }
+            var requestHeaders = "";
+            if($scope.jsonEditorHeaders != undefined){
+                requestHeaders = $scope.jsonEditorHeaders.getSession().getValue();
+            }
             var startTime = new Date();
             var endTime = null;
-            apiService.performQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
+            apiService.performQuery(apiService.selectedOption)(apiService.text, postBody, requestHeaders).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
                 } else if (isHtmlResponse(headers)) {  
