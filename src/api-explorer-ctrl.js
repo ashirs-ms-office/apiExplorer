@@ -8,8 +8,8 @@ angular.module('ApiExplorer')
             } 
         });*/
         
-        /*
-        $scope.$on('$locationChangeStart', function (e) {
+        
+/*        $scope.$on('$locationChangeStart', function (e) {
                 if ($location.path().indexOf('access_token') > -1 ||
                     $location.path().indexOf('id_token') > -1) {
                     e.preventDefault();
@@ -27,6 +27,7 @@ angular.module('ApiExplorer')
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
         initializeJsonViewer($scope, run, apiService, $log);
+        initializeJsonEditorHeaders($scope); 
         parseMetadata(apiService, $log, $scope);
         
         $scope.$on("adal:loginSuccess", function () {
@@ -92,7 +93,7 @@ angular.module('ApiExplorer')
                 apiService.selectedOption = $scope.selectedOption;
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                    $scope.setSelectedTab(1);
+                    //$scope.setSelectedTab(1);
                     apiService.showJsonEditor = true;
                     
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
@@ -300,12 +301,11 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.history = [];
-    $scope.historySelected = null;
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
     $scope.durationVisibility = "hidden";
     $scope.entityItem = null;
-    $scope.selectedIndex = 0;
+    $scope.selectedIndex = 1;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
     
@@ -325,10 +325,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         });
     }
     
-    $scope.historyHeading = {};
+/*    $scope.historyHeading = {};
     $scope.historyHeading.urlText = "Query";
     $scope.historyHeading.statusCode = "Status Code";
-    $scope.history.push($scope.historyHeading);
+    $scope.history.push($scope.historyHeading);*/
     
     
     $scope.getText = function(){
@@ -471,7 +471,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
             });
 
-           
+            $scope.setSelectedTab(1);
+            //add history object to the array
+            $scope.history.splice(0, 0, historyObj);
         }else{
             apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 

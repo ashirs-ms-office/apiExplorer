@@ -1,11 +1,10 @@
 'use strict';
 
-if(window !== window.parent){ 
+if(window !== window.parent){
     angular.module('ApiExplorer', ['AdalAngular'])
     .config(['$httpProvider', 'adalAuthenticationServiceProvider', function ($httpProvider, adalProvider) {
         adalProvider.init(
           {
-              
                 clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16',
           },
           $httpProvider

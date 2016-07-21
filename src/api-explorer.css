@@ -49,6 +49,14 @@ body {
     margin-top: 10px;
 }
 
+#jsonEditorHeaders {
+    position: relative;
+    height: 15vh;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    margin-top: 10px;
+}
+
 #duration {
    padding: 5px;
     color: #4685e2;
@@ -117,19 +125,40 @@ body {
     padding-right: 10px;
 }
 
+.historyTable th{
+   color: #707070;
+   font-size: 14px;
+   font-weight: 700;
+}
+
+.historyTable td, .historyTable th{
+    padding: 10px;
+}
+
+.historyTable td, .historyTable tr, .historyTable th{
+    border: 1px dotted #707070;
+}
+
+.historyRow:hover {
+    background-color: #ECECEC;
+}
+
+.editorLabel p{
+   color: #707070;
+   font-size: 14px;
+   padding-left: 2em;
+   font-weight: 500;
+}
+
+
 /* css classses for coloring back links based on success/failure */
 .success{
     color: #92C700;
-    border-left: 1px solid #808080;
-    padding-left: 10px;
-    padding-right: 45px !important;
 }
 
 .error{
     color: #FF6A00;
     border-left: 1px solid #808080;
-    padding-left: 10px;
-    padding-right: 45px !important;
 }
 
 .loginDialog{
