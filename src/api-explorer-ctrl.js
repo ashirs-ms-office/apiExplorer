@@ -296,7 +296,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.listData = "requestList";
     $scope.photoData = "";
     $scope.history = [];
-    $scope.historySelected = null;
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
     $scope.durationVisibility = "hidden";
@@ -321,10 +320,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         });
     }
     
-    $scope.historyHeading = {};
+/*    $scope.historyHeading = {};
     $scope.historyHeading.urlText = "Query";
     $scope.historyHeading.statusCode = "Status Code";
-    $scope.history.push($scope.historyHeading);
+    $scope.history.push($scope.historyHeading);*/
     
     
     $scope.getText = function(){
@@ -472,7 +471,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
             $scope.setSelectedTab(0);
             //add history object to the array
-            $scope.history.splice(1, 0, historyObj);
+            $scope.history.splice(0, 0, historyObj);
         }else{
             //user is not logged in
             $log.log("not logged in");
