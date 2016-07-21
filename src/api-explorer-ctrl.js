@@ -407,33 +407,32 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         
         $log.log("submitting " + apiService.text);
-        
+        $scope.progressVisibility = "not-hidden";
+
+        //create an object to store the api call
+        var historyObj = {};
+
+        historyObj.urlText = apiService.text;
+        historyObj.selectedVersion = apiService.selectedVersion;
+        historyObj.htmlOption = apiService.selectedOption;
+
+        if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
+            historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
+        }else{
+            historyObj.jsonInput ="";
+        }
+
+        $scope.showJsonViewer = true;
+        $scope.showImage = false;
+
+
+        var postBody = "";
+        if ($scope.jsonEditor != undefined) {
+            postBody = $scope.jsonEditor.getSession().getValue();
+        }
+        var startTime = new Date();
+        var endTime = null;
         if ($scope.userInfo.isAuthenticated) {
-            $scope.progressVisibility = "not-hidden";
-
-            //create an object to store the api call
-            var historyObj = {};
-
-            historyObj.urlText = apiService.text;
-            historyObj.selectedVersion = apiService.selectedVersion;
-            historyObj.htmlOption = apiService.selectedOption;
-
-            if(historyObj.htmlOption == 'POST' || historyObj.htmlOption == 'PATCH'){
-                historyObj.jsonInput = $scope.jsonEditor.getSession().getValue();
-            }else{
-                historyObj.jsonInput ="";
-            }
-
-            $scope.showJsonViewer = true;
-            $scope.showImage = false;
-
-
-            var postBody = "";
-            if ($scope.jsonEditor != undefined) {
-                postBody = $scope.jsonEditor.getSession().getValue();
-            }
-            var startTime = new Date();
-            var endTime = null;
             apiService.performQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
@@ -469,15 +468,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
             });
 
-            $scope.setSelectedTab(0);
-            //add history object to the array
-            $scope.history.splice(1, 0, historyObj);
+           
         }else{
-            //user is not logged in
-           /* $log.log("not logged in");
-            $scope.openLoginDialog();*/ 
-            var startTime = new Date();
-            var endTime = null;
             apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
@@ -488,7 +480,33 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 } else {
                     handleJsonResponse($scope, startTime, results, headers, status);
                 }
+                
+                historyObj.success = "success";
+                historyObj.statusCode = status;
+                $scope.hasAResponse = true;
+                
+                
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                    setEntity($scope.entityItem, apiService, $log, true, apiService.text);
+                }
+
+                $scope.insufficientPrivileges = false;
+           }).error(function (err, status) {
+                handleJsonResponse($scope, startTime, err, null, status);
+                historyObj.success = "error";
+                historyObj.statusCode = status;
+                $scope.hasAResponse = true;
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") && apiService.selectedOption == "GET"){
+                    setEntity($scope.entityItem, apiService, $log, false, apiService.text);
+                }
+                
+                if(status === 401 || status === 403){
+                    $scope.insufficientPrivileges = true;
+                }
             });
-         }
+      }
+      $scope.setSelectedTab(0);
+      //add history object to the array
+      $scope.history.splice(1, 0, historyObj);
     };
 }]);

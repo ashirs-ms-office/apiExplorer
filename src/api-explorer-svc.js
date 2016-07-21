@@ -37,25 +37,57 @@ angular.module('ApiExplorer')
                 }
                 if (queryType == "GET_BINARY") {
                     return function (query, postString) {
-                        return $http.get(query, {responseType:"arraybuffer"});
+                        return $http({
+                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'GET',
+                            headers: {
+                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                                "Accept": "application/json"
+                            },
+                            responseType: "arraybuffer"
+                        });
                     };
                 }
                 
-                if (queryType == "POST") {
+/*                if (queryType == "POST") {
                     return function (query, postString) {
-                        return $http.post(query, postString, {headers : "Content-Type:application/json"});
+                        return $http({
+                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'POST',
+                            headers: {
+                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                                "Content-Type": "application/json",
+                                "Accept": "application/json"
+                            },
+                            data: postString
+                        });
                     };
                 }
                 if (queryType == "PATCH") {
                     return function (query, postString) {
-                        return $http.patch(query, postString, {headers : "Content-Type:application/json"});
+                        return $http({
+                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'PATCH',
+                            headers: {
+                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                                "Content-Type": "application/json",
+                                "Accept": "application/json"
+                            }
+                        });
                     };
                 }
                 if (queryType == "DELETE") {
                     return function (query, postString) {
-                        return $http.delete(query);
+                        return $http({
+                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'DELETE',
+                            headers: {
+                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                                "Accept": "application/json"
+                            }
+                        });
                     };
-                }
+                }*/
                 
                 return null;
             },
