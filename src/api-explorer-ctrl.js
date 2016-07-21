@@ -9,12 +9,12 @@ angular.module('ApiExplorer')
         });*/
         
         
-        $scope.$on('$locationChangeStart', function (e) {
+/*        $scope.$on('$locationChangeStart', function (e) {
                 if ($location.path().indexOf('access_token') > -1 ||
                     $location.path().indexOf('id_token') > -1) {
                     e.preventDefault();
                 }
-            });
+        });*/
         
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;

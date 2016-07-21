@@ -138,6 +138,14 @@ body {
     background-color: #ECECEC;
 }
 
+.editorLabel p{
+   color: #707070;
+   font-size: 14px;
+   padding-left: 2em;
+   font-weight: 500;
+}
+
+
 /* css classses for coloring back links based on success/failure */
 .success{
     color: #92C700;
