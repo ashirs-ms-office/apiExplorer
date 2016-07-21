@@ -32,7 +32,7 @@ angular.module('ApiExplorer')
         
         $scope.$on("adal:loginSuccess", function () {
             console.log("login success");
-            parseMetadata(apiService, $log, $scope);
+            //parseMetadata(apiService, $log, $scope);
 
         });
 

@@ -63,6 +63,7 @@
                 </tr> 
              </table>
              <!--<md-menu-item ng-repeat="call in history">
+
                  <md-button ng-value={{call}} ng-click="historyOnClick(call)">
                     <div class="historyUrl">
                         {{call.urlText }}
@@ -151,11 +152,19 @@
         </div>
         
         <!-- response and request --> 
+<<<<<<< HEAD
         
         <div class="editorLabel" ng-show="showJsonEditor" ng-cloak><p>     REQUEST BODY</p></div>
         <div id="jsonEditor" ng-show="showJsonEditor" ng-cloak></div>
         <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
             <md-tab label="response header"> 
+=======
+        <div id="jsonEditor" ng-show="showJsonEditor" ng-disabled="requestBodyDisabled()" ng-cloak></div>
+        <div id="jsonViewer" ng-show="showJsonViewer" ng-cloak></div>
+        
+<!--        <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
+            <md-tab label="response"> 
+>>>>>>> a2cc7a2d9597efc4770b95badb45943eeda92044
                 <md-tab-body>
                     <div id="jsonEditorHeaders" ng-show="showJsonViewer"></div>
                 </md-tab-body>
@@ -163,7 +172,7 @@
             <md-tab label="response body">
                 <div id="jsonViewer" ng-show="showJsonViewer"></div>
             </md-tab>
-        </md-tabs>
+        </md-tabs>-->
     </div>
 
     <!--    scripts are loaded here-->
