@@ -24,7 +24,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" tabindex=0 ng-show="userInfo.isAuthenticated" ng-cloak>{{userInfo.userName}}</a>
-                        <a class="nav-link" tabindex=0 ng-hide="userInfo.isAuthenticated" ng-cloak> Using sample data </a>
+                        <a class="nav-link" tabindex=0 ng-hide="userInfo.isAuthenticated" ng-cloak>Using sample data</a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#" ng-show="userInfo.isAuthenticated" ng-click="logout()" ng-cloak>Logout</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" ng-hide="userInfo.isAuthenticated" ng-click="login()" ng-cloak>Login</a></li>
@@ -43,7 +43,7 @@
          <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length<=1" aria-label="history">
               <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
          </md-button>
-         <md-menu-content width="6">
+         <md-menu-content width="9">
              <md-menu-item ng-repeat="call in history">
                  <md-button ng-value={{call}} ng-click="historyOnClick(call)">
                     <div class="historyUrl">
