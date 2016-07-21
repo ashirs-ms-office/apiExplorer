@@ -22,6 +22,43 @@ angular.module('ApiExplorer')
             
             entityNameIsAnId: false,
             
+            performAnonymousQuery: function (queryType) {
+                if (queryType == "GET") {
+                    return function (query, postString) {
+                        return $http({
+                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'GET',
+                            headers: {
+                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                                "Accept": "application/json"
+                            }
+                        });
+                    };
+                }
+                if (queryType == "GET_BINARY") {
+                    return function (query, postString) {
+                        return $http.get(query, {responseType:"arraybuffer"});
+                    };
+                }
+                
+                if (queryType == "POST") {
+                    return function (query, postString) {
+                        return $http.post(query, postString, {headers : "Content-Type:application/json"});
+                    };
+                }
+                if (queryType == "PATCH") {
+                    return function (query, postString) {
+                        return $http.patch(query, postString, {headers : "Content-Type:application/json"});
+                    };
+                }
+                if (queryType == "DELETE") {
+                    return function (query, postString) {
+                        return $http.delete(query);
+                    };
+                }
+                
+                return null;
+            },
 
             performQuery: function (queryType) {
                 if (queryType == "GET") {

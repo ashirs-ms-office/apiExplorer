@@ -474,9 +474,21 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             $scope.history.splice(1, 0, historyObj);
         }else{
             //user is not logged in
-            $log.log("not logged in");
-            $scope.openLoginDialog(); 
-        }
-
+           /* $log.log("not logged in");
+            $scope.openLoginDialog();*/ 
+            var startTime = new Date();
+            var endTime = null;
+            apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
+                if (isImageResponse(headers)) { 
+                    handleImageResponse($scope, apiService, headers, status);
+                } else if (isHtmlResponse(headers)) {  
+                    handleHtmlResponse($scope, startTime, results, headers, status);
+                } else if (isXmlResponse(results)) {
+                    handleXmlResponse($scope, startTime, results, headers, status);
+                } else {
+                    handleJsonResponse($scope, startTime, results, headers, status);
+                }
+            });
+         }
     };
 }]);
