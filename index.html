@@ -43,7 +43,7 @@
          <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length<=1" aria-label="history">
               <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
          </md-button>
-         <md-menu-content width="9">
+         <md-menu-content width="6">
              <md-menu-item ng-repeat="call in history">
                  <md-button ng-value={{call}} ng-click="historyOnClick(call)">
                     <div class="historyUrl">
@@ -133,7 +133,10 @@
         </div>
         
         <!-- response and request --> 
-        <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
+        <div id="jsonEditor" ng-show="showJsonEditor" ng-disabled="requestBodyDisabled()" ng-cloak></div>
+        <div id="jsonViewer" ng-show="showJsonViewer" ng-cloak></div>
+        
+<!--        <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
             <md-tab label="response"> 
                 <md-tab-body>
                     <div id="jsonViewer" ng-show="showJsonViewer"></div>
@@ -142,7 +145,7 @@
             <md-tab label="request body" ng-disabled="requestBodyDisabled()">
                 <div id="jsonEditor" ng-show="showJsonEditor"></div>
             </md-tab>
-        </md-tabs>
+        </md-tabs>-->
     </div>
 
     <!--    scripts are loaded here-->
