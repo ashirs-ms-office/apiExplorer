@@ -471,9 +471,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
             });
 
-            $scope.setSelectedTab(1);
-            //add history object to the array
-            $scope.history.splice(0, 0, historyObj);
         }else{
             apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
@@ -510,8 +507,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 }
             });
       }
-      $scope.setSelectedTab(0);
-      //add history object to the array
-      $scope.history.splice(1, 0, historyObj);
+        
+      $scope.history.splice(0, 0, historyObj);
     };
 }]);
