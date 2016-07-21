@@ -132,14 +132,16 @@
         </div>
         
         <!-- response and request --> 
+        
+        <div id="jsonEditor" ng-show="showJsonEditor" ng-cloak></div>
         <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
-            <md-tab label="response"> 
+            <md-tab label="response header"> 
                 <md-tab-body>
-                    <div id="jsonViewer" ng-show="showJsonViewer"></div>
+                    <div id="jsonEditorHeaders" ng-show="showJsonViewer"></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab label="request body" ng-disabled="requestBodyDisabled()">
-                <div id="jsonEditor" ng-show="showJsonEditor"></div>
+            <md-tab label="response body">
+                <div id="jsonViewer" ng-show="showJsonViewer"></div>
             </md-tab>
         </md-tabs>
 

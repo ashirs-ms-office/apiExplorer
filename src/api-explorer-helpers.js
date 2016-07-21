@@ -68,8 +68,6 @@ var showDuration = function($scope, startTime) {
 
 var showHeaders = function($scope, headers, status) {
     
-   
-    
    var responseObj = {};
     if (headers != null) {
         responseObj = headers();
@@ -77,7 +75,7 @@ var showHeaders = function($scope, headers, status) {
     
     responseObj["Status Code"] = status;
     var responseHeaders = JSON.stringify(responseObj, null, 4).trim();
-    $scope.jsonViewer.getSession().insert(0, responseHeaders);
+    $scope.jsonEditorHeaders.getSession().insert(0, responseHeaders);
 }
 
 

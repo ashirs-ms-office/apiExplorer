@@ -20,6 +20,7 @@ angular.module('ApiExplorer')
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
         initializeJsonViewer($scope, run, apiService, $log);
+        initializeJsonEditorHeaders($scope); 
         if($scope.userInfo.isAuthenticated){
             parseMetadata(apiService, $log, $scope);
         }
@@ -87,7 +88,7 @@ angular.module('ApiExplorer')
                 apiService.selectedOption = $scope.selectedOption;
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                    $scope.setSelectedTab(1);
+                    //$scope.setSelectedTab(1);
                     apiService.showJsonEditor = true;
                     
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
