@@ -151,19 +151,25 @@
             <md-button href="http://dev.office.com/devprogram"> NO </md-button>
         </div>
         
-        <!-- response and request --> 
+       <!-- <div class="editorLabel" ng-show="showJsonEditor" ng-cloak><p>     REQUEST BODY</p></div>
+        <div id="jsonEditor" ng-show="showJsonEditor" ng-cloak></div>-->
         
-        <div class="editorLabel" ng-show="showJsonEditor" ng-cloak><p>     REQUEST BODY</p></div>
-        <div id="jsonEditor" ng-show="showJsonEditor" ng-cloak></div>
-        <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
-            <md-tab label="response header"> 
-
+        <!-- request -->
+        <md-tabs md-dynamic-height md-selected=1 ng-cloak>
+            <md-tab label="request header"> 
                 <md-tab-body>
-                    <div id="jsonEditorHeaders" ng-show="showJsonViewer"></div>
+                    <div id="jsonEditorHeaders" ></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab label="response body">
-                <div id="jsonViewer" ng-show="showJsonViewer"></div>
+            <md-tab label="request body" ng-disabled="!showJsonEditor">
+                <div id="jsonEditor" ></div>
+            </md-tab>
+        </md-tabs>
+        <md-tabs md-dynamic-height ng-cloak>
+            <md-tab label="response"> 
+                <md-tab-body>
+                    <div id="jsonViewer" ></div>
+                </md-tab-body>
             </md-tab>
         </md-tabs>
     </div>

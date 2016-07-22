@@ -43,7 +43,6 @@ angular.module('ApiExplorer')
         $scope.$on("adal:loginSuccess", function () {
             console.log("login success");
         });
-
         
         $scope.getEditor = function(){
             return apiService.showJsonEditor;
@@ -101,12 +100,15 @@ angular.module('ApiExplorer')
                 apiService.selectedOption = $scope.selectedOption;
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
-                    //$scope.setSelectedTab(1);
                     apiService.showJsonEditor = true;
-                    
+                    $scope.jsonEditorHeaders.getSession().setValue("");
+                    var header = {};
+                    header["Content-Type"] = "application/json"
+                    var requestHeaders = JSON.stringify(header, null, 4).trim();
+                    $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                     apiService.showJsonEditor = false;
-
+                    $scope.setSelectedTab(1);
                 }
             }
         });
@@ -128,10 +130,9 @@ angular.module('ApiExplorer')
             return $scope.selectedVersion;
         }
         
-      $scope.getServiceVersion = function(){
+       $scope.getServiceVersion = function(){
             return apiService.selectedVersion;
         }
-    
         
         $scope.onItemClick = function(choice){
             $scope.selectedVersion = choice;
@@ -141,7 +142,12 @@ angular.module('ApiExplorer')
             if(oldVal !== newVal){
                 apiService.selectedVersion = $scope.selectedVersion;
                 $log.log("switching to: " + apiService.selectedVersion);
-                apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
+                if($scope.$parent.searchText){
+                    apiService.text = $scope.$parent.searchText.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
+                   /* $scope.$root.$broadcast("clearUrlOptions");*/
+                }else{
+                    apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));    
+                }
                 parseMetadata(apiService, $log, $scope);
             }
         });
@@ -155,130 +161,126 @@ angular.module('ApiExplorer')
         
         $scope.getEntity = function(){
             return apiService.entity;
-
         }
 
         $scope.getText = function(){
             return apiService.text;
         }
         
-    
-    $scope.$watch("getText()", function(event, args) {
-         $scope.text = apiService.text;
-         this.searchText = $scope.text;
-    });
-        
-   $scope.searchTextChange = function(searchText){
-        if(searchText.charAt(searchText.length-1) === "/" && apiService.entity && getEntityName(searchText) !== apiService.entity.name){
-            if(apiService.cache.get(apiService.selectedVersion + "Metadata") ){
-                apiService.text = searchText;
-                setEntity(getEntityName(searchText), apiService, $log, true);
+        $scope.$watch("getText()", function(event, args) {
+             $scope.text = apiService.text;
+             this.searchText = $scope.text;
+        });
+
+       $scope.searchTextChange = function(searchText){
+            this.searchText = searchText;
+            if(searchText.charAt(searchText.length-1) === "/" && apiService.entity && getEntityName(searchText) !== apiService.entity.name){
+                if(apiService.cache.get(apiService.selectedVersion + "Metadata") ){
+                    apiService.text = searchText;
+                    setEntity(getEntityName(searchText), apiService, $log, true);
+                }
             }
-        }
-   }
-   
-   $scope.urlHashFunction = function(urlObj){
+       }
+
+       $scope.urlHashFunction = function(urlObj){
             var hash = urlObj.autocompleteVal.length;
             for(var i=0; i<urlObj.name.length; i++){
                 hash += urlObj.name.charCodeAt(i);
             }
-            
             return hash;
-   }
-        
+       }
 
-    $scope.$on("clearUrlOptions", function(){
-        $log.log("clearing options");
-        $scope.urlOptions = {};
-        $scope.urlArray = [];
-        $scope.urlArrayHash = {};
-    });
-        
-   $scope.urlHashFunction = function(urlObj){
+
+        $scope.$on("clearUrlOptions", function(){
+            $log.log("clearing options");
+            $scope.urlOptions = {};
+            $scope.urlArray = [];
+            $scope.urlArrayHash = {};
+        });
+
+       $scope.urlHashFunction = function(urlObj){
             var hash = urlObj.autocompleteVal.length;
             for(var i=0; i<urlObj.name.length; i++){
                 hash += urlObj.name.charCodeAt(i);
             }
-            
+
             return hash;
-   }
-        
+       }
 
-    $scope.$on("updateUrlOptions", function(){
-        $log.log("updating url options");
-        $log.log(apiService.entity);
-        if(apiService.entity && apiService.entity.name === apiService.selectedVersion){
-             $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
-             apiService.entity.name = apiService.selectedVersion;
-        }else if(apiService.entity != null){
-            $scope.urlOptions = apiService.entity.URLS;  
-        }else{
-            return;
-        }
-
-        //for each new URL to add
-        for(var x in $scope.urlOptions){
-
-            if(apiService.text.charAt((apiService.text).length-1) != '/'){
-                $scope.urlOptions[x].autocompleteVal = apiService.text + '/' + $scope.urlOptions[x].name;
+        $scope.$on("updateUrlOptions", function(){
+            $log.log("updating url options");
+            $log.log(apiService.entity);
+            if(apiService.entity && apiService.entity.name === apiService.selectedVersion){
+                 $scope.urlOptions = apiService.cache.get(apiService.selectedVersion + "EntitySetData");
+                 apiService.entity.name = apiService.selectedVersion;
+            }else if(apiService.entity != null){
+                $scope.urlOptions = apiService.entity.URLS;  
             }else{
-                $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
+                return;
             }
 
-            //find the hash bucket that it would be in
-            var hashNumber = $scope.urlHashFunction($scope.urlOptions[x]);
-            var bucket = $scope.urlArrayHash[hashNumber.toString()];
-            //if it exists
-            if(bucket){
-                var inBucket = false;
-                //for each value already in the hash, 
-                 for(var i=0; i<bucket.length; i++){
-                    //check to see if its the value to add
-                    if(bucket[i].autocompleteVal === $scope.urlOptions[x].autocompleteVal){
-                        inBucket = true;
-                        break;
-                    } 
-                 }
+            //for each new URL to add
+            for(var x in $scope.urlOptions){
 
-                if(!inBucket){
-                    //if its not, add it
-                     bucket.push($scope.urlOptions[x]);
-                     $scope.urlArray.push($scope.urlOptions[x]);
+                if(apiService.text.charAt((apiService.text).length-1) != '/'){
+                    $scope.urlOptions[x].autocompleteVal = apiService.text + '/' + $scope.urlOptions[x].name;
+                }else{
+                    $scope.urlOptions[x].autocompleteVal = apiService.text + $scope.urlOptions[x].name;
                 }
 
-            }else{
-                //if the bucket does not already exist, create a new array and add it
-                 $scope.urlArrayHash[hashNumber.toString()] = [$scope.urlOptions[x]];
-                 $scope.urlArray.unshift($scope.urlOptions[x]);
+                //find the hash bucket that it would be in
+                var hashNumber = $scope.urlHashFunction($scope.urlOptions[x]);
+                var bucket = $scope.urlArrayHash[hashNumber.toString()];
+                //if it exists
+                if(bucket){
+                    var inBucket = false;
+                    //for each value already in the hash, 
+                     for(var i=0; i<bucket.length; i++){
+                        //check to see if its the value to add
+                        if(bucket[i].autocompleteVal === $scope.urlOptions[x].autocompleteVal){
+                            inBucket = true;
+                            break;
+                        } 
+                     }
+
+                    if(!inBucket){
+                        //if its not, add it
+                         bucket.push($scope.urlOptions[x]);
+                         $scope.urlArray.push($scope.urlOptions[x]);
+                    }
+
+                }else{
+                    //if the bucket does not already exist, create a new array and add it
+                     $scope.urlArrayHash[hashNumber.toString()] = [$scope.urlOptions[x]];
+                     $scope.urlArray.unshift($scope.urlOptions[x]);
+                }
             }
-        }
-        
-    });
 
-    $scope.$watch("getEntity()", function(event, args){
-        $log.log("entity changed - changing URLs");
-        $scope.$emit("updateUrlOptions");
+        });
 
-    }, true);
+        $scope.$watch("getEntity()", function(event, args){
+            $log.log("entity changed - changing URLs");
+            $scope.$emit("updateUrlOptions");
+
+        }, true);
 
 
-   $scope.getMatches = function(query) {
-       $log.log("getting matches");
-     if(apiService.cache.get(apiService.selectedVersion + "EntitySetData")){
-          return $scope.urlArray.filter( function(option){
+       $scope.getMatches = function(query) {
+         if(apiService.cache.get(apiService.selectedVersion + "EntitySetData")){
+              return $scope.urlArray.filter( function(option){
 
-              var queryInOption = (option.autocompleteVal.indexOf(query)>-1);
-              var queryIsEmpty = (getEntityName(query).length == 0);
+                  var queryInOption = (option.autocompleteVal.indexOf(query)>-1);
+                  var queryIsEmpty = (getEntityName(query).length == 0);
 
-              return  queryIsEmpty || queryInOption;
-          });
-     }else{
-         var obj = {
-             autocompleteVal: apiService.text
+                  return  queryIsEmpty || queryInOption;
+              });
+         }else{
+             var obj = {
+                 autocompleteVal: apiService.text
+             }
+             return [obj];
          }
-         return [obj];
      }
- }
         
 }]);
 
@@ -426,6 +428,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         var endTime = null;
         if ($scope.userInfo.isAuthenticated) {
             apiService.performQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
+
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
                 } else if (isHtmlResponse(headers)) {  

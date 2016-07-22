@@ -76,8 +76,8 @@ var showHeaders = function($scope, headers, status) {
     responseObj["Status Code"] = status;
     var responseHeaders = JSON.stringify(responseObj, null, 4).trim();
     
-    $scope.jsonEditorHeaders.getSession().setValue("");
-    $scope.jsonEditorHeaders.getSession().insert(0, responseHeaders);
+    $scope.jsonViewer.getSession().setValue("");
+    $scope.jsonViewer.getSession().insert(0, responseHeaders);
 }
 
 
@@ -274,7 +274,6 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     
     $log.log("setting entity to");
     
-    
    if(getEntityName(service.text) == service.selectedVersion){
              var entityObj = {};
              entityObj.name = service.selectedVersion;
@@ -382,6 +381,8 @@ var parseMetadata = function(service, $log, $scope){
                 $log.log("metadata successfully parsed");
                 if(service.entity == ""){
                     service.entity = entityTypeData["user"];
+                }else{
+                    service.entity = entityTypeData[getEntityName(service.text)];
                 }
                 
           $scope.$root.$broadcast("updateUrlOptions");
