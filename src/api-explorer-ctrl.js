@@ -25,14 +25,13 @@ angular.module('ApiExplorer')
         var requestVal = $location.search().request;
         var actionVal = $location.search().action;
         var bodyVal = $location.search().body;
-        $log.log("request val: ");
-        $log.log(requestVal);
-        $log.log("action val: ");
-        $log.log(actionVal);
-        $log.log("body val: ");
-        $log.log(bodyVal);
+        var versionVal = $location.search().version;
+        
+        if(versionVal){
+            apiService.selectedVersion = versionVal;
+        }
         if(requestVal){
-            apiService.text = requestVal;
+            apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/" + requestVal;
         }
         if(actionVal){
             apiService.selectedOption = actionVal;
@@ -43,8 +42,6 @@ angular.module('ApiExplorer')
         
         $scope.$on("adal:loginSuccess", function () {
             console.log("login success");
-            //parseMetadata(apiService, $log, $scope);
-
         });
 
         
@@ -55,7 +52,6 @@ angular.module('ApiExplorer')
         $scope.$watch("getEditor()", function(event, args){
             $scope.showJsonEditor = $scope.getEditor();
             if($scope.showJsonEditor){
-                //callback?
                 initializeJsonEditor($scope, bodyVal);
             }
         });
@@ -294,20 +290,6 @@ function DialogController($scope, $mdDialog) {
 
 }
 
-/*angular.module('ApiExplorer')
-.directive('onEnter', function () {
-    return function ($scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if(event.which === 13 && !$scope.userInfo.isAuthenticated) {
-                $scope.$apply(function (){
-                   $scope.submit($scope.text);
-                });
-                event.preventDefault();
-            }
-        });
-    };
-});*/
-
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
@@ -336,11 +318,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             clickOutsideToClose:true
         });
     }
-    
-/*    $scope.historyHeading = {};
-    $scope.historyHeading.urlText = "Query";
-    $scope.historyHeading.statusCode = "Status Code";
-    $scope.history.push($scope.historyHeading);*/
     
     
     $scope.getText = function(){
