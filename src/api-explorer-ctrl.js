@@ -95,7 +95,7 @@ angular.module('ApiExplorer')
                     $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                     apiService.showJsonEditor = false;
-
+                    $scope.setSelectedTab(1);
                 }
             }
         });
