@@ -26,7 +26,7 @@ angular.module('ApiExplorer')
                 if (queryType == "GET") {
                     return function (query, postString) {
                         return $http({
-                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
                             method: 'GET',
                             headers: {
                                 "Authorization": "Bearer {token:https://graph.microsoft.com/}",
@@ -38,7 +38,7 @@ angular.module('ApiExplorer')
                 if (queryType == "GET_BINARY") {
                     return function (query, postString) {
                         return $http({
-                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
                             method: 'GET',
                             headers: {
                                 "Authorization": "Bearer {token:https://graph.microsoft.com/}",
