@@ -155,29 +155,23 @@
         <div id="jsonEditor" ng-show="showJsonEditor" ng-cloak></div>-->
         
         <!-- request -->
-        <md-tabs md-dynamic-height md-selected=1 ng-show="showJsonEditor" ng-cloak>
+        <md-tabs md-dynamic-height md-selected=1 ng-cloak>
             <md-tab label="request header"> 
                 <md-tab-body>
                     <div id="jsonEditorHeaders" ></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab label="request body">
+            <md-tab label="request body" ng-disabled="!showJsonEditor">
                 <div id="jsonEditor" ></div>
             </md-tab>
         </md-tabs>
-        
-        <!-- response -->
-        <md-tabs md-dynamic-height md-selected=selectedIndex ng-cloak>
-            <md-tab label="request header" data-ng-if="!showJsonEditor"> 
+        <md-tabs md-dynamic-height ng-cloak>
+            <md-tab label="response"> 
                 <md-tab-body>
-                    <div id="jsonEditorHeaders" ng-show="showJsonViewer"></div>
+                    <div id="jsonViewer" ></div>
                 </md-tab-body>
             </md-tab>
-            <md-tab label="response">
-                <div id="jsonViewer" ng-show="showJsonViewer"></div>
-            </md-tab>
         </md-tabs>
-
     </div>
 
     <!--    scripts are loaded here-->
