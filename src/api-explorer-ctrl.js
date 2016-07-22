@@ -16,18 +16,29 @@ angular.module('ApiExplorer')
                 }
             });*/
         
-        var requestVal = $location.search().request;
-        $log.log("request val: ");
-        $log.log(requestVal);
-        if(requestVal){
-            apiService.text = requestVal;
-        }
-        
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
         initializeJsonViewer($scope, run, apiService, $log);
         initializeJsonEditorHeaders($scope); 
+        
+        var requestVal = $location.search().request;
+        var actionVal = $location.search().action;
+        var bodyVal = $location.search().body;
+        $log.log("request val: ");
+        $log.log(requestVal);
+        $log.log("action val: ");
+        $log.log(actionVal);
+        $log.log("body val: ");
+        $log.log(bodyVal);
+        if(requestVal){
+            apiService.text = requestVal;
+        }
+        if(actionVal){
+            apiService.selectedOption = actionVal;
+            apiService.showJsonEditor = (actionVal == 'POST' || actionVal == 'PATCH');
+        }
+
         parseMetadata(apiService, $log, $scope);
         
         $scope.$on("adal:loginSuccess", function () {
@@ -43,9 +54,9 @@ angular.module('ApiExplorer')
         
         $scope.$watch("getEditor()", function(event, args){
             $scope.showJsonEditor = $scope.getEditor();
-            
             if($scope.showJsonEditor){
-                initializeJsonEditor($scope);
+                //callback?
+                initializeJsonEditor($scope, bodyVal);
             }
         });
         
@@ -59,6 +70,7 @@ angular.module('ApiExplorer')
         $scope.isActive = function (viewLocation) {
             return viewLocation === $location.path();
         };
+        
         
 }]);
 
@@ -472,6 +484,13 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             });
 
         }else{
+            if(apiService.selectedOption == "POST" || apiService.selectedOption == "PATCH" || apiService.selectedOption == "DELETE"){
+                var error = "action: " + apiService.selectedOption +  " not supported in anonymous login scenario";
+                $log.log(error);
+                handleJsonResponse($scope, startTime, error, null, status);
+                return;
+            }
+            
             apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);

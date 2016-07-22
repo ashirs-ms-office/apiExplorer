@@ -372,7 +372,7 @@ var parseMetadata = function(service, $log, $scope){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");
-         service.getMetadata().success(function (results){
+         service.getMetadata($scope.userInfo.isAuthenticated).success(function (results){
                 results = JSON.stringify(results, null, 4).trim();
                 service.cache.put(service.selectedVersion + "Metadata", results);
                 entitySetData = getEntitySets(results, $log);

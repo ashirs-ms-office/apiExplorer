@@ -48,47 +48,7 @@ angular.module('ApiExplorer')
                         });
                     };
                 }
-                
-/*                if (queryType == "POST") {
-                    return function (query, postString) {
-                        return $http({
-                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
-                            method: 'POST',
-                            headers: {
-                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                                "Content-Type": "application/json",
-                                "Accept": "application/json"
-                            },
-                            data: postString
-                        });
-                    };
-                }
-                if (queryType == "PATCH") {
-                    return function (query, postString) {
-                        return $http({
-                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
-                            method: 'PATCH',
-                            headers: {
-                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                                "Content-Type": "application/json",
-                                "Accept": "application/json"
-                            }
-                        });
-                    };
-                }
-                if (queryType == "DELETE") {
-                    return function (query, postString) {
-                        return $http({
-                            url: 'http://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
-                            method: 'DELETE',
-                            headers: {
-                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                                "Accept": "application/json"
-                            }
-                        });
-                    };
-                }*/
-                
+                       
                 return null;
             },
 
@@ -123,8 +83,12 @@ angular.module('ApiExplorer')
                 return null;
             },
             
-            getMetadata: function(){
-                 return this.performAnonymousQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+            getMetadata: function(loggedIn){
+                if(loggedIn){
+                     return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+                }else{
+                     return this.performAnonymousQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+                }
 
             }
         };
