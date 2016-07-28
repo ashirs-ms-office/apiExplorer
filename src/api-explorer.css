@@ -26,7 +26,7 @@ body {
 
 #jsonViewer {
     position: relative;
-    height: 65vh;
+    height: 60vh;
     background: rgb(230, 230, 230);
     border: 1px solid #ccc;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
