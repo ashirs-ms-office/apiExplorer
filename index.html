@@ -39,7 +39,11 @@
 
         <!-- History button -->
         <md-menu md-offset="0 45" ng-cloak>
+ 
          <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
+              <md-tooltip  aria-label="history" md-direction="top" ng-cloak>
+                   History 
+              </md-tooltip> 
               <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
          </md-button>
          <md-menu-content width="6">
