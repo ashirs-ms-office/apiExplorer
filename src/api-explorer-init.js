@@ -7,7 +7,8 @@ if(window !== window.parent){
         adalProvider.init(
           {
                 clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16',
-                redirectUri: "http://localhost:1282/index.html"
+
+                redirectUri: "http://localhost:9936/index.html"
           },
           $httpProvider
           );
@@ -43,7 +44,7 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 }, 
                 scope:["calendars.readWrite contacts.readWrite files.read.all user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all"], 
             
-                redirectUri: "http://localhost:1282/index.html",
+                redirectUri: "http://localhost:9936/index.html",
             
                 cacheLocation: 'localStorage',
             },
