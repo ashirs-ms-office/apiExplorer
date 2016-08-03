@@ -136,7 +136,6 @@
 
         
         <!-- progress bar and duration -->
-        <img id="img" width="250px" height="250px" ng-show="showImage"  ng-cloak/>
         <div layout="row" layout-align="space-between center" ng-class="not-hidden"> 
             <md-progress-linear flex=90 ng-class="progressVisibility" md-mode="indeterminate"></md-progress-linear> 
             <span tabindex=0 layout="row" layout-align="end center" id="duration" ng-class="durationVisibility"  aria-label="excecution time {{duration}}" ng-cloak> {{duration}} </span>
@@ -149,11 +148,6 @@
             <md-button href="http://dev.office.com/devprogram"> NO </md-button>
         </div>
         
-        <!-- response and request --> 
-        
-       <!-- <div class="editorLabel" ng-show="showJsonEditor" ng-cloak><p>     REQUEST BODY</p></div>
-        <div id="jsonEditor" ng-show="showJsonEditor" ng-cloak></div>-->
-        
         <!-- request -->
         <md-tabs md-dynamic-height md-selected=1 ng-cloak>
             <md-tab label="request header"> 
@@ -165,6 +159,10 @@
                 <div id="jsonEditor" ></div>
             </md-tab>
         </md-tabs>
+        
+        <img id="img" width="250px" height="250px" ng-show="showImage"  ng-cloak/>
+        
+        <!-- response -->
         <md-tabs md-dynamic-height ng-cloak>
             <md-tab label="response"> 
                 <md-tab-body>

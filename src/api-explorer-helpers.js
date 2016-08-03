@@ -103,8 +103,7 @@ var handleImageResponse = function ($scope, apiService, headers, status) {
         $scope.showJsonViewer = false;
         $scope.showImage = true;
         showHeaders($scope, headers);
-
-        $scope.progressbar.complete();
+        showDuration($scope, startTime);
     });
 }
 
