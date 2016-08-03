@@ -93,6 +93,7 @@ angular.module('ApiExplorer')
                     header["Content-Type"] = "application/json"
                     var requestHeaders = JSON.stringify(header, null, 4).trim();
                     $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
+                    $scope.setSelectedTab(1);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                     apiService.showJsonEditor = false;
                     $scope.setSelectedTab(1);
@@ -302,9 +303,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.progressVisibility = "hidden";
     $scope.durationVisibility = "hidden";
     $scope.entityItem = null;
-    $scope.selectedIndex = 1;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
+    $scope.requestTab = 0;
     
     $scope.openSettings = function(){
         $mdDialog.show({
@@ -395,7 +396,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         if(num >= 2 || num < 0){
             return;
         }else{
-            $scope.selectedIndex = num;
+            $scope.requestTab = num;
         }
     }
     
