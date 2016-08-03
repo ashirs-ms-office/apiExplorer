@@ -306,6 +306,15 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
     $scope.requestTab = 0;
+            
+    
+    $scope.getConsentText = function(){
+        if(localStorage.getItem("adminConsent")){
+            return "This query requires administrator privileges to complete. Are you an admin? Consent propogation can take 5 minutes";
+        }else{
+            return "This query requires administrator privileges to complete. Are you an admin?";
+        }
+    }
     
     $scope.openSettings = function(){
         $mdDialog.show({
@@ -375,6 +384,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
+        localStorage.setItem("adminConsent", true);
         adalService.config.scope = ["user.readWrite.All directory.readWrite.All group.readWrite.All"];
         adalService.login();                                                                                                      
     }
