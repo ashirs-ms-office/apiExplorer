@@ -16,7 +16,7 @@ function initializeJsonEditorHeaders($scope) {
     $(document).ready(function() {
         var jsonViewerElement = document.getElementById("jsonEditorHeaders");
         jsonEditorHeaders = ace.edit(jsonViewerElement);
-        jsonEditorHeaders.getSession().setMode("ace/mode/javascript");
+        /*jsonEditorHeaders.getSession().setMode("ace/mode/javascript");*/
         jsonEditorHeaders.setShowPrintMargin(false);
         //accessibility - keyboard dependant users must be able to "tab out" of session
         jsonEditorHeaders.commands.bindKey("Tab", null);

@@ -61,7 +61,7 @@ var showDuration = function($scope, startTime) {
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
     $scope.progressVisibility = "hidden";
-    $scope.durationVisibility = "not-hidden";
+    $scope.goVisibility = "not-hidden";
 }
 
 
@@ -74,12 +74,19 @@ var showHeaders = function($scope, headers, status) {
     }
     
     responseObj["Status Code"] = status;
-    var responseHeaders = JSON.stringify(responseObj, null, 4).trim();
+    var responseHeaders = headersToString(responseObj);
     
     $scope.jsonViewer.getSession().setValue("");
     $scope.jsonViewer.getSession().insert(0, responseHeaders);
 }
 
+var headersToString = function(headers){
+      var returnStr = "";
+      for(var key in headers){
+          returnStr += key + ": " + headers[key] + "\n";
+      } 
+    return returnStr;
+}
 
 var showResults = function ($scope, results, headers, status) {
     $scope.jsonViewer.setValue("");

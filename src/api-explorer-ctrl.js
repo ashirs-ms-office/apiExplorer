@@ -102,9 +102,7 @@ angular.module('ApiExplorer')
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                     apiService.showJsonEditor = true;
                     $scope.jsonEditorHeaders.getSession().setValue("");
-                    var header = {};
-                    header["Content-Type"] = "application/json"
-                    var requestHeaders = JSON.stringify(header, null, 4).trim();
+                    var requestHeaders = "Content-Type: application/json"
                     $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
                     $scope.setSelectedTab(1);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
@@ -300,11 +298,20 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.history = [];
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
-    $scope.durationVisibility = "hidden";
+    $scope.goVisibility = "not-hidden";
     $scope.entityItem = null;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
     $scope.requestTab = 0;
+            
+    
+    $scope.getConsentText = function(){
+        if(localStorage.getItem("adminConsent")){
+            return "This query requires administrator privileges to complete. Are you an admin? Consent propogation can take 5 minutes";
+        }else{
+            return "This query requires administrator privileges to complete. Are you an admin?";
+        }
+    }
     
     $scope.openSettings = function(){
         $mdDialog.show({
@@ -364,9 +371,14 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $scope.submit($scope.text);
     }
     
+    $scope.closeAdminConsentBar = function(){
+        $scope.insufficientPrivileges = false;
+    }
+    
     
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
+        localStorage.setItem("adminConsent", true);
         adalService.config.scope = ["user.readWrite.All directory.readWrite.All group.readWrite.All"];
         adalService.login();                                                                                                      
     }
@@ -403,6 +415,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         $log.log("submitting " + apiService.text);
         $scope.progressVisibility = "not-hidden";
+        $scope.goVisibility = "hidden";
+        
 
         //create an object to store the api call
         var historyObj = {};
@@ -508,6 +522,9 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             });
       }
         
-      $scope.history.splice(0, 0, historyObj);
+    $scope.setSelectedTab(1);
+    //add history object to the array
+    historyObj.duration = $scope.duration;
+    $scope.history.splice(0, 0, historyObj);
     };
 }]);
