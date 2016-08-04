@@ -301,7 +301,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.history = [];
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
-    $scope.durationVisibility = "hidden";
     $scope.goVisibility = "not-hidden";
     $scope.entityItem = null;
     $scope.hasAResponse = false;
@@ -382,6 +381,10 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     }
     
+    $scope.closeAdminConsentBar = function(){
+        $scope.insufficientPrivileges = false;
+    }
+    
     
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
@@ -424,7 +427,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         if ($scope.userInfo.isAuthenticated) {
             $scope.progressVisibility = "not-hidden";
-            $scope.durationVisibility = "hidden";
             $scope.goVisibility = "hidden";
 
             //create an object to store the api call

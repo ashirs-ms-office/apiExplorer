@@ -39,13 +39,14 @@
 
         <!-- History button -->
         <md-menu md-offset="0 45" ng-cloak>
- 
-         <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
-              <md-tooltip  aria-label="history" md-direction="top" ng-cloak>
-                   History 
-              </md-tooltip> 
-              <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
-         </md-button>
+         <div>
+             <md-button class="md-icon-button historyButton" ng-click="$mdOpenMenu($event)" ng-disabled="history.length==0" aria-label="history">
+                 <img class="historyIcon" src = "./icons/VSO_History_16x.svg" > 
+             </md-button>
+             <md-tooltip  aria-label="history" md-direction="top" ng-cloak>
+                History
+            </md-tooltip> 
+        </div>
          <md-menu-content width="6">
              <table class="historyTable">
                 <tr>
@@ -121,10 +122,12 @@
             
        
          <md-button class="md-raised" type="submit" ng-click="submit(searchText)" ng-disabled="!userInfo.isAuthenticated" ng-cloak> 
-             <span ng-class="goVisibility">
-             Go
-             </span>
-             <md-progress-circular md-diameter="20px" aria-label="response loading" md-mode="indeterminate" ng-class="progressVisibility" ng-cloak></md-progress-circular>
+             <div layout="row" layout-align="center center">
+                 <span ng-class="goVisibility">
+                 Go
+                 </span>
+                 <md-progress-circular md-diameter="20px" aria-label="response loading" md-mode="indeterminate" ng-class="progressVisibility" ng-cloak></md-progress-circular>
+             </div>
          </md-button>     
             
          <md-tooltip  aria-label="Login to use the graph explorer!" md-direction="top" ng-show="!userInfo.isAuthenticated" ng-cloak>
@@ -140,6 +143,11 @@
             <span tabindex=0 flex=75> {{getConsentText()}} </span>
             <md-button ng-click="addAdminScopes()"> YES </md-button>
             <md-button href="http://dev.office.com/devprogram"> NO </md-button>
+            <div class="flexbox-parent">
+                <div class="closeColumn" layout="column" layout-align="start center" style="min-height:50px">
+                    <md-button ng-click="closeAdminConsentBar()"> x </md-button>
+                </div>
+            </div>
         </div>
         
         
