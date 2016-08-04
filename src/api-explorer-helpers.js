@@ -61,7 +61,6 @@ var showDuration = function($scope, startTime) {
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
     $scope.progressVisibility = "hidden";
-    $scope.durationVisibility = "not-hidden";
     $scope.goVisibility = "not-hidden";
 }
 
