@@ -89,9 +89,7 @@ angular.module('ApiExplorer')
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                     apiService.showJsonEditor = true;
                     $scope.jsonEditorHeaders.getSession().setValue("");
-                    var header = {};
-                    header["Content-Type"] = "application/json"
-                    var requestHeaders = JSON.stringify(header, null, 4).trim();
+                    var requestHeaders = "Content-Type: application/json"
                     $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
                     $scope.setSelectedTab(1);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
