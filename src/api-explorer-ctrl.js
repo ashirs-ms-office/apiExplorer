@@ -302,6 +302,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.text = apiService.text;
     $scope.progressVisibility = "hidden";
     $scope.durationVisibility = "hidden";
+    $scope.goVisibility = "not-hidden";
     $scope.entityItem = null;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
@@ -423,6 +424,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         if ($scope.userInfo.isAuthenticated) {
             $scope.progressVisibility = "not-hidden";
+            $scope.durationVisibility = "hidden";
+            $scope.goVisibility = "hidden";
 
             //create an object to store the api call
             var historyObj = {};
@@ -488,6 +491,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
 
             $scope.setSelectedTab(1);
             //add history object to the array
+            historyObj.duration = $scope.duration;
             $scope.history.splice(0, 0, historyObj);
         }else{
             //user is not logged in

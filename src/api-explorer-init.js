@@ -8,7 +8,7 @@ if(window !== window.parent){
           {
                 clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16',
 
-                redirectUri: "http://localhost:9936/index.html"
+                redirectUri: "http://localhost:14817/index.html"
           },
           $httpProvider
           );
@@ -33,13 +33,13 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16', //'2e8459fe-87ef-4286-af70-f33a307563aa',
                 endpoints: {
                     "https://graph.microsoft.com" :{
-                    scope:["calendars.readWrite contacts.readWrite files.read.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all"] 
+                    scope:["calendars.readWrite contacts.readWrite files.readWrite.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create"] 
                   } 
                 
                 }, 
-                scope:["calendars.readWrite contacts.readWrite files.read.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all"], 
+                scope:["calendars.readWrite contacts.readWrite files.readWrite.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create"], 
             
-                redirectUri: "http://localhost:9936/index.html",
+                redirectUri: "http://localhost:14817/index.html",
             
                 cacheLocation: 'localStorage',
             },

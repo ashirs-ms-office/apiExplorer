@@ -58,10 +58,12 @@ body {
 }
 
 #duration {
-   padding: 5px;
+    padding-top: 5px;
     color: #4685e2;
-    margin: 10px;
+    font-size: 15px;
+    position: absolute;
 }
+
 
 #queryBar {
     border-right: 0;
