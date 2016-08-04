@@ -52,8 +52,7 @@ body {
     position: relative;
     height: 15vh;
     border: 1px solid #ccc;
-    box-shadow: 10px 10px 5px #888888; 
-    /*box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; */
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; 
     margin-top: 10px;
 }
 
@@ -116,6 +115,10 @@ body {
 .historyItem{
     border-top: 1px solid #808080;
 }
+
+/*.historyButton{
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; 
+}*/
 
 .historyButton[disabled] .historyIcon{
     -webkit-filter: opacity(50%);
