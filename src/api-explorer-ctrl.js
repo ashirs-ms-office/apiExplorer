@@ -15,6 +15,13 @@ angular.module('ApiExplorer')
                     e.preventDefault();
                 }
         });*/
+        if ($location.path().indexOf('id_token') > -1){
+               console.log("LOCATION");
+               var params = parseQueryString(location.hash);
+               console.log(params);
+               getAccessToken();
+        }
+        
         
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
@@ -45,8 +52,17 @@ angular.module('ApiExplorer')
         
 
         $scope.login = function () {
-            adalService.login();
+           apiService.login(); 
+       
         };
+        
+/*        $scope.$on('$locationChangeStart', function (e) {
+            if ($location.path().indexOf('id_token') > -1){
+               console.log("LOCATION");
+               console.log(location);             
+            }
+       });*/
+        
         $scope.logout = function () {
             adalService.logOut();
         };
