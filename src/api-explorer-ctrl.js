@@ -2,19 +2,13 @@ angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
 
-/*        window.addEventListener('storage',function(e){                                                                    
-               if(e.storageArea===sessionStorage && e.key == "adal.error" && e.oldValue !== e.newValue && e.newValue === "interaction_required"){
-                    adalService.login();
-            } 
-        });*/
         
-        
-/*        $scope.$on('$locationChangeStart', function (e) {
+        $scope.$on('$locationChangeStart', function (e) {
                 if ($location.path().indexOf('access_token') > -1 ||
                     $location.path().indexOf('id_token') > -1) {
                     e.preventDefault();
                 }
-            });*/
+        });
         
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
@@ -57,8 +51,10 @@ angular.module('ApiExplorer')
         
 
         $scope.login = function () {
-            adalService.login();
+          adalService.login();
+       
         };
+        
         $scope.logout = function () {
             adalService.logOut();
         };
@@ -291,7 +287,8 @@ function DialogController($scope, $mdDialog) {
 
 }
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
+
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', function ($scope, $log, apiService,  adalService){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
@@ -439,10 +436,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         if ($scope.jsonEditor != undefined) {
             postBody = $scope.jsonEditor.getSession().getValue();
         }
+        var requestHeaders = "";
+            if($scope.jsonEditorHeaders != undefined){
+                requestHeaders = $scope.jsonEditorHeaders.getSession().getValue();
+                requestHeaders = formatRequestHeaders(requestHeaders);
+                console.log(requestHeaders);
+        }
         var startTime = new Date();
         var endTime = null;
         if ($scope.userInfo.isAuthenticated) {
-            apiService.performQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
+            apiService.performQuery(apiService.selectedOption)(apiService.text, postBody, requestHeaders).success(function (results, status, headers, config) {
 
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);

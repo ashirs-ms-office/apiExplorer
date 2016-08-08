@@ -196,12 +196,37 @@ var findNameIndex = function(array){
     }
 }
 
+this.parseQueryString = function (url) {
+    var params = {}, 
+        queryString = url.substring(2), 
+        regex = /([^&=]+)=([^&]*)/g, 
+        m;
+    while (m = regex.exec(queryString)) {
+        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+    }
+    return params;
+};
+
 var findTypeIndex = function(array){
     for(var i=0; i<array.length; i++){
         if(array[i].name === "type"){
             return i;
         }
     }
+}
+
+var formatRequestHeaders = function(headers){
+    var obj = {};
+    var parts = headers.replace(/^\s+|,\s*$/g, '').split(',');
+    
+    for(var i = 0, len = parts.length; i < len; i++) {
+        var match = parts[i].match(/^\s*"?([^":]*)"?\s*:\s*"?([^"]*)\s*$/);
+        if(match) {
+            obj[match[1]] = match[2];
+        }
+    }
+    
+   return obj; 
 }
 
 var createEntityTypeObject = function(returnArray, DOMarray, $log){

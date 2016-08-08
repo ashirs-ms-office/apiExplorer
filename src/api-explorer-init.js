@@ -6,9 +6,9 @@ if(window !== window.parent){
     .config(['$httpProvider', 'adalAuthenticationServiceProvider', function ($httpProvider, adalProvider) {
         adalProvider.init(
           {
-                clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16',
+                clientId: clientId,
 
-                redirectUri: "http://localhost:14817/index.html"
+                redirectUri: redirectUri 
           },
           $httpProvider
           );
@@ -35,16 +35,16 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         adalProvider.init({
                 instance: 'https://login.microsoftonline.com/',
                 tenant: 'common',
-                clientId: '41359d1a-a069-4a6b-aaf1-b398c18b6c16', //'2e8459fe-87ef-4286-af70-f33a307563aa',
+                clientId: clientId, 
                 endpoints: {
                     "https://graph.microsoft.com" :{
-                    scope:["calendars.readWrite contacts.readWrite files.readWrite.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create"] 
+                    scope:[userScopesMSA] 
                   } 
                 
                 }, 
-                scope:["calendars.readWrite contacts.readWrite files.readWrite.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create"], 
+                scope:[userScopesMSA], 
             
-                redirectUri: "http://localhost:14817/index.html",
+                redirectUri: redirectUri, 
             
                 cacheLocation: 'localStorage',
             },
