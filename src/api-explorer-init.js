@@ -18,12 +18,7 @@ if(window !== window.parent){
 
 
 angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootstrap', 'ngProgress', 'ngMaterial'])
-    .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$mdThemingProvider', '$locationProvider', function ($routeProvider, $httpProvider, adalProvider, $mdThemingProvider, $locationProvider){
-        
-        $locationProvider.html5Mode({
-            enabled: true,
-            requireBase: false
-        });
+    .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$mdThemingProvider', function ($routeProvider, $httpProvider, adalProvider, $mdThemingProvider) {
 
         $routeProvider.when("/Home", {
             controller: "ApiExplorerCtrl",
