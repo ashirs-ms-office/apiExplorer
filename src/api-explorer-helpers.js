@@ -221,7 +221,9 @@ var formatRequestHeaders = function(headers){
     
     for(var i = 0, len = parts.length; i < len; i++) {
         var match = parts[i].match(/^\s*"?([^":]*)"?\s*:\s*"?([^"]*)\s*$/);
-        obj[match[1]] = match[2];
+        if(match) {
+            obj[match[1]] = match[2];
+        }
     }
     
    return obj; 
