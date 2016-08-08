@@ -24,39 +24,46 @@ angular.module('ApiExplorer')
             
             performAnonymousQuery: function (queryType) {
                 if (queryType == "GET") {
-                    var headersObj = {
-                         "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                         "Accept": "application/json"    
-                    };
-       /*             
-                    if(requestHeaders && requestHeaders["Authorization"]){
-                        headersObj["Authorization"] = requestHeaders["Authorization"];
-                    }
-                    
-                    if(requestHeaders && requestHeaders[""])*/
+
                     
                     return function (query, postString, requestHeaders) {
-                        console.log(requestHeaders);
+                         var headersObj = {
+                             "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                             "Accept": "application/json"    
+                        };
+
+                        if(requestHeaders && requestHeaders["Authorization"]){
+                            headersObj["Authorization"] = requestHeaders["Authorization"];
+                        }
+
+                        if(requestHeaders && requestHeaders["Accept"]){
+                            headersObj["Accept"] = requestHeaders["Accept"];
+                        }
                         return $http({
                             url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
                             method: 'GET',
                             headers: headersObj
-                                
-                            
                         });
                     };
                 }
                 if (queryType == "GET_BINARY") {
                     return function (query, postString, requestHeaders) {
+                         var headersObj = {
+                             "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                             "Accept": "application/json"    
+                        };
+
+                        if(requestHeaders && requestHeaders["Authorization"]){
+                            headersObj["Authorization"] = requestHeaders["Authorization"];
+                        }
+
+                        if(requestHeaders && requestHeaders["Accept"]){
+                            headersObj["Accept"] = requestHeaders["Accept"];
+                        }
                         return $http({
                             url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
                             method: 'GET',
-                            headers: {
-                               /* if(!requestHeaders["Authorization"]){
-                                    "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                                    "Accept": "application/json"    
-                                }*/
-                            },
+                            headers: headersObj,
                             responseType: "arraybuffer"
                         });
                     };
