@@ -14,12 +14,22 @@ angular.module('ApiExplorer')
         $scope.showJsonViewer = apiService.showJsonViewer;
         $scope.showImage = false;
         initializeJsonViewer($scope, run, apiService, $log);
-        initializeJsonEditorHeaders($scope); 
         
         var requestVal = $location.search().request;
-        var actionVal = $location.search().action;
+        var actionVal = $location.search().method;
         var bodyVal = $location.search().body;
         var versionVal = $location.search().version;
+        var headersVal = $location.search().headers;
+        
+        
+        initializeJsonEditorHeaders($scope, headersVal); 
+        
+        if(actionVal){
+            apiService.selectedOption = actionVal.toUpperCase();
+            if(apiService.selectedOption === 'POST' || apiService.selectedOption === 'PATCH'){
+                apiService.showJsonEditor = true;
+            }
+        }
         
         if(versionVal){
             apiService.selectedVersion = versionVal;
@@ -27,11 +37,7 @@ angular.module('ApiExplorer')
         if(requestVal){
             apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/" + requestVal;
         }
-        if(actionVal){
-            apiService.selectedOption = actionVal;
-            apiService.showJsonEditor = (actionVal == 'POST' || actionVal == 'PATCH');
-        }
-
+        
         parseMetadata(apiService, $log, $scope);
         
         $scope.$on("adal:loginSuccess", function () {
@@ -97,9 +103,7 @@ angular.module('ApiExplorer')
                 apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
                 if ($scope.selectedOption == 'POST' || $scope.selectedOption == 'PATCH') {
                     apiService.showJsonEditor = true;
-                    $scope.jsonEditorHeaders.getSession().setValue("");
-                    var requestHeaders = "Content-Type: application/json"
-                    $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
+                    showRequestHeaders($scope);
                     $scope.setSelectedTab(1);
                 } else if ($scope.selectedOption == 'GET' || $scope.selectedOption == 'DELETE') {
                     apiService.showJsonEditor = false;
@@ -299,8 +303,12 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.entityItem = null;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
-    $scope.requestTab = 0;
-            
+    
+    if(apiService.selectedOption === 'POST' || apiService.selectedOption === 'PATCH'){
+        $scope.requestTab = 1;
+    }else{
+        $scope.requestTab = 0;
+    }
     
     $scope.getConsentText = function(){
         if(localStorage.getItem("adminConsent")){

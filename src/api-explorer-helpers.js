@@ -265,6 +265,12 @@ var createEntityTypeObject = function(returnArray, DOMarray, $log){
     return returnArray;
 }
 
+var showRequestHeaders = function($scope){
+    $scope.jsonEditorHeaders.getSession().setValue("");
+    var requestHeaders = "Content-Type: application/json"
+    $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
+}
+
 var getEntityTypes = function(XML, $log){
     var entityTypesArray = {};
     var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
