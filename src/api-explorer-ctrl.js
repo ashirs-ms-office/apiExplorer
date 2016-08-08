@@ -9,12 +9,12 @@ angular.module('ApiExplorer')
         });*/
         
         
-/*        $scope.$on('$locationChangeStart', function (e) {
+        $scope.$on('$locationChangeStart', function (e) {
                 if ($location.path().indexOf('access_token') > -1 ||
                     $location.path().indexOf('id_token') > -1) {
                     e.preventDefault();
                 }
-        });*/
+        });
 /*        if ($location.path().indexOf('id_token') > -1){
                console.log("LOCATION");
                var params = parseQueryString(location.hash);
@@ -309,7 +309,7 @@ angular.module('ApiExplorer')
     };
 });
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc', 'ngProgressFactory', 'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService, ngProgressFactory, adalService, $mdDialog){
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', function ($scope, $log, apiService,  adalService){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
