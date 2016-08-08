@@ -2,12 +2,6 @@ angular.module('ApiExplorer')
     .controller('ApiExplorerCtrl', ['$scope', '$log', 'adalAuthenticationService', '$location', 'ApiExplorerSvc', function ($scope, $log, adalService, $location, apiService) {
         var expanded = true;
 
-/*        window.addEventListener('storage',function(e){                                                                    
-               if(e.storageArea===sessionStorage && e.key == "adal.error" && e.oldValue !== e.newValue && e.newValue === "interaction_required"){
-                    adalService.login();
-            } 
-        });*/
-        
         
         $scope.$on('$locationChangeStart', function (e) {
                 if ($location.path().indexOf('access_token') > -1 ||
@@ -15,13 +9,6 @@ angular.module('ApiExplorer')
                     e.preventDefault();
                 }
         });
-/*        if ($location.path().indexOf('id_token') > -1){
-               console.log("LOCATION");
-               var params = parseQueryString(location.hash);
-               console.log(params);
-               getAccessToken();
-        }*/
-        
         
         $scope.showJsonEditor = apiService.showJsonEditor;
         $scope.showJsonViewer = apiService.showJsonViewer;
@@ -52,17 +39,9 @@ angular.module('ApiExplorer')
         
 
         $scope.login = function () {
-          /* apiService.login(); */
           adalService.login();
        
         };
-        
-/*        $scope.$on('$locationChangeStart', function (e) {
-            if ($location.path().indexOf('id_token') > -1){
-               console.log("LOCATION");
-               console.log(location);             
-            }
-       });*/
         
         $scope.logout = function () {
             adalService.logOut();
@@ -468,6 +447,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             var requestHeaders = "";
             if($scope.jsonEditorHeaders != undefined){
                 requestHeaders = $scope.jsonEditorHeaders.getSession().getValue();
+                requestHeaders = formatRequestHeaders(requestHeaders);
+                console.log(requestHeaders);
             }
             var startTime = new Date();
             var endTime = null;

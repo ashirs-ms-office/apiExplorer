@@ -215,6 +215,18 @@ var findTypeIndex = function(array){
     }
 }
 
+var formatRequestHeaders = function(headers){
+    var obj = {};
+    var parts = headers.replace(/^\s+|,\s*$/g, '').split(',');
+    
+    for(var i = 0, len = parts.length; i < len; i++) {
+        var match = parts[i].match(/^\s*"?([^":]*)"?\s*:\s*"?([^"]*)\s*$/);
+        obj[match[1]] = match[2];
+    }
+    
+   return obj; 
+}
+
 var createEntityTypeObject = function(returnArray, DOMarray, $log){
     for(var i=0; i<DOMarray.length; i++){
            var EntityType = {};
