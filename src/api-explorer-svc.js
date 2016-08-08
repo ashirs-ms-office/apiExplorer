@@ -55,21 +55,6 @@ angular.module('ApiExplorer')
                 return null;
             },
             
-            login: function(){
-                window.location = 
-               /*$http.get(*/
-                "https://login.microsoftonline.com/" + "common" + "/oauth2/v2.0/authorize?" + 
-                "client_id=" + clientId +
-                "&response_type=id_token" +
-                "&redirect_uri=" +  encodeURIComponent(redirectUri) + 
-                "&scope=openid%20" + encodeURIComponent(userScopes) + 
-                "&response_mode=fragment" +
-                "&state=" + guid() + 
-                "&nonce=" + guid();
-                //);
-                
-            },
-            
             getMetadata: function(){
                  return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
 
