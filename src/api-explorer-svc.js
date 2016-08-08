@@ -24,25 +24,38 @@ angular.module('ApiExplorer')
             
             performAnonymousQuery: function (queryType) {
                 if (queryType == "GET") {
-                    return function (query, postString) {
+                    var headersObj = {
+                         "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                         "Accept": "application/json"    
+                    };
+       /*             
+                    if(requestHeaders && requestHeaders["Authorization"]){
+                        headersObj["Authorization"] = requestHeaders["Authorization"];
+                    }
+                    
+                    if(requestHeaders && requestHeaders[""])*/
+                    
+                    return function (query, postString, requestHeaders) {
+                        console.log(requestHeaders);
                         return $http({
                             url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
                             method: 'GET',
-                            headers: {
-                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                                "Accept": "application/json"
-                            }
+                            headers: headersObj
+                                
+                            
                         });
                     };
                 }
                 if (queryType == "GET_BINARY") {
-                    return function (query, postString) {
+                    return function (query, postString, requestHeaders) {
                         return $http({
                             url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
                             method: 'GET',
                             headers: {
-                                "Authorization": "Bearer {token:https://graph.microsoft.com/}",
-                                "Accept": "application/json"
+                               /* if(!requestHeaders["Authorization"]){
+                                    "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                                    "Accept": "application/json"    
+                                }*/
                             },
                             responseType: "arraybuffer"
                         });

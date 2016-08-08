@@ -497,7 +497,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
                 return;
             }
             
-            apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody).success(function (results, status, headers, config) {
+            apiService.performAnonymousQuery(apiService.selectedOption)(apiService.text, postBody, requestHeaders).success(function (results, status, headers, config) {
                 if (isImageResponse(headers)) { 
                     handleImageResponse($scope, apiService, headers, status);
                 } else if (isHtmlResponse(headers)) {  
