@@ -1,4 +1,4 @@
-﻿//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 // AdalJS-Experimental v2.0.0-experimental
 // @preserve Copyright (c) Microsoft Open Technologies, Inc.
 // All Rights Reserved
@@ -275,6 +275,8 @@ if (typeof module !== 'undefined' && module.exports) {
                     request: function (config) {
                         if (config) {
                             
+                            console.log(config);
+                            
                             // This interceptor needs to load service, but dependeny definition causes circular reference error.
                             // Loading with injector is suggested at github. https://github.com/angular/angular.js/issues/2367
                             
@@ -287,7 +289,9 @@ if (typeof module !== 'undefined' && module.exports) {
                             if (tokenStored) {
                                 authService.log(scope, 'Token is avaliable for this url ' + config.url);
                                 // check endpoint mapping if provided
-                                config.headers.Authorization = 'Bearer ' + tokenStored;
+                                if(!config.headers.Authorization){
+                                    config.headers.Authorization = 'Bearer ' + tokenStored;
+                                }
                                 return config;
                             } else {
                                 
@@ -309,7 +313,10 @@ if (typeof module !== 'undefined' && module.exports) {
                                     var delayedRequest = $q.defer();
                                     authService.acquireTokenSilent(scope).then(function (token) {
                                         authService.log(scope, 'Token is avaliable');
-                                        config.headers.Authorization = 'Bearer ' + token;
+                                        
+                                        if(!config.headers.Authorization){
+                                            config.headers.Authorization = 'Bearer ' + token;
+                                        }
                                         delayedRequest.resolve(config);
                                     }, function (err) {
                                         delayedRequest.reject(err);
