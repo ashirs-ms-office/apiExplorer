@@ -15,12 +15,12 @@ angular.module('ApiExplorer')
                     e.preventDefault();
                 }
         });*/
-        if ($location.path().indexOf('id_token') > -1){
+/*        if ($location.path().indexOf('id_token') > -1){
                console.log("LOCATION");
                var params = parseQueryString(location.hash);
                console.log(params);
                getAccessToken();
-        }
+        }*/
         
         
         $scope.showJsonEditor = apiService.showJsonEditor;
@@ -52,7 +52,8 @@ angular.module('ApiExplorer')
         
 
         $scope.login = function () {
-           apiService.login(); 
+          /* apiService.login(); */
+          adalService.login();
        
         };
         

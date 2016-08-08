@@ -207,7 +207,7 @@ this.parseQueryString = function (url) {
     return params;
 };
 
-var getAccessToken = function (){
+/*var getAccessToken = function (){
     "https://login.microsoftonline.com/" + "common" +
     "/oauth2/v2.0/authorize?" + 
     "client_id=" + clientId +
@@ -219,7 +219,7 @@ var getAccessToken = function (){
     "&prompt=none" +
     &domain_hint=organizations
     &login_hint=myuser@mycompany.com   
-}
+}*/
 
 var guid = function () {
     // RFC4122: The version 4 UUID is meant for generating UUIDs from truly-random or

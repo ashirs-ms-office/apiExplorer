@@ -33,11 +33,11 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
                 clientId: clientId, 
                 endpoints: {
                     "https://graph.microsoft.com" :{
-                    scope:["calendars.readWrite contacts.readWrite files.readWrite.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create"] 
+                    scope:[userScopesMSA] 
                   } 
                 
                 }, 
-                scope:["calendars.readWrite contacts.readWrite files.readWrite.all files.readWrite user.readWrite mail.readWrite mail.send sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create"], 
+                scope:[userScopesMSA], 
             
                 redirectUri: redirectUri, 
             

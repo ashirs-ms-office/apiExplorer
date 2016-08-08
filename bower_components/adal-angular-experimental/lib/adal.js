@@ -1,4 +1,4 @@
-﻿//----------------------------------------------------------------------
+//----------------------------------------------------------------------
 // AdalJS-Experimental v2.0.0-experimental
 // @preserve Copyright (c) Microsoft Open Technologies, Inc.
 // All Rights Reserved
@@ -736,6 +736,19 @@ AuthenticationContext.prototype.saveTokenFromHash = function (requestInfo) {
     this._saveItem(this.CONSTANTS.STORAGE.ERROR, '');
     this._saveItem(this.CONSTANTS.STORAGE.ERROR_DESCRIPTION, '');
     
+    var idToken = requestInfo.parameters[this.CONSTANTS.ID_TOKEN];
+    var decodedIDtoken = this._extractIdToken(idToken);
+    if (decodedIDtoken && decodedIDtoken.hasOwnProperty('tid')) {
+        if (decodedIDtoken.tid !== this.CONSTANTS.MSA_TENANTID) {
+             console.log("Not an MSA account")
+             //not an MSA account - add scopes
+             this.CONSTANTS.SCOPE = this.CONSTANTS.SCOPE.concat("sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create");
+             this.CONSTANTS.PARAMETERS.SCOPE = this.CONSTANTS.PARAMETERS.SCOPE.concat("sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create");
+        }else if(decodedIDtoken){
+            console.log("MSA account");
+        }
+    }
+    
     // Record error
     if (requestInfo.parameters.hasOwnProperty(this.CONSTANTS.ERROR_DESCRIPTION)) {
         this._logstatus('Error :' + requestInfo.parameters.error);
@@ -771,6 +784,7 @@ AuthenticationContext.prototype.saveTokenFromHash = function (requestInfo) {
             }
             
             if (requestInfo.parameters.hasOwnProperty(this.CONSTANTS.ID_TOKEN)) {
+
                 this._loginInProgress = false;
                 this._user = this._createUser(requestInfo.parameters[this.CONSTANTS.ID_TOKEN]);
                 if (this._user && this._user.profile) {
@@ -779,6 +793,7 @@ AuthenticationContext.prototype.saveTokenFromHash = function (requestInfo) {
                         this._saveItem(this.CONSTANTS.STORAGE.LOGIN_ERROR, 'Nonce is not same as ' + this._idTokenNonce);
                     } else {
                         this._saveItem(this.CONSTANTS.STORAGE.IDTOKEN, requestInfo.parameters[this.CONSTANTS.ID_TOKEN]);
+                        
                         var entryKey = this._createTokenCacheEntryKeyForIDToken();
                         var entryValue = this._createTokenCacheEntryValue(requestInfo);
                         
