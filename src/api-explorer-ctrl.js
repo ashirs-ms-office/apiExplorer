@@ -126,7 +126,6 @@ angular.module('ApiExplorer')
                 $log.log("switching to: " + apiService.selectedVersion);
                 if($scope.$parent.searchText){
                     apiService.text = $scope.$parent.searchText.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
-                   /* $scope.$root.$broadcast("clearUrlOptions");*/
                 }else{
                     apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));    
                 }
@@ -267,7 +266,7 @@ angular.module('ApiExplorer')
 }]);
 
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', function ($scope, $log, apiService,  adalService){
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService,  adalService, $mdDialog){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
@@ -278,13 +277,14 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.entityItem = null;
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
-    
     if(apiService.selectedOption === 'POST' || apiService.selectedOption === 'PATCH'){
         $scope.requestTab = 1;
     }else{
         $scope.requestTab = 0;
     }
-    
+
+    $scope.submissionInProgress = false;
+            
     $scope.getConsentText = function(){
         if(localStorage.getItem("adminConsent")){
             return "This query requires administrator privileges to complete. Are you an admin? Consent propogation can take 5 minutes";
@@ -342,7 +342,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
         localStorage.setItem("adminConsent", true);
-        adalService.config.scope = ["user.readWrite.All directory.readWrite.All group.readWrite.All"];
+        adalService.config.scope = [adminScopes];
         adalService.login();                                                                                                      
     }
     
