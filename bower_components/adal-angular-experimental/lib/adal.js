@@ -738,6 +738,7 @@ AuthenticationContext.prototype.saveTokenFromHash = function (requestInfo) {
     
     var idToken = requestInfo.parameters[this.CONSTANTS.ID_TOKEN];
     var decodedIDtoken = this._extractIdToken(idToken);
+    console.log(decodedIDtoken);
     if (decodedIDtoken && decodedIDtoken.hasOwnProperty('tid')) {
         if (decodedIDtoken.tid !== this.CONSTANTS.MSA_TENANTID) {
              console.log("Not an MSA account")

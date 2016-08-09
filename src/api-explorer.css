@@ -197,17 +197,18 @@ body {
     md-backdrop{
         background-color: transparent;
     }
-    
-    md-menu-item:hover{
-        border: 1px solid #ccc;
-    }
-    
-   .md-autocomplete-suggestions li:hover{
+
+    .md-autocomplete-suggestions li:hover,
+    .md-focused{
           border: 1px solid #ccc;  
     }
-        /*border: 1px solid #ccc;   */
+    md-autocomplete-suggestions-container.md-default-theme li:hover, 
+    .md-autocomplete-suggestions-container li:hover, 
+    .md-autocomplete-suggestions-container.md-default-theme li.selected, 
+    .md-autocomplete-suggestions-container li.selected{    
+          border: 1px solid #ccc;  
     }
-} 
+}
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
