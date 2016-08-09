@@ -21,22 +21,9 @@ angular.module('ApiExplorer')
         var versionVal = $location.search().version;
         var headersVal = $location.search().headers;
         
+        handleQueryString(apiService, actionVal, versionVal, requestVal);
         
         initializeJsonEditorHeaders($scope, headersVal); 
-        
-        if(actionVal){
-            apiService.selectedOption = actionVal.toUpperCase();
-            if(apiService.selectedOption === 'POST' || apiService.selectedOption === 'PATCH'){
-                apiService.showJsonEditor = true;
-            }
-        }
-        
-        if(versionVal){
-            apiService.selectedVersion = versionVal;
-        }
-        if(requestVal){
-            apiService.text = "https://graph.microsoft.com/" + apiService.selectedVersion + "/" + requestVal;
-        }
         
         parseMetadata(apiService, $log, $scope);
         
@@ -54,11 +41,9 @@ angular.module('ApiExplorer')
                 initializeJsonEditor($scope, bodyVal);
             }
         });
-        
 
         $scope.login = function () {
-          adalService.login();
-       
+            adalService.login();
         };
         
         $scope.logout = function () {
@@ -68,14 +53,12 @@ angular.module('ApiExplorer')
             return viewLocation === $location.path();
         };
         
-        
 }]);
 
 angular.module('ApiExplorer')
     .controller('DropdownCtrl', ['$scope', '$log', 'ApiExplorerSvc', function ($scope, $log, apiService) {
     
         $scope.selectedOption = apiService.selectedOption;
-
 
         $scope.onItemClick = function(choice){
             $scope.selectedOption = choice;
@@ -283,14 +266,6 @@ angular.module('ApiExplorer')
         
 }]);
 
-function DialogController($scope, $mdDialog) {
-
-  $scope.cancel = function() {
-    $mdDialog.cancel();
-  };
-
-}
-
 
 angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', function ($scope, $log, apiService,  adalService){
     $scope.duration = "15 ms";
@@ -317,23 +292,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             return "This query requires administrator privileges to complete. Are you an admin?";
         }
     }
-    
-    $scope.openSettings = function(){
-        $mdDialog.show({
-            templateUrl: "settings.html",
-            controller: DialogController,
-            clickOutsideToClose:true
-        });
-    }
-    
-    $scope.openLoginDialog = function(){
-        $mdDialog.show({
-            templateUrl: "login.html",
-            controller: DialogController,
-            clickOutsideToClose:true
-        });
-    }
-    
     
     $scope.getText = function(){
         return apiService.text;

@@ -404,6 +404,23 @@ var setToSetOrType = function(service, entityName, prevCallName){
     
 }
 
+
+var handleQueryString = function(service, actionValue, versionValue, requestValue){
+    if(actionValue){
+        service.selectedOption = actionValue.toUpperCase();
+        if(service.selectedOption === 'POST' || service.selectedOption === 'PATCH'){
+                service.showJsonEditor = true;
+        }
+   }
+        
+   if(versionValue){
+        service.selectedVersion = versionValue;
+   }
+   if(requestValue){
+        service.text = "https://graph.microsoft.com/" + service.selectedVersion + "/" + requestValue;
+   }
+}
+
 var parseMetadata = function(service, $log, $scope){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
