@@ -192,9 +192,20 @@ body {
      /*visibility: visible;*/
 }
 
+
 @media (-ms-high-contrast) {
     md-backdrop{
         background-color: transparent;
+    }
+    
+    md-menu-item:hover{
+        border: 1px solid #ccc;
+    }
+    
+   .md-autocomplete-suggestions li:hover{
+          border: 1px solid #ccc;  
+    }
+        /*border: 1px solid #ccc;   */
     }
 } 
 

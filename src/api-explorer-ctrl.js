@@ -266,7 +266,7 @@ angular.module('ApiExplorer')
 }]);
 
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService,  adalService, $mdDialog){
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', function ($scope, $log, apiService, adalService){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
@@ -338,7 +338,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $scope.insufficientPrivileges = false;
     }
     
-    
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
         localStorage.setItem("adminConsent", true);
@@ -354,7 +353,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
          }
     }
     
-
     $scope.selectedItemChange = function(item){
        $scope.entityItem = item; 
     }
@@ -375,12 +373,15 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         
         apiService.text = query;
         
-        
         $log.log("submitting " + apiService.text);
         $scope.progressVisibility = "not-hidden";
         $scope.goVisibility = "hidden";
         
-
+        
+        ga('send', 'account', 'GraphExplorer', apiService.selectedOption + " " + query);
+        ga('send', 'query', 'GraphExplorer', apiService.selectedOption + " " + query);
+        /*MscomCustomEvent('ms.InteractionType', '4', 'ms.controlname', 'graphexplorer', 'ms.ea_action', $scope.selectedOptions, 'ms.contentproperties', $scope.text);*/
+        
         //create an object to store the api call
         var historyObj = {};
 
