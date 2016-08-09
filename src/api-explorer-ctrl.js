@@ -126,7 +126,6 @@ angular.module('ApiExplorer')
                 $log.log("switching to: " + apiService.selectedVersion);
                 if($scope.$parent.searchText){
                     apiService.text = $scope.$parent.searchText.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));
-                   /* $scope.$root.$broadcast("clearUrlOptions");*/
                 }else{
                     apiService.text = apiService.text.replace(/https:\/\/graph.microsoft.com($|\/([\w]|\.)*($|\/))/, ("https://graph.microsoft.com/" + apiService.selectedVersion + "/"));    
                 }
@@ -288,7 +287,7 @@ angular.module('ApiExplorer')
     };
 });
 
-angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', function ($scope, $log, apiService,  adalService){
+angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExplorerSvc',  'adalAuthenticationService', '$mdDialog', function ($scope, $log, apiService,  adalService, $mdDialog){
     $scope.duration = "15 ms";
     $scope.listData = "requestList";
     $scope.photoData = "";
@@ -300,6 +299,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.hasAResponse = false;
     $scope.insufficientPrivileges = false;
     $scope.requestTab = 0;
+    $scope.submissionInProgress = false;
             
     
     $scope.getConsentText = function(){
@@ -310,14 +310,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         }
     }
     
-    $scope.openSettings = function(){
-        $mdDialog.show({
-            templateUrl: "settings.html",
-            controller: DialogController,
-            clickOutsideToClose:true
-        });
-    }
-    
     $scope.openLoginDialog = function(){
         $mdDialog.show({
             templateUrl: "login.html",
@@ -325,12 +317,6 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
             clickOutsideToClose:true
         });
     }
-    
-/*    $scope.historyHeading = {};
-    $scope.historyHeading.urlText = "Query";
-    $scope.historyHeading.statusCode = "Status Code";
-    $scope.history.push($scope.historyHeading);*/
-    
     
     $scope.getText = function(){
         return apiService.text;
@@ -383,7 +369,7 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
     $scope.addAdminScopes = function(){
         $log.log("requesting admin priviliges");
         localStorage.setItem("adminConsent", true);
-        adalService.config.scope = ["user.readWrite.All directory.readWrite.All group.readWrite.All"];
+        adalService.config.scope = [adminScopes];
         adalService.login();                                                                                                      
     }
     
