@@ -77,6 +77,7 @@ AuthenticationContext = function (config) {
         ERROR_DESCRIPTION: 'error_description',
         SESSION_STATE: 'session_state',
         SCOPE: 'scope',
+        ACCOUNT_TYPE: "account_type",
         STORAGE: {
             TOKEN_KEYS: 'adal.token.keys',
             ACCESS_TOKEN_KEY: 'adal.access.token.key',
@@ -454,6 +455,7 @@ AuthenticationContext.prototype.acquireTokenSilent = function (scopes, callback)
         this._renewIdToken(scopes, callback);
     } else {
         this._logstatus('renewing accesstoken');
+        
         this._renewToken(scopes, callback);
     }
 };
@@ -736,19 +738,7 @@ AuthenticationContext.prototype.saveTokenFromHash = function (requestInfo) {
     this._saveItem(this.CONSTANTS.STORAGE.ERROR, '');
     this._saveItem(this.CONSTANTS.STORAGE.ERROR_DESCRIPTION, '');
     
-    var idToken = requestInfo.parameters[this.CONSTANTS.ID_TOKEN];
-    var decodedIDtoken = this._extractIdToken(idToken);
-    console.log(decodedIDtoken);
-    if (decodedIDtoken && decodedIDtoken.hasOwnProperty('tid')) {
-        if (decodedIDtoken.tid !== this.CONSTANTS.MSA_TENANTID) {
-             console.log("Not an MSA account")
-             //not an MSA account - add scopes
-             this.CONSTANTS.SCOPE = this.CONSTANTS.SCOPE.concat("sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create");
-             this.CONSTANTS.PARAMETERS.SCOPE = this.CONSTANTS.PARAMETERS.SCOPE.concat("sites.read.all tasks.readWrite people.read notes.readWrite.all notes.create");
-        }else if(decodedIDtoken){
-            console.log("MSA account");
-        }
-    }
+
     
     // Record error
     if (requestInfo.parameters.hasOwnProperty(this.CONSTANTS.ERROR_DESCRIPTION)) {
@@ -775,6 +765,9 @@ AuthenticationContext.prototype.saveTokenFromHash = function (requestInfo) {
             }
             
             if (requestInfo.parameters.hasOwnProperty(this.CONSTANTS.ACCESS_TOKEN)) {
+                
+
+                
                 this._logstatus('Fragment has access token');
                 this._renewActive = false;
                 
@@ -868,7 +861,7 @@ AuthenticationContext.prototype.handleWindowCallback = function () {
         
         window.location.hash = '';
         window.location = this._getItem(this.CONSTANTS.STORAGE.LOGIN_REQUEST);
-        if (requestInfo.requestType === this.REQUEST_TYPE.RENEW_TOKEN) {
+ 
             callback(this._getItem(this.CONSTANTS.STORAGE.ERROR_DESCRIPTION), requestInfo.parameters[this.CONSTANTS.ACCESS_TOKEN] || requestInfo.parameters[this.CONSTANTS.ID_TOKEN]);
             return;
         } else if (requestInfo.requestType === this.REQUEST_TYPE.ID_TOKEN) {
@@ -876,7 +869,6 @@ AuthenticationContext.prototype.handleWindowCallback = function () {
             callback(this._getItem(this.CONSTANTS.STORAGE.ERROR_DESCRIPTION), this._createUser(this._getItem(this.CONSTANTS.STORAGE.IDTOKEN)));
             return;
         }
-    }
 };
 
 AuthenticationContext.prototype._getNavigateUrl = function (responseType, scopes) {

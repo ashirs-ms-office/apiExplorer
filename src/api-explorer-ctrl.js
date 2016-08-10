@@ -377,8 +377,16 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $scope.progressVisibility = "not-hidden";
         $scope.goVisibility = "hidden";
         
+        var accountType = "";
+        if ($scope.userInfo.isAuthenticated) {
+            accountType = adalService.getAccountType();
+        }else{
+            accountType = "anonymous";
+        }
+        $log.log("account type: ")
+        $log.log(accountType);
         
-        ga('send', 'account', 'GraphExplorer', apiService.selectedOption + " " + query);
+        ga('send', 'account', 'GraphExplorer', accountType);
         ga('send', 'query', 'GraphExplorer', apiService.selectedOption + " " + query);
         /*MscomCustomEvent('ms.InteractionType', '4', 'ms.controlname', 'graphexplorer', 'ms.ea_action', $scope.selectedOptions, 'ms.contentproperties', $scope.text);*/
         

@@ -214,6 +214,19 @@ if (typeof module !== 'undefined' && module.exports) {
                         login: function (scopes) {
                             _adal.login(scopes);
                         },
+                        userInfo: _oauthData,
+                        getAccountType: function(){
+                            if (_oauthData.profile && _oauthData.profile.hasOwnProperty('tid')) {
+                                if (_oauthData.profile.tid !== _adal.CONSTANTS.MSA_TENANTID) {
+                                     console.log("Not an MSA account")
+                                     //not an MSA account - add scopes
+                                     return "common";
+                                }else if(_oauthData.profile){
+                                    console.log("MSA account");
+                                    return "consumer";
+                                }
+                          }
+                        },
                         loginInProgress: function () {
                             return _adal.loginInProgress();
                         },
@@ -224,7 +237,6 @@ if (typeof module !== 'undefined' && module.exports) {
                         getCachedToken: function (scopes) {
                             return _adal.getCachedToken(scopes);
                         },
-                        userInfo: _oauthData,
                         acquireTokenSilent: function (scopes) {
                             // automated token request call
                             var deferred = $q.defer();
