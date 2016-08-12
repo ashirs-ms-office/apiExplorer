@@ -386,8 +386,8 @@ angular.module('ApiExplorer').controller('FormCtrl', ['$scope', '$log', 'ApiExpl
         $log.log("account type: ")
         $log.log(accountType);
         
-        ga('send', 'account', 'GraphExplorer', accountType);
-        ga('send', 'query', 'GraphExplorer', apiService.selectedOption + " " + query);
+        //ga('send', 'account', 'GraphExplorer', accountType);
+        //ga('send', 'query', 'GraphExplorer', apiService.selectedOption + " " + query);
         /*MscomCustomEvent('ms.InteractionType', '4', 'ms.controlname', 'graphexplorer', 'ms.ea_action', $scope.selectedOptions, 'ms.contentproperties', $scope.text);*/
         
         //create an object to store the api call
