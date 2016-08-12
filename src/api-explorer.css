@@ -1,5 +1,6 @@
 body {
     padding-top: 70px;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
 .nav,
@@ -25,18 +26,11 @@ body {
 
 #jsonViewer {
     position: relative;
-    height: 65vh;
+    height: 60vh;
     background: rgb(230, 230, 230);
     border: 1px solid #ccc;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
-    margin-top: 10px;
-}
-
-#responseHeaders{
-    position: relative;
-    background: rgb(230, 230, 230);
-    border: 1px solid #ccc;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
     margin-top: 10px;
 }
 
@@ -44,16 +38,29 @@ body {
     position: relative;
     height: 15vh;
     border: 1px solid #ccc;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; 
+    margin-top: 10px;
+}
+
+#editor{
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; 
+}
+
+#jsonEditorHeaders {
+    position: relative;
+    height: 15vh;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; 
     margin-top: 10px;
 }
 
 #duration {
-    border-radius: 0;
-    background: rgb(256, 256, 256);
-    border-right: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    padding-top: 5px;
+    color: #4685e2;
+    font-size: 15px;
+    position: absolute;
 }
 
 #queryBar {
@@ -84,6 +91,12 @@ body {
     width: 100%;
 }
 
+#adminConsent{
+    background-color: #4685e2;
+    color: #FFFFFF;
+    padding-left: 1em;
+}
+
 .panel-heading{
     color: #333;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -99,29 +112,104 @@ body {
     font-size:18px;
 }
 
+.historyItem{
+    border-top: 1px solid #808080;
+}
+
+/*.historyButton{
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26) !important; 
+}*/
+
+.historyButton[disabled] .historyIcon{
+    -webkit-filter: opacity(50%);
+    filter: opacity(50%);
+}
+
+.historyIcon{
+    min-height: 100%;
+    min-width: 100%;
+}
+
+.historyUrl{
+    padding-right: 10px;
+}
+
+.historyTable th{
+   color: #707070;
+   font-size: 14px;
+   font-weight: 700;
+}
+
+.historyTable td, .historyTable th{
+    padding: 10px;
+}
+
+.historyTable td, .historyTable tr, .historyTable th{
+    border: 1px dotted #707070;
+}
+
+.historyRow:hover {
+    background-color: #ECECEC;
+}
+
+.editorLabel p{
+   color: #707070;
+   font-size: 14px;
+   padding-left: 2em;
+   font-weight: 500;
+}
+
+.closeColumn .md-button{
+    font-size: 50%;
+    min-height: 1%;
+    height: 20px;
+    min-width: 1%;
+    line-height: 0px;
+}
+
+
 /* css classses for coloring back links based on success/failure */
 .success{
     color: #92C700;
-    padding-left: 20px;
-    border-left: 2px solid #808080;
 }
 
 .error{
     color: #FF6A00;
-    padding-left: 20px;
-    border-left: 2px solid #808080;
+    border-left: 1px solid #808080;
+}
+
+.loginDialog{
+    padding: 5%;
 }
 
 .hidden{
-    visibility: hidden;
+    display: none;
+ /*   visibility: hidden;*/
 }
 
 .not-hidden{
-     visibility: visible;
+    display: block;
+     /*visibility: visible;*/
+}
+
+
+@media (-ms-high-contrast) {
+    md-backdrop{
+        background-color: transparent;
+    }
+
+    .md-autocomplete-suggestions li:hover,
+    .md-focused{
+          border: 1px solid #ccc;  
+    }
+    md-autocomplete-suggestions-container.md-default-theme li:hover, 
+    .md-autocomplete-suggestions-container li:hover, 
+    .md-autocomplete-suggestions-container.md-default-theme li.selected, 
+    .md-autocomplete-suggestions-container li.selected{    
+          border: 1px solid #ccc;  
+    }
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
-
-

@@ -56,26 +56,17 @@ var formatXml = function (xml) {
 
     return formatted;
 };
-var showDuration = function($scope, startTime, $mdToast) {
+var showDuration = function($scope, startTime) {
     var endTime = new Date();
     var duration = (endTime.getTime() - startTime.getTime());
     $scope.duration = duration + " ms";
-    $mdToast.show(
-        $mdToast.simple().
-        textContent($scope.duration).
-        hideDelay(0).
-        position('bottom right')
-    );
     $scope.progressVisibility = "hidden";
-
-    //$scope.progressbar.complete();
+    $scope.goVisibility = "not-hidden";
 }
 
 
 
 var showHeaders = function($scope, headers, status) {
-    
-   
     
    var responseObj = {};
     if (headers != null) {
@@ -83,10 +74,19 @@ var showHeaders = function($scope, headers, status) {
     }
     
     responseObj["Status Code"] = status;
-    var responseHeaders = JSON.stringify(responseObj, null, 4).trim();
+    var responseHeaders = headersToString(responseObj);
+    
+    $scope.jsonViewer.getSession().setValue("");
     $scope.jsonViewer.getSession().insert(0, responseHeaders);
 }
 
+var headersToString = function(headers){
+      var returnStr = "";
+      for(var key in headers){
+          returnStr += key + ": " + headers[key] + "\n";
+      } 
+    return returnStr;
+}
 
 var showResults = function ($scope, results, headers, status) {
     $scope.jsonViewer.setValue("");
@@ -110,28 +110,27 @@ var handleImageResponse = function ($scope, apiService, headers, status) {
         $scope.showJsonViewer = false;
         $scope.showImage = true;
         showHeaders($scope, headers);
-
-        $scope.progressbar.complete();
+        showDuration($scope, startTime);
     });
 }
 
-var handleHtmlResponse = function ($scope, startTime, results, headers, $mdToast, status){
+var handleHtmlResponse = function ($scope, startTime, results, headers, status){
     setJsonViewerContentType("html");
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
-var handleJsonResponse = function ($scope, startTime, results, headers, $mdToast, status){
+var handleJsonResponse = function ($scope, startTime, results, headers, status){
     setJsonViewerContentType("json");
     results = JSON.stringify(results, null, 4);
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
-var handleXmlResponse = function ($scope, startTime, results, headers, $mdToast, status) {
+var handleXmlResponse = function ($scope, startTime, results, headers, status) {
     setJsonViewerContentType("xml");
     results = formatXml(results);
-    showDuration($scope, startTime, $mdToast);
+    showDuration($scope, startTime);
     showResults($scope, results, headers, status);
 }
 
@@ -168,7 +167,6 @@ var getContentType = function(headers) {
 
 
 
-
 var getEntitySets = function(XML, $log){
     var entitySetArray = {};
     var entitySets = $(($.parseHTML(XML))[2]).find("EntityContainer")[0].children;
@@ -184,7 +182,6 @@ var getEntitySets = function(XML, $log){
            type = type.substring(index+6, type.length-2);
            EntitySet.entityType = type;
            entitySetArray[EntitySet.name] = EntitySet;
-           //entitySetArray.push(EntitySet);
     }
     return entitySetArray;
 }
@@ -199,12 +196,37 @@ var findNameIndex = function(array){
     }
 }
 
+this.parseQueryString = function (url) {
+    var params = {}, 
+        queryString = url.substring(2), 
+        regex = /([^&=]+)=([^&]*)/g, 
+        m;
+    while (m = regex.exec(queryString)) {
+        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+    }
+    return params;
+};
+
 var findTypeIndex = function(array){
     for(var i=0; i<array.length; i++){
         if(array[i].name === "type"){
             return i;
         }
     }
+}
+
+var formatRequestHeaders = function(headers){
+    var obj = {};
+    var parts = headers.replace(/^\s+|,\s*$/g, '').split(',');
+    
+    for(var i = 0, len = parts.length; i < len; i++) {
+        var match = parts[i].match(/^\s*"?([^":]*)"?\s*:\s*"?([^"]*)\s*$/);
+        if(match) {
+            obj[match[1]] = match[2];
+        }
+    }
+    
+   return obj; 
 }
 
 var createEntityTypeObject = function(returnArray, DOMarray, $log){
@@ -225,8 +247,11 @@ var createEntityTypeObject = function(returnArray, DOMarray, $log){
                      var collection = children[j].attributes[typeIndex].nodeValue;
                      collection = collection.substring(2, 12);
                      var type = children[j].attributes[typeIndex].nodeValue;
-                     var index = type.indexOf("graph.")
-                     type = type.substring(index+6, type.length-3);
+                     var index = type.lastIndexOf(".")
+                     type = type.substring(index+1, type.length-2);
+                     if(type.charAt(type.length-1) == ")"){
+                         type = type.substring(0, type.length-1);
+                     }
                      var urlObject = {};
                      urlObject.isACollection = (collection === "Collection") && (index >0);
                      urlObject.name = childName;
@@ -240,6 +265,12 @@ var createEntityTypeObject = function(returnArray, DOMarray, $log){
     return returnArray;
 }
 
+var showRequestHeaders = function($scope){
+    $scope.jsonEditorHeaders.getSession().setValue("");
+    var requestHeaders = "Content-Type: application/json"
+    $scope.jsonEditorHeaders.getSession().insert(0, requestHeaders);
+}
+
 var getEntityTypes = function(XML, $log){
     var entityTypesArray = {};
     var entityTypes = $(($.parseHTML(XML))[2]).find("EntityType");
@@ -251,21 +282,10 @@ var getEntityTypes = function(XML, $log){
     return entityTypesArray;
 }
 
-/*var dynamicallyPopulateURLsForEntitySets = function(service, jsonObj){
-    if(service.entity != null && service.entity.isEntitySet){
-        service.entity.URLS = [];
-        for(var i=0; i<jsonObj.value.length && i<10; i++){
-            var urlObject = {};
-            urlObject.name = jsonObj.value[i].id;
-            service.entity.URLS.push(urlObject);
-        }
-    }
-}*/
-    
 var myTrim = function(word){
       var returnWord = word;
       if(returnWord != null){
-          while(returnWord.charAt(returnWord.length-1) == "/"){
+          while(returnWord.charAt(returnWord.length-1) == "/" ){
               returnWord = returnWord.replace(/\/$/, "");
           }
           return returnWord; 
@@ -279,14 +299,6 @@ var getEntityName = function(URL){
      }
      return returnWord;
 }
-/*
-var unshortenURL = function(URL, service){
-   if(!URL){
-       return;
-   }
-    
-   return URL.replace("...", service.id);
-}*/
 
 
 var getPreviousCall = function(URL, entityName){
@@ -297,15 +309,12 @@ var getPreviousCall = function(URL, entityName){
 
 var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     
-    if(service.selectedOption != "GET"){
-        return;
-    }
-    
     $log.log("setting entity to");
     
-    
    if(getEntityName(service.text) == service.selectedVersion){
-             service.entity = "topLevel";
+             var entityObj = {};
+             entityObj.name = service.selectedVersion;
+             service.entity = entityObj; 
              return;
     }else{
        var entityName = getEntityName(service.text);
@@ -322,6 +331,7 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
     }
     
     var entitySet = service.cache.get(service.selectedVersion + "EntitySetData")[prevCallName];
+    var entityType = service.cache.get(service.selectedVersion + "EntityTypeData")[prevCallName]; 
     var twoPrevEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[twoPrevCallsName];
     var twoPrevEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[twoPrevCallsName];
     var collection = false;
@@ -341,38 +351,81 @@ var setEntity = function(entityItem, service, $log, lastCallSuccessful){
         }
     }
     
-    service.entityNameIsAnId = (entitySet && lastCallSuccessful && (prevCallName != "me")) || (collection && lastCallSuccessful);
+    service.entityNameIsAnId = (((entitySet && !entityType) || (entitySet && twoPrevCallsName === service.selectedVersion))&& lastCallSuccessful && (prevCallName != "me")) || (collection && lastCallSuccessful);
     
     if(service.entityNameIsAnId){
            $log.log("entity name is an id");
            var typeName;
            if(collection){
+               $log.log("is a collection");
                typeName = collectionType;
+               $log.log(typeName);
            }else if(entitySet){
                typeName = entitySet.entityType; 
            }
            service.entity = service.cache.get(service.selectedVersion + "EntityTypeData")[typeName];
-          // service.entity = "id";
     }else{
-        //if(!entityItem){
-              var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
-              var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
-              if(isEntitySet){
-                  entityItem = isEntitySet;
-              }else if(isEntityType){
-                  entityItem = isEntityType;
+              entityItem = setToSetOrType(service, entityName, prevCallName);
+             if(!entityItem && entityType){
+                   for(var i=0; i < entityType.URLS.length; i++){
+                         if(entityType.URLS[i].name == entityName){
+                             $log.log(entityType.URLS[i]);
+                              entityItem = setToSetOrType(service, entityType.URLS[i].type);
+                              break;
+                         }
+                  }
+              }else if(!entityItem && entitySet){
+                  for(var i=0; i < entitySet.URLS.length; i++){
+                         if(entitySet.URLS[i].name == entityName){
+                             $log.log(entitySet.URLS[i]);
+                              entityItem = setToSetOrType(service, entitySet.URLS[i].type);
+                              break;
+                         }
+                  }
               }
-        //}
         service.entity = entityItem;
     }
 }
 
+var setToSetOrType = function(service, entityName, prevCallName){
+      var isEntitySet = service.cache.get(service.selectedVersion + "EntitySetData")[entityName];
+      var isEntityType = service.cache.get(service.selectedVersion + "EntityTypeData")[entityName];
+      if(isEntitySet && !isEntityType){
+          return isEntitySet;
+      }else if(isEntityType && !isEntitySet){
+          return isEntityType;
+      }else if(isEntitySet && isEntityType){
+           if(prevCallName === service.selectedVersion){
+               return isEntitySet
+           }else{
+               return isEntityType;
+           }
+      }
+    
+}
+
+
+var handleQueryString = function(service, actionValue, versionValue, requestValue){
+    if(actionValue){
+        service.selectedOption = actionValue.toUpperCase();
+        if(service.selectedOption === 'POST' || service.selectedOption === 'PATCH'){
+                service.showJsonEditor = true;
+        }
+   }
+        
+   if(versionValue){
+        service.selectedVersion = versionValue;
+   }
+   if(requestValue){
+        service.text = "https://graph.microsoft.com/" + service.selectedVersion + "/" + requestValue;
+   }
+}
 
 var parseMetadata = function(service, $log, $scope){
     var entitySetData, entityTypeData;
     if(!service.cache.get(service.selectedVersion + "Metadata")){
          $log.log("parsing metadata");
-         service.getMetadata().success(function (results){
+         service.getMetadata($scope.userInfo.isAuthenticated).success(function (results){
                 results = JSON.stringify(results, null, 4).trim();
                 service.cache.put(service.selectedVersion + "Metadata", results);
                 entitySetData = getEntitySets(results, $log);
@@ -381,8 +434,11 @@ var parseMetadata = function(service, $log, $scope){
                 service.cache.put(service.selectedVersion + "EntityTypeData", entityTypeData);
                 $log.log("metadata successfully parsed");
                 if(service.entity == ""){
-                   service.entity = "topLevel";
+                    service.entity = entityTypeData["user"];
+                }else{
+                    service.entity = entityTypeData[getEntityName(service.text)];
                 }
+                
           $scope.$root.$broadcast("updateUrlOptions");
          }).error(function(err, status){
                  $log.log("metadata could not be parsed");
@@ -391,9 +447,3 @@ var parseMetadata = function(service, $log, $scope){
           $scope.$root.$broadcast("updateUrlOptions");
      }
 }
-
-var replaceEntityWithEllipses = function(val){
-    
-    return "REPLACED";
-}
-    
