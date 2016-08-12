@@ -1,5 +1,22 @@
 'use strict';
 
+
+if(window !== window.parent){
+    angular.module('ApiExplorer', ['AdalAngular'])
+    .config(['$httpProvider', 'adalAuthenticationServiceProvider', function ($httpProvider, adalProvider) {
+        adalProvider.init(
+          {
+                clientId: clientId,
+
+                redirectUri: redirectUri 
+          },
+          $httpProvider
+          );
+    }]);
+}else{
+
+
+
 angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootstrap', 'ngProgress', 'ngMaterial'])
     .config(['$routeProvider', '$httpProvider', 'adalAuthenticationServiceProvider', '$mdThemingProvider', function ($routeProvider, $httpProvider, adalProvider, $mdThemingProvider) {
 
@@ -13,11 +30,18 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         adalProvider.init({
                 instance: 'https://login.microsoftonline.com/',
                 tenant: 'common',
-                clientId: '2e8459fe-87ef-4286-af70-f33a307563aa',
+                clientId: clientId, 
                 endpoints: {
-                    "https://graph.microsoft.com": "https://graph.microsoft.com"
-                },
-                cacheLocation: 'localStorage'
+                    "https://graph.microsoft.com" :{
+                    scope:[userScopesMSA] 
+                  } 
+                
+                }, 
+                scope:[userScopesMSA], 
+            
+                redirectUri: redirectUri, 
+            
+                cacheLocation: 'localStorage',
             },
             $httpProvider
         );
@@ -64,6 +88,8 @@ angular.module('ApiExplorer', ['ngRoute', 'AdalAngular', 'ngAnimate', 'ui.bootst
         $mdThemingProvider.theme('default').primaryPalette('O365PrimaryPalette');
         $mdThemingProvider.theme('default').accentPalette('O365AccentPalette');
 }]);
+    
+}
 // v2 - 76a89b1b-d49c-42e0-859a-53324fe7eb6a
 //test - ce268d90-5d39-403c-a3a0-8d463140d4a9
 //real - 8a3eb86b-8149-4231-9ff3-3c50958ea0fd

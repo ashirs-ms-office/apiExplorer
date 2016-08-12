@@ -4,7 +4,7 @@ angular.module('ApiExplorer')
     .factory('ApiExplorerSvc', ['$http', '$cacheFactory', function ($http, $cacheFactory) {
         return {
             
-            text: 'https://graph.microsoft.com/v1.0/',
+            text: 'https://graph.microsoft.com/v1.0/me/',
             
             selectedVersion: "v1.0",
             
@@ -22,39 +22,95 @@ angular.module('ApiExplorer')
             
             entityNameIsAnId: false,
             
-            performQuery: function (queryType) {
+            performAnonymousQuery: function (queryType) {
                 if (queryType == "GET") {
-                    return function (query, postString) {
-                        return $http.get(query);
+
+                    
+                    return function (query, postString, requestHeaders) {
+                         var headersObj = {
+                             "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                             "Accept": "application/json"    
+                        };
+
+                        if(requestHeaders && requestHeaders["Authorization"]){
+                            headersObj["Authorization"] = requestHeaders["Authorization"];
+                        }
+
+                        if(requestHeaders && requestHeaders["Accept"]){
+                            headersObj["Accept"] = requestHeaders["Accept"];
+                        }
+                        return $http({
+                            url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'GET',
+                            headers: headersObj
+                        });
                     };
                 }
                 if (queryType == "GET_BINARY") {
-                    return function (query, postString) {
-                        return $http.get(query, {responseType:"arraybuffer"});
+                    return function (query, postString, requestHeaders) {
+                         var headersObj = {
+                             "Authorization": "Bearer {token:https://graph.microsoft.com/}",
+                             "Accept": "application/json"    
+                        };
+
+                        if(requestHeaders && requestHeaders["Authorization"]){
+                            headersObj["Authorization"] = requestHeaders["Authorization"];
+                        }
+
+                        if(requestHeaders && requestHeaders["Accept"]){
+                            headersObj["Accept"] = requestHeaders["Accept"];
+                        }
+                        return $http({
+                            url: 'https://apiexproxy-dev.azurewebsites.net/svc?url=' + encodeURIComponent(query),
+                            method: 'GET',
+                            headers: headersObj,
+                            responseType: "arraybuffer"
+                        });
+                    };
+                }
+                       
+                return null;
+            },
+
+            performQuery: function (queryType) {
+                if (queryType == "GET") {
+                    return function (query, postString, requestHeaders) {
+                        console.log(requestHeaders);
+                        return $http.get(query, {headers : requestHeaders});
+                    };
+                }
+                if (queryType == "GET_BINARY") {
+                    return function (query, postString, requestHeaders) {
+                        return $http.get(query, {responseType:"arraybuffer"}, {headers : requestHeaders});
                     };
                 }
                 
                 if (queryType == "POST") {
-                    return function (query, postString) {
-                        return $http.post(query, postString, {headers : "Content-Type:application/json"});
+                    return function (query, postString, requestHeaders) {
+                        return $http.post(query, postString, {headers : requestHeaders});
                     };
                 }
                 if (queryType == "PATCH") {
-                    return function (query, postString) {
-                        return $http.patch(query, postString, {headers : "Content-Type:application/json"});
+                    return function (query, postString, requestHeaders) {
+                        return $http.patch(query, postString,{headers : requestHeaders});
                     };
                 }
                 if (queryType == "DELETE") {
-                    return function (query, postString) {
-                        return $http.delete(query);
+                    return function (query, postString, requestHeaders) {
+                        return $http.delete(query, {headers : requestHeaders});
                     };
                 }
                 
                 return null;
             },
             
-            getMetadata: function(){
-                 return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+            getMetadata: function(loggedIn){
+                if(loggedIn){
+                     return this.performQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+                }else{
+                     return this.performAnonymousQuery("GET")("https://graph.microsoft.com/" + this.selectedVersion +"/$metadata");
+                }
+
             }
         };
     }]);

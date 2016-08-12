@@ -1,28 +1,54 @@
+<md-dialog flex=25>
+    <md-toolbar>
+       <div class="md-toolbar-tools">
+            <h2> Settings </h2>    
+            <span flex></span>
 
-<md-toolbar>
-   <div class="md-toolbar-tools">
-        <h2> Settings </h2>    
-        <span flex></span>
+       </div>
+    </md-toolbar>
+    
+    <!-- admin consent button -->
+    <br />
+    <div class="adminSettings" layout="row" layout-align="space-around center">
+        <span tabindex=0 flex=45>Are you an admin? </span>
+        <md-button class="md-raised" ng-click="addAdminScopes()" ng-controller="FormCtrl">
+               YES 
+        </md-button>
+    </div>
+    <br />
+    <md-divider></md-divider>
+    <br />
 
-   </div>
-</md-toolbar>
-<br />
+       
+    <!-- version button -->
+    <div layout="column">
+       <div layout="row" layout-align="space-around center">
+       <span  tabindex=0 flex=45> Version: </span>
+       <md-menu md-offset="0 45" ng-controller="VersionCtrl">
+            <md-button class="md-raised" ng-click="$mdOpenMenu($event)" layout="row" layout-align="space-around center">
+                   {{getServiceVersion()}}
+                  <span> &or; </span>
+            </md-button>
+           <md-menu-content>
+               <md-menu-item ng-repeat="choice in items">
+                     <md-button ng-click="onItemClick(choice)">
+                         {{choice}}
+                     </md-button>
+               </md-menu-item>
+           </md-menu-content>
+         </md-menu> 
 
-<div layout="row" layout-align="space-around">
-
-
-     <md-input-container ng-controller="VersionCtrl">
-         <label> Version </label>
-       <md-select id="version-button" ng-model="selectedVersion">
-             <md-option ng-value="choice" ng-repeat="choice in items" ng-click="onItemClick(choice)">
-                 {{choice}}
-           </md-option>
-       </md-select>
-    </md-input-container>
-</div>
-
-<div layout="row" layout-align="center">
-    <md-button class="md-raised" ng-click="cancel()">
-        OK
-    </md-button>
-</div>
+        </div>
+        <br />
+        <md-divider></md-divider>
+        <br />
+        
+        <!-- apply button -->
+        <div layout="row" layout-align="center center">
+            <md-button class="md-raised" ng-click="cancel()">
+                APPLY
+            </md-button>
+        </div>
+        <br />
+    </div>
+</md-dialog>
