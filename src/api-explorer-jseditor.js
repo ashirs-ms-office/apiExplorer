@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-function initializeJsonEditor($scope) {
-    jsonEditor = ace.edit("jsonEditor");
-    jsonEditor.getSession().setMode("ace/mode/javascript");
-    jsonEditor.setShowPrintMargin(false);
-    //accessibility - keyboard dependant users must be able to "tab out" of session
-    jsonEditor.commands.bindKey("Tab", null);
-    $scope.jsonEditor = jsonEditor;
-=======
 function initializeJsonEditor($scope, bodyVal) {
     
     $(document).ready(function() {
@@ -44,5 +35,4 @@ function initializeJsonEditorHeaders($scope, headersVal) {
         jsonEditorHeaders.commands.bindKey("Tab", null);
         $scope.jsonEditorHeaders = jsonEditorHeaders;
     });
->>>>>>> b52329deb069ee9f79bb6ecfa29ff01d6dd4df0c
 }
